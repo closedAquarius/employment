@@ -1,6 +1,0 @@
-AssistantService.ts
-ClientService.ts
-com/guangge/Interview/test/WrittenTestTools/InterViewRecord.ts
-connect-client.default.ts
-endpoints.ts
-com/guangge/Interview/test/WrittenTestTools/InterViewRecordModel.ts
