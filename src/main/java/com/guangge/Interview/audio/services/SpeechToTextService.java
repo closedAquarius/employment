@@ -1,0 +1,51 @@
+package com.guangge.Interview.audio.services;
+
+import com.alibaba.dashscope.audio.asr.recognition.Recognition;
+import com.alibaba.dashscope.audio.asr.recognition.RecognitionParam;
+import com.alibaba.dashscope.audio.asr.transcription.*;
+import com.alibaba.nacos.shaded.com.google.gson.Gson;
+import com.alibaba.nacos.shaded.com.google.gson.GsonBuilder;
+import com.alibaba.nacos.shaded.com.google.gson.JsonObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+
+@Service
+public class SpeechToTextService {
+    @Value("${spring.ai.dash-scope.api-key}")
+    private String apiKey;
+
+    public String transcribeAudio(File audioFile) throws IOException {
+        String result = "";
+        // 创建Recognition实例
+        Recognition recognizer = new Recognition();
+        // 创建RecognitionParam
+        RecognitionParam param =
+                RecognitionParam.builder()
+                        // 若没有将API Key配置到环境变量中，需将下面这行代码注释放开，并将apiKey替换为自己的API Key
+                        .apiKey(apiKey)
+                        .model("paraformer-realtime-v2")
+                        .format("wav")
+                        .sampleRate(16000)
+                        // “language_hints”只支持paraformer-v2和paraformer-realtime-v2模型
+                        .parameter("language_hints", new String[]{"zh", "en"})
+                        .build();
+
+        try {
+            result = recognizer.call(param, audioFile);
+            System.out.println("识别结果：" + result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+}
