@@ -1,1 +1,0 @@
-[{"route":"","params":{},"title":"Main Layout","children":[{"route":"","menu":{"order":0,"icon":"line-awesome/svg/file.svg"},"title":"光哥笔试","params":{}},{"route":"interview","menu":{"order":1,"icon":"line-awesome/svg/file.svg"},"title":"光哥面试","params":{}},{"route":"interviewResult","menu":{"order":2,"icon":"line-awesome/svg/globe-solid.svg"},"title":"面试结果","params":{}}]}]
