@@ -47,17 +47,33 @@ public class WrittenTestTools {
     }
 
     @Bean
-    @Description("获取简历")
+    @Description("根据姓名获取简历")
     public Function<WrittenTestTools.InterViewRequest, String> getResumeByName() {
         return request -> {
             try {
                 String resume = resumeService.findInterView(request.name()).getRawText();
                 if (resume.isEmpty()) {
+                    return "没有发现这个人的简历，请让他联系工作人员已确认是否上传了简历。";
+                }
+                return resume;
+            } catch (IllegalArgumentException ex) {
+                return "没有发现这个人，请确认真的被邀请面试了吗。";
+            }
+        };
+    }
+
+    @Bean
+    @Description("根据序号获取简历")
+    public Function<WrittenTestTools.InterViewRequest, String> getResumeById() {
+        return request -> {
+            try {
+                String resume = resumeService.findInterView(Long.valueOf(request.number())).getRawText();
+                if (resume.isEmpty()) {
                     return "没有发现这个人的简历，请确认他真实姓名。";
                 }
                 return resume;
             } catch (IllegalArgumentException ex) {
-                return "没有发现这个人，请确认他真实姓名。";
+                return "没有发现这个人，请确认真的被邀请面试了吗。";
             }
         };
     }

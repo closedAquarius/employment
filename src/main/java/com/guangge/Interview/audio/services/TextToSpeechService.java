@@ -17,7 +17,12 @@ public class TextToSpeechService {
 
     @Value("${spring.ai.dash-scope.audio.options.model}")
     private String model;
-    
+
+    /**
+     * 文字转音频
+     * @param response 文字
+     * @return 音频
+     */
     public byte[] textToSpeech(String response) {
         SpeechSynthesizer synthesizer = new SpeechSynthesizer();
         SpeechSynthesisParam param =

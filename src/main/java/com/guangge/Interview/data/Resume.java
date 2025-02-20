@@ -43,6 +43,10 @@ public class Resume {
     @Column(name = "interview_evaluate", nullable = true)
     private String interviewEvaluate;
 
+    @Column(name = "is_done_status", nullable = true)
+    @Convert(converter = IsDoneStatusConverter.class)
+    private IsDoneStatus isDoneStatus;
+
     public Resume() {}
 
     public String getName() {
@@ -115,5 +119,13 @@ public class Resume {
 
     public void setInterviewEvaluate(String interviewEvaluate) {
         this.interviewEvaluate = interviewEvaluate;
+    }
+
+    public IsDoneStatus getIsDoneStatus() {
+        return isDoneStatus;
+    }
+
+    public void setIsDoneStatus(IsDoneStatus isDoneStatus) {
+        this.isDoneStatus = isDoneStatus;
     }
 }

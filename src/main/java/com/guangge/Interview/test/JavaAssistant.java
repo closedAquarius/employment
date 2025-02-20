@@ -18,6 +18,9 @@ import java.nio.charset.Charset;
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
+/**
+ * JAVA笔试助手
+ */
 @Service
 public class JavaAssistant {
 
@@ -37,6 +40,12 @@ public class JavaAssistant {
                 .build();
     }
 
+    /**
+     * 流聊天
+     * @param chatId 聊天ID
+     * @param userMessageContent 用户回答
+     * @return AI回答
+     */
     public Flux<String> chat(String chatId, String userMessageContent) {
 
         return this.chatClient.prompt()
@@ -47,6 +56,12 @@ public class JavaAssistant {
                 .stream().content();
     }
 
+    /**
+     * 字符串聊天
+     * @param chatId 聊天ID
+     * @param userMessageContent 用户回答
+     * @return AI回答
+     */
     public String chatForString(String chatId, String userMessageContent) {
 
         return this.chatClient.prompt()

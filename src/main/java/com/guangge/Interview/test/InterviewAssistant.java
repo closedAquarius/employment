@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
+/**
+ * 面试助手
+ */
 @Service
 public class InterviewAssistant {
 
@@ -26,7 +29,7 @@ public class InterviewAssistant {
                         new PromptChatMemoryAdvisor(chatMemory),
                         new LoggingAdvisor()
                 )
-                .defaultFunctions("getResumeByName","changeInterView")
+                .defaultFunctions("getResumeByName","changeInterView","getResumeById")
                 .build();
     }
 
@@ -36,7 +39,7 @@ public class InterviewAssistant {
                 .user(userMessageContent)
                 .advisors(a -> a
                         .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
-                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 20))
                 .call().content();
     }
 }

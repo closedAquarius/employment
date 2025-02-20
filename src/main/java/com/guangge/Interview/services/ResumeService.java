@@ -2,6 +2,7 @@ package com.guangge.Interview.services;
 
 import com.guangge.Interview.audio.services.AudioService;
 import com.guangge.Interview.data.InterViewStatus;
+import com.guangge.Interview.data.IsDoneStatus;
 import com.guangge.Interview.data.Resume;
 import com.guangge.Interview.repository.ResumeRepository;
 import com.guangge.Interview.test.WrittenTestTools;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ResumeService {
@@ -68,6 +70,14 @@ public class ResumeService {
         return resume;
     }
 
+    public Resume findInterView(Long id) {
+        Optional<Resume> byId = this.resumeRepository.findById(id);
+        if (!byId.isPresent()) {
+            throw new IllegalArgumentException("Interview not found");
+        }
+        return byId.get();
+    }
+
     public void changeTestReuslt(String name, int score, String evaluate) {
         var resume = findInterView(name);
         resume.setScore(score);
@@ -88,6 +98,7 @@ public class ResumeService {
         resume.setEvaluate(evaluate);
         String mp3Path = this.audioService.getSpeech(resume.getId() + name,evaluate);
         resume.setMp3Path(mp3Path);
+        resume.setIsDoneStatus(IsDoneStatus.ONE_DONE);
 
         this.resumeRepository.save(resume);
     }
@@ -95,6 +106,7 @@ public class ResumeService {
     public void changeInterview(String name, String evaluate) {
         var resume = findInterView(name);
         resume.setInterviewEvaluate(evaluate);
+        resume.setIsDoneStatus(IsDoneStatus.TWO_DONE);
         this.resumeRepository.save(resume);
     }
 

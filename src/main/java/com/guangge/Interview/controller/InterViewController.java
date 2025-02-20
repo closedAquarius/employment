@@ -1,4 +1,4 @@
-package com.guangge.Interview.audio.controller;
+package com.guangge.Interview.controller;
 
 import com.guangge.Interview.audio.services.AudioConverter;
 import com.guangge.Interview.audio.services.SpeechToTextService;
@@ -16,6 +16,8 @@ import reactor.core.publisher.Flux;
 import javax.sound.sampled.*;
 import java.io.*;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("interview")
@@ -42,9 +44,19 @@ public class InterViewController {
         return interViewAgent.chat(chatId, userMessage);
     }
 
+    /**
+     * 面试接口
+     * @param chatId 回话id
+     * @param audio 面试者回答音频
+     * @return 面试官问题音频
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws UnsupportedAudioFileException
+     */
     @PostMapping(value="/face2faceChat", produces = "audio/wav")
     public ResponseEntity<byte[]> face2faceChat(@RequestParam("chatId") String chatId,
                                                 @RequestParam("audio") MultipartFile audio) throws IOException, InterruptedException, UnsupportedAudioFileException {
+        String completed = "";
         File tempFile = File.createTempFile("audio-", ".opus");
         audio.transferTo(tempFile);
         File convertFile = AudioConverter.convertToWav(tempFile);
@@ -56,15 +68,24 @@ public class InterViewController {
         // 获取大模型响应
         String response = interviewAssistant.chat(chatId,text);
 
+        if (response.contains("再见")) {
+            completed = "completed";
+        }
 
         // 文字转语音
         byte[] audioResponse = speechService.textToSpeech(response);
 
         return ResponseEntity.ok()
                 .header("Content-Type", "audio/wav")
+                .header("X-Chat-Status", completed) // 状态信息
                 .body(audioResponse);
     }
 
+    /**
+     * 欢迎音频取得
+     * @return 欢迎音频
+     * @throws IOException
+     */
     @GetMapping(value="/welcomemp3", produces = "audio/mp3")
     public ResponseEntity<byte[]> welcomemp3() throws IOException {
         Resource resource = new ClassPathResource("static/audio/welcome.mp3");
@@ -77,4 +98,5 @@ public class InterViewController {
                 .header("Content-Type", "audio/mp3")
                 .body(audioBytes);
     }
+
 }

@@ -6,6 +6,7 @@ import com.alibaba.dashscope.audio.asr.transcription.*;
 import com.alibaba.nacos.shaded.com.google.gson.Gson;
 import com.alibaba.nacos.shaded.com.google.gson.GsonBuilder;
 import com.alibaba.nacos.shaded.com.google.gson.JsonObject;
+import com.guangge.Interview.util.JacksonMapperUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +19,19 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SpeechToTextService {
     @Value("${spring.ai.dash-scope.api-key}")
     private String apiKey;
 
+    /**
+     * 音频转文字
+     * @param audioFile 音频
+     * @return 文字
+     * @throws IOException
+     */
     public String transcribeAudio(File audioFile) throws IOException {
         String result = "";
         // 创建Recognition实例
@@ -42,7 +50,9 @@ public class SpeechToTextService {
 
         try {
             result = recognizer.call(param, audioFile);
-            System.out.println("识别结果：" + result);
+            Map<String, Object> stringObjectMap = JacksonMapperUtils.json2map(result);
+            List<Map<String, Object>> sentences = (List<Map<String, Object>>) stringObjectMap.get("sentences");
+            result = (String) sentences.get(0).get("text");
         } catch (Exception e) {
             e.printStackTrace();
         }

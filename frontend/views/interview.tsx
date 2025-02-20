@@ -6,6 +6,7 @@ import { ClipLoader } from 'react-spinners';
 import { motion } from 'framer-motion';
 import talkingAnimation from 'Frontend/assets/animations/talking-animation.json'; // 从 LottieFiles 下载的动画文件
 import thinkingAnimation from 'Frontend/assets/animations/think-animation.json'; // 从 LottieFiles 下载的动画文件
+import microphoneAnimation from 'Frontend/assets/animations/microphone-animation.json'; // 从 LottieFiles 下载的动画文件
 import { FaMicrophone, FaStop, FaPaperPlane } from 'react-icons/fa';
 
 export const config: ViewConfig = { menu: { order: 1, icon: 'line-awesome/svg/file.svg' }, title: '光哥面试' };
@@ -22,6 +23,7 @@ const AudioRecorder = () => {
   const [chatId, setChatId] = useState(nanoid());
   const lottieRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   // 播放欢迎语音
   const playWelcomeAudio = async () => {
@@ -91,6 +93,12 @@ const AudioRecorder = () => {
 
       const responseBlob = await response.blob();
       const audioUrl = URL.createObjectURL(responseBlob);
+
+      // 获取状态信息
+      const status = response.headers.get('X-Chat-Status');
+      const completed = status === 'completed';
+      setIsCompleted(completed);
+
       setAudioUrl(audioUrl);
       setIsProcessing(false);
       playAudio(audioUrl);
@@ -136,60 +144,120 @@ const AudioRecorder = () => {
       setIsRecording(false);
       setIsWelcomePlaying(false);
       setShowAnswerButton(true); // 显示“回答”按钮
+      if (!isCompleted) {
+        startRecording();
+      }
     };
   };
 
   return (
+  <div>
+   <div style={{ textAlign: 'center',
+                    position: 'fixed',
+                    top: '20%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)' }}>
+        {/* 开始面试按钮 */}
+      {showStartButton && (
+        <motion.button
+          onClick={playWelcomeAudio}
+          style={{
+            padding: '15px 30px',
+            fontSize: '18px',
+            borderRadius: '10px',
+            border: 'none',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            cursor: 'pointer',
+          }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          开始面试
+        </motion.button>
+      )}
+
+      {/* 回答按钮 */}
+        {showAnswerButton && !isProcessing && !isCompleted && !isPlaying &&(
+        <motion.button
+          onClick={isRecording ? stopRecording : startRecording}
+          style={{
+            padding: '15px 30px',
+            fontSize: '18px',
+            borderRadius: '10px',
+            border: 'none',
+            backgroundColor: isRecording ? '#ff4d4d' : '#4CAF50',
+            color: 'white',
+            cursor: 'pointer',
+            position: 'relative',
+            zIndex: 20, // 按钮在上层
+          }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          {isRecording ? '回答完毕' : '回答'}
+        </motion.button>
+        )}
+    </div>
+
     <div style={{ textAlign: 'center',
                   position: 'fixed',
                   top: '50%',
                   left: '50%',
                   transform: 'translate(-50%, -50%)' }}>
-          {/* 开始面试按钮 */}
-          {showStartButton && (
-            <motion.button
-              onClick={playWelcomeAudio}
-              style={{
-                padding: '15px 30px',
-                fontSize: '18px',
-                borderRadius: '10px',
-                border: 'none',
-                backgroundColor: '#4CAF50',
-                color: 'white',
-                cursor: 'pointer',
-              }}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              开始面试
-            </motion.button>
-          )}
 
-          {/* 按钮 */}
-          {showAnswerButton && !isProcessing && (
-          <motion.button
-            onClick={isRecording ? stopRecording : startRecording}
-            disabled={isProcessing || isPlaying}
+        {/* 加载动画 */}
+        {isRecording && !isCompleted && (
+          <div
             style={{
-              padding: '15px 30px',
-              fontSize: '18px',
-              borderRadius: '10px',
-              border: 'none',
-              backgroundColor: isRecording ? '#ff4d4d' : '#4CAF50',
-              color: 'white',
-              cursor: isProcessing || isPlaying ? 'not-allowed' : 'pointer',
-              position: 'relative',
-              zIndex: 1, // 按钮在底层
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'none', // 禁止点击
+              zIndex: 10, // 动画在底层
             }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
           >
-            {isProcessing ? '思考中...' : isRecording ? '回答完毕' : '回答'}
-          </motion.button>
+            <Lottie
+              lottieRef={lottieRef}
+              animationData={microphoneAnimation}
+              loop={true}
+              style={{ width: '200px', height: '200px' }} // 调整动画大小
+            />
+             <div
+             style={{
+               marginTop: '10px',
+               fontSize: '20px',
+               fontWeight: 'bold',
+               color: '#333',
+             }}
+           >
+             请对着麦克风回答问题...
+           </div>
+          </div>
+        )}
+
+          {isCompleted &&(
+          <motion.div
+            initial={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5, rotate: 360 }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+            style={{
+              width: 200,
+              height: 200,
+              backgroundColor: 'lightblue',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: '10px',
+            }}
+          >
+            <h1>Goodbye!</h1>
+          </motion.div>
           )}
 
           {/* 加载动画 */}
-          {isProcessing && (
+          {isProcessing && !isCompleted && (
             <div
               style={{
                 position: 'fixed',
@@ -204,7 +272,7 @@ const AudioRecorder = () => {
                 lottieRef={lottieRef}
                 animationData={thinkingAnimation}
                 loop={true}
-                style={{ width: '600px', height: '400px' }} // 调整动画大小
+                style={{ width: '300px', height: '300px' }} // 调整动画大小
               />
                <div
                style={{
@@ -220,7 +288,7 @@ const AudioRecorder = () => {
           )}
 
           {/* 动画小人 */}
-          {isPlaying && (
+          {isPlaying && !isCompleted && (
             <div
               style={{
                 position: 'fixed',
@@ -249,18 +317,7 @@ const AudioRecorder = () => {
              </div>
             </div>
           )}
-
-          {/* 播放完成提示 */}
-          {audioUrl && !isPlaying && (
-            <motion.div
-              style={{ marginTop: '20px' }}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <p style={{ fontSize: '18px' }}>回答完毕！</p>
-            </motion.div>
-          )}
+        </div>
         </div>
   );
 };
