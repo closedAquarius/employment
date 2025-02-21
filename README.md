@@ -46,3 +46,8 @@ docker-compose up -d
 
 # 3. 访问API文档
 open http://localhost:8080/swagger-ui.html
+
+# 项目名称
+作者: 大连光哥  
+技术栈: JAVA、AI 、React 
+邮箱: xgwangdl@163.com  
