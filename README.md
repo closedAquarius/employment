@@ -49,14 +49,14 @@ open http://localhost:8080/swagger-ui.html
 
 # 4. 项目展示
 1.笔试面试界面
-![image](https://github.com/user-attachments/assets/177a52f5-6413-4d8f-9071-1cf5ee6205a6)
+![image](https://github.com/user-attachments/assets/177a52f5-6413-4d8f-9071-1cf5ee6205a6?raw=true)
 2.面试界面
 面试官提问
-![image](https://github.com/user-attachments/assets/f77a2319-4274-498e-9478-b567bbf26fda)
+![image](https://github.com/user-attachments/assets/f77a2319-4274-498e-9478-b567bbf26fda?raw=true)
 面试者回答
-![image](https://github.com/user-attachments/assets/75cdd8a2-f7ba-4e9a-aa9c-8a298ec20133)
+![image](https://github.com/user-attachments/assets/75cdd8a2-f7ba-4e9a-aa9c-8a298ec20133?raw=true)
 3.面试结果界面
-![image](https://github.com/user-attachments/assets/3b984882-3edd-47a1-8215-1b34ed2d557e)
+![image](https://github.com/user-attachments/assets/3b984882-3edd-47a1-8215-1b34ed2d557e?raw=true)
 
 # 项目名称
 作者: 大连光哥  
