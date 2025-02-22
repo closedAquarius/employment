@@ -32,6 +32,19 @@
 | 语音交互系统     | REST API + 异步任务队列           | 模拟技术沟通场景           |
 | 行为分析仪表盘   | OpenCV情绪识别 + 代码热力图       | 面试表现多维可视化         |
 
+
+## 🚩 项目展示
+1.笔试面试界面
+![image](https://github.com/user-attachments/assets/177a52f5-6413-4d8f-9071-1cf5ee6205a6)
+2.面试界面
+面试官提问
+![image](https://github.com/user-attachments/assets/f77a2319-4274-498e-9478-b567bbf26fda)
+面试者回答
+![image](https://github.com/user-attachments/assets/75cdd8a2-f7ba-4e9a-aa9c-8a298ec20133)
+3.面试结果界面
+![image](https://github.com/user-attachments/assets/3b984882-3edd-47a1-8215-1b34ed2d557e)
+
+
 ## ⚡ 快速开始
 
 5分钟开启你的第一次AI面试：
@@ -47,18 +60,7 @@ docker-compose up -d
 # 3. 访问API文档
 open http://localhost:8080/swagger-ui.html
 
-# 4. 项目展示
-1.笔试面试界面
-![alt text](writeInterview.png)
-2.面试界面
-面试官提问
-![alt text](face2face.png)
-面试者回答
-![image](https://github-production-user-asset-6210df.s3.amazonaws.com/18305119/415882662-f77a2319-4274-498e-9478-b567bbf26fda.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250222%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250222T060325Z&X-Amz-Expires=300&X-Amz-Signature=f575f01dcdf4bfab4929281fed116784231991c063065b9bd8ed3e50abcd6ee9&X-Amz-SignedHeaders=host)
-3.面试结果界面
-![alt text](result.png)
-
 # 项目名称
 作者: 大连光哥  
 技术栈: JAVA、AI 、React 
-邮箱: xgwangdl@163.com  
+邮箱: xgwangdl@163.com
