@@ -21,7 +21,7 @@ public class Application implements AppShellConfigurator {
 
 	@Bean
 	public VectorStore vectorStore(EmbeddingModel embeddingModel) {
-		return new SimpleVectorStore(embeddingModel);
+		return  SimpleVectorStore.builder(embeddingModel).build();
 	}
 
 	@Bean

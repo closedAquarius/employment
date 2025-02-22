@@ -17,8 +17,8 @@ public class ImageGenerator {
 
     public ImageResponse generate(String prompt) {
         var options = ImageOptionsBuilder.builder()
-                .withHeight(1024)
-                .withWidth(1024)
+                .width(1024)
+                .height(1024)
                 .build();
 
         var imagePrompt = new ImagePrompt(prompt, options);

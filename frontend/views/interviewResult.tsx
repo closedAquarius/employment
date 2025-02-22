@@ -11,6 +11,12 @@ import Message, {MessageItem} from "../components/Message";
 import MessageList from "Frontend/components/MessageList";
 import { Button, Notification, TextField } from '@vaadin/react-components';
 import { Tooltip } from '@vaadin/react-components/Tooltip.js';
+import { HorizontalLayout } from '@vaadin/react-components/HorizontalLayout.js';
+import { VerticalLayout } from '@vaadin/react-components/VerticalLayout.js';
+import { Avatar } from '@vaadin/react-components/Avatar.js';
+import { TextArea } from '@vaadin/react-components/TextArea.js';
+import newInterViewDialog from "./newInterViewDialog";
+
 import axios from 'axios';
 
 export const config: ViewConfig = { menu: { order: 2, icon: 'line-awesome/svg/globe-solid.svg' }, title: '面试结果' };
@@ -19,6 +25,7 @@ export default function InterviewView() {
   const [chatId, setChatId] = useState(nanoid());
   const [working, setWorking] = useState(false);
   const [interViews, setInterView] = useState<InterViewRecord[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     // Update bookings when we have received the full response
@@ -28,7 +35,7 @@ export default function InterviewView() {
   }, [working]);
 
 const statusRenderer = (status: string) => (
-      <span {...{ theme: `badge ${status === '淘汰' ? 'error' : 'success'}` }}>
+      <span {...{ theme: `badge ${status === '等待' ? '' :status === '淘汰' ? 'error' : 'success'}` }}>
          {status}
       </span>
 );
@@ -37,9 +44,13 @@ const tooltipGenerator = (context: GridEventContext<interViews>): string => {
   let text = '';
 
   const { column, item } = context;
-  if (column && item && column.path == 'evaluate') {
+  if (column && item && (column.path == 'evaluate') ) {
     text = item.evaluate;
   }
+
+  if (column && item && (column.path == 'interviewEvaluate') ) {
+      text = item.interviewEvaluate;
+    }
 
   return text;
 };
@@ -67,24 +78,47 @@ const handleUpload = async (number: String, event) => {
     }
   };
 
+function employeeRenderer({ item: interViews }) {
+  return (
+    <HorizontalLayout style={{ alignItems: 'center' }} theme="spacing">
+      <Avatar  name={`${interViews.number} ${interViews.name}`} />
+
+      <VerticalLayout style={{ lineHeight: 'var(--lumo-line-height-m)' }}>
+        <span>
+          {interViews.number} {interViews.name}
+        </span>
+        <span
+          style={{ fontSize: 'var(--lumo-font-size-s)', color: 'var(--lumo-secondary-text-color)' }}
+        >
+          {interViews.email}
+        </span>
+      </VerticalLayout>
+    </HorizontalLayout>
+  );
+}
+
   return (
     <SplitLayout className="h-full">
       <div className="flex flex-col gap-m p-m box-border" style={{width: '100%'}} >
         <h3>候选者名单</h3>
         <Grid items={interViews} className="flex-shrink-0" theme="row-stripes">
-          <GridColumn path="number" header="序号" autoWidth/>
-          <GridColumn path="name" header="姓名" autoWidth/>
-          <GridColumn path="score" header="得分" autoWidth/>
-          <GridColumn header="评价" >
+          <GridColumn path="number" header="候选者" renderer={employeeRenderer} autoWidth/>
+          <GridColumn header="结果" >
           {({ item: interView }) => statusRenderer(interView.interViewStatus)}
           </GridColumn>
-          <GridColumn path="email" header="邮箱" autoWidth/>
-          <GridColumn path="evaluate" header="评语" >
-          {({ item: interView  }) => (
-                <span>
-                  {interView.evaluate}
-                </span>
-              )}
+          <GridColumn path="evaluate" header="笔试评语" >
+            {({ item: interView  }) => (
+                  <span>
+                    {interView.evaluate}
+                  </span>
+                )}
+          </GridColumn>
+          <GridColumn path="interviewEvaluate" header="面试评语" >
+            {({ item: interView  }) => (
+                  <span>
+                    {interView.interviewEvaluate}
+                  </span>
+                )}
           </GridColumn>
           <GridColumn header="发信" >
                 {({ item: interView }) => (
@@ -96,7 +130,7 @@ const handleUpload = async (number: String, event) => {
                   </Button>
                 )}
           </GridColumn>
-          <GridColumn header="上传简历" >
+          <GridColumn  header="上传简历" >
               {({ item: interView }) => (
                  <input type="file" onChange={(e) => handleUpload(interView.number, e)} />
               )}

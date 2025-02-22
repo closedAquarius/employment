@@ -33,7 +33,7 @@ public class JavaAssistant {
         this.chatClient = modelBuilder.defaultSystem(systemText)
                 .defaultAdvisors(
                         new PromptChatMemoryAdvisor(chatMemory),
-                        new QuestionAnswerAdvisor(vectorStore, SearchRequest.defaults(),userTextAdvisors.getContentAsString(Charset.defaultCharset())),
+                        new QuestionAnswerAdvisor(vectorStore, SearchRequest.builder().build(),userTextAdvisors.getContentAsString(Charset.defaultCharset())),
                         new LoggingAdvisor()
                 )
                 .defaultFunctions("changeTestResult","getInterviewDetails")

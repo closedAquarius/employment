@@ -232,7 +232,7 @@ const AudioRecorder = () => {
                color: '#333',
              }}
            >
-             请对着麦克风回答问题...
+             请回答问题...
            </div>
           </div>
         )}
@@ -313,7 +313,7 @@ const AudioRecorder = () => {
                  color: '#333',
                }}
              >
-               面试官光哥正在回答...
+               面试官正在回答...
              </div>
             </div>
           )}

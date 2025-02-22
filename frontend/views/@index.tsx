@@ -18,7 +18,7 @@ export default function InterviewView() {
   const [interViews, setInterView] = useState<InterViewRecord[]>([]);
   const [messages, setMessages] = useState<MessageItem[]>([{
     role: 'assistant',
-    content: '欢迎您来到光哥面试系统! 请输入面试者序号和姓名。'
+    content: '欢迎您来到光哥面试系统! 请输入笔试者姓名。'
   }]);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function InterviewView() {
   return (
     <SplitLayout className="h-full">
       <div className="flex flex-col gap-m p-m box-border h-full" style={{width: '50%'}}>
-        <h3>面试题</h3>
+        <h3>笔试题</h3>
         <MessageList messages={messages} className="flex-grow overflow-scroll msgp"  />
         <MessageInput onSubmit={e => sendMessage(e.detail.value)}  className="px-0" disabled={working} />
       </div>

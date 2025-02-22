@@ -9,6 +9,7 @@ import com.guangge.Interview.test.WrittenTestTools;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,7 +37,7 @@ public class ResumeService {
 
         if (!documents.isEmpty()) {
             Resume resume = resumeRepository.getReferenceById(id);
-            resume.setRawText(documents.get(0).getContent());
+            resume.setRawText(documents.get(0).getText());
             resumeRepository.save(resume);
         }
     }
@@ -49,7 +50,8 @@ public class ResumeService {
                 resume.getInterViewStatus().toString(),
                 resume.getEvaluate(),
                 resume.getEmail(),
-                resume.getMp3Path()
+                resume.getMp3Path(),
+                resume.getInterviewEvaluate()
         );
     }
 
@@ -58,8 +60,8 @@ public class ResumeService {
      * @return 面试者
      */
     public List<WrittenTestTools.InterViewRecord> getInterViews() {
-        List<Resume> resume = this.resumeRepository.findAll();
-        return this.resumeRepository.findAll().stream().map(this::toInterViewDetails).toList();
+        List<Resume> resume = this.resumeRepository.findAll(Sort.by("id").descending());
+        return resume.stream().map(this::toInterViewDetails).toList();
     }
 
     public Resume findInterView(String name) {

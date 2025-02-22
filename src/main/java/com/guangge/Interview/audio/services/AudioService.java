@@ -32,7 +32,7 @@ public class AudioService {
                         .sampleRate(48000)
                         .build();
 
-        String name = "static/audio/" + title + ".mp3";
+        String name = "audio/" + title + ".mp3";
         File file = new File(name);
         if (file.exists()) {
             file.delete();
