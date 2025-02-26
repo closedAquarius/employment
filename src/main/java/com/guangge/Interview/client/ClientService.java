@@ -26,4 +26,8 @@ public class ClientService {
     public void sendMail(String name) {
         this.mailService.sendMailForAttachment(name);
     }
+
+    public List<WrittenTestTools.InterViewRecord> findInterView(String question) {
+        return this.resumeService.findInterViewsByQuestion(question);
+    }
 }

@@ -13,3 +13,16 @@ spring:
     username: wxg
     password: mysecretpassword
     driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-init-sql: "CREATE EXTENSION IF NOT EXISTS vector;"
+  ai:
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        initializeSchema: true
+        dimensions: 1536
+        schemaName: public
+        tableName: vector_store
+        batching-strategy: TOKEN_COUNT # Optional: Controls how documents are batched for embedding
+        max-document-batch-size: 10000 # Optional: Maximum number of documents per batch

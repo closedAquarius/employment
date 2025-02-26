@@ -26,6 +26,7 @@ export default function InterviewView() {
   const [working, setWorking] = useState(false);
   const [interViews, setInterView] = useState<InterViewRecord[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(''); // 输入框的值
 
   useEffect(() => {
     // Update bookings when we have received the full response
@@ -97,8 +98,28 @@ function employeeRenderer({ item: interViews }) {
   );
 }
 
+const handleSearch = () => {
+    ClientService.findInterView(searchTerm).then(setInterView);
+  };
+
   return (
-    <SplitLayout className="h-full">
+<div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+        <TextField
+          placeholder="输入搜索内容"
+          style={{ flex: 1, padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)} // 绑定输入框的值
+        />
+        <Button
+          theme="primary"
+          style={{ padding: '8px 16px', borderRadius: '4px', border: 'none', backgroundColor: '#007bff', color: '#fff' }}
+          onClick={handleSearch}
+        >
+          查找
+        </Button>
+      </div>
+
       <div className="flex flex-col gap-m p-m box-border" style={{width: '100%'}} >
         <h3>候选者名单</h3>
         <Grid items={interViews} className="flex-shrink-0" theme="row-stripes">
@@ -138,7 +159,6 @@ function employeeRenderer({ item: interViews }) {
           <Tooltip slot="tooltip" generator={tooltipGenerator} />
         </Grid>
       </div>
-    </SplitLayout>
-
+</div>
   );
 }

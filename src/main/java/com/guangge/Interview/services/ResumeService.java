@@ -4,7 +4,9 @@ import com.guangge.Interview.audio.services.AudioService;
 import com.guangge.Interview.data.InterViewStatus;
 import com.guangge.Interview.data.IsDoneStatus;
 import com.guangge.Interview.data.Resume;
+import com.guangge.Interview.data.ResumeVector;
 import com.guangge.Interview.repository.ResumeRepository;
+import com.guangge.Interview.repository.ResumeVectorRepository;
 import com.guangge.Interview.test.WrittenTestTools;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
@@ -14,18 +16,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ResumeService {
 
     private final AudioService audioService;
     private final ResumeRepository resumeRepository;
+    private final EmbeddingService embeddingService;
+    private final ResumeVectorRepository resumeVectorRepository;
 
-    public ResumeService(AudioService audioService, ResumeRepository resumeRepository) {
+    public ResumeService(AudioService audioService, ResumeRepository resumeRepository,
+                         EmbeddingService embeddingService, ResumeVectorRepository resumeVectorRepository) {
         this.audioService = audioService;
         this.resumeRepository = resumeRepository;
+        this.embeddingService = embeddingService;
+        this.resumeVectorRepository = resumeVectorRepository;
     }
 
     public void saveResume(Long id,MultipartFile file) throws IOException {
@@ -115,5 +124,29 @@ public class ResumeService {
     public WrittenTestTools.InterViewRecord getInterViewDetails(String name) {
         var resume = findInterView(name);
         return toInterViewDetails(resume);
+    }
+
+    public List<WrittenTestTools.InterViewRecord> findInterViewsByQuestion(String question) {
+        float[] embedding = this.embeddingService.generateEmbedding(question);
+        System.out.println("Embedding length: "+ embedding.length);
+        System.out.println("Embedding values: "+ Arrays.toString(embedding));
+        List<ResumeVector> nearest = this.resumeVectorRepository.findNearest(embedding);
+        List<Resume> resume = nearest.stream().map(resumeVector -> resumeVector.getResume()).collect(Collectors.toList());
+        return resume.stream().map(this::toInterViewDetails).toList();
+    }
+
+    public ResumeVector findResumeVectorByResumeId(Long resumeId) {
+        return this.resumeVectorRepository.findByResumeId(resumeId);
+    }
+
+    public void saveResumeVector(Resume resume) {
+        ResumeVector resumeVector = this.findResumeVectorByResumeId(resume.getId());
+        float[] embedding = embeddingService.generateEmbedding(resume.getRawText());
+        if (resumeVector != null) {
+            resumeVector.setEmbedding(embedding);
+        } else {
+            resumeVector = new ResumeVector(embedding, resume);
+        }
+        this.resumeVectorRepository.save(resumeVector);
     }
 }

@@ -1,6 +1,7 @@
 package com.guangge.Interview.data;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "resume_vectors")
@@ -9,12 +10,14 @@ public class ResumeVector {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "vector(768)", nullable = false) // 768维向量
+    @Type(value = com.guangge.Interview.data.VectorType.class)
+    @Column(name = "embedding", columnDefinition = "vector(50)")
     private float[] embedding;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "resume_id", referencedColumnName = "id")
     private Resume resume;
+
 
     // 必须有无参构造函数
     public ResumeVector() {}
@@ -47,4 +50,5 @@ public class ResumeVector {
     public void setResume(Resume resume) {
         this.resume = resume;
     }
+
 }
