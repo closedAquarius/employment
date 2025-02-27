@@ -32,6 +32,20 @@
 | 语音交互系统     | REST API + 异步任务队列           | 模拟技术沟通场景           |
 | 行为分析仪表盘   | OpenCV情绪识别 + 代码热力图       | 面试表现多维可视化         |
 
+## 🛠️ 核心技术栈
+```bash
+智能引擎: Spring Boot + QWen-Max
+
+语音识别: Vosk + FFmpeg
+
+语音合成: Sambert
+
+代码分析: JavaParser + ANTLR
+
+Rag处理: Postgre Vector
+
+数据库: Postgresql
+```
 
 ## 🚩 项目展示
 1.笔试面试界面
