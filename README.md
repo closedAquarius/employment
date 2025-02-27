@@ -32,6 +32,20 @@
 | 语音交互系统     | REST API + 异步任务队列           | 模拟技术沟通场景           |
 | 行为分析仪表盘   | OpenCV情绪识别 + 代码热力图       | 面试表现多维可视化         |
 
+## 🛠️ 核心技术栈
+```bash
+智能引擎: Spring Boot + QWen-Max
+
+语音识别: Vosk + FFmpeg
+
+语音合成: Sambert
+
+代码分析: JavaParser + ANTLR
+
+Rag处理: Postgre Vector
+
+数据库: Postgresql
+```
 
 ## 🚩 项目展示
 1.笔试面试界面
@@ -64,3 +78,25 @@ open http://localhost:8080/swagger-ui.html
 作者: 大连光哥  
 技术栈: JAVA、AI 、React 
 邮箱: xgwangdl@163.com
+```
+
+📜 开源协议
+本项目采用 Apache License 2.0，您可自由地：
+
+修改并私有化部署 ✅
+
+用于商业产品 ✅
+
+保留原始版权声明 ⚠️
+
+🙌 致谢
+特别感谢这些优秀开源项目：
+
+Spring Boot - REST API核心框架
+
+QWen-max - 阿里千问大模型
+
+Spring-Ai-Alibaba - 快速开发生成式 AI 应用
+
+⭐ 如果这个项目对您有帮助，请点击右上角Star支持我们的开发！
+📢 关注更新：点击Watch按钮获取最新功能通知
