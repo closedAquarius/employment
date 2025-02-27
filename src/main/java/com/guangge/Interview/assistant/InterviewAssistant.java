@@ -1,4 +1,4 @@
-package com.guangge.Interview.test;
+package com.guangge.Interview.assistant;
 
 import com.guangge.Interview.services.LoggingAdvisor;
 import lombok.SneakyThrows;

@@ -1,4 +1,4 @@
-package com.guangge.Interview.test;
+package com.guangge.Interview.assistant;
 
 import com.guangge.Interview.services.LoggingAdvisor;
 import lombok.SneakyThrows;
@@ -33,7 +33,8 @@ public class JavaAssistant {
         this.chatClient = modelBuilder.defaultSystem(systemText)
                 .defaultAdvisors(
                         new PromptChatMemoryAdvisor(chatMemory),
-                        new QuestionAnswerAdvisor(vectorStore, SearchRequest.builder().build(),userTextAdvisors.getContentAsString(Charset.defaultCharset())),
+                        new QuestionAnswerAdvisor(vectorStore, SearchRequest.builder().similarityThreshold(0.5).build(),
+                                userTextAdvisors.getContentAsString(Charset.defaultCharset())),
                         new LoggingAdvisor()
                 )
                 .defaultFunctions("changeTestResult","getInterviewDetails")

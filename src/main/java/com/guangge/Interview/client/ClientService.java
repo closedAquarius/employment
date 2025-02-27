@@ -2,7 +2,7 @@ package com.guangge.Interview.client;
 
 import com.guangge.Interview.mail.MailService;
 import com.guangge.Interview.services.ResumeService;
-import com.guangge.Interview.test.WrittenTestTools;
+import com.guangge.Interview.tools.WrittenTestTools;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.BrowserCallable;
 

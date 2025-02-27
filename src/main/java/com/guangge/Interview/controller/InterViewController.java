@@ -3,8 +3,8 @@ package com.guangge.Interview.controller;
 import com.guangge.Interview.audio.services.AudioConverter;
 import com.guangge.Interview.audio.services.SpeechToTextService;
 import com.guangge.Interview.audio.services.TextToSpeechService;
-import com.guangge.Interview.test.InterviewAssistant;
-import com.guangge.Interview.test.JavaAssistant;
+import com.guangge.Interview.assistant.InterviewAssistant;
+import com.guangge.Interview.assistant.JavaAssistant;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -16,8 +16,6 @@ import reactor.core.publisher.Flux;
 import javax.sound.sampled.*;
 import java.io.*;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("interview")

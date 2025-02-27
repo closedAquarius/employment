@@ -1,5 +1,8 @@
 package com.guangge.Interview.services;
 
+import com.guangge.Interview.Application;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.advisor.api.AdvisedRequest;
 import org.springframework.ai.chat.client.advisor.api.AdvisedResponse;
 import org.springframework.ai.chat.client.advisor.api.CallAroundAdvisor;
@@ -11,6 +14,8 @@ import org.springframework.ai.chat.model.MessageAggregator;
 import reactor.core.publisher.Flux;
 
 public class LoggingAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
+
+	private static final Logger logger = LoggerFactory.getLogger(LoggingAdvisor.class);
 
 	@Override
 	public String getName() {
@@ -24,19 +29,19 @@ public class LoggingAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
 
 	@Override
 	public AdvisedResponse aroundCall(AdvisedRequest advisedRequest, CallAroundAdvisorChain chain) {
-		System.out.println("\nRequest: " + advisedRequest);
+		logger.info("\nRequest: " + advisedRequest);
 		AdvisedResponse response = chain.nextAroundCall(advisedRequest);
-		System.out.println("\nResponse: " + response);
+		logger.info("\nResponse: " + response);
 		return response;
 
 	}
 
 	@Override
 	public Flux<AdvisedResponse> aroundStream(AdvisedRequest advisedRequest, StreamAroundAdvisorChain chain) {
-		System.out.println("\nRequest: " + advisedRequest);
+		logger.info("\nRequest: " + advisedRequest);
 		Flux<AdvisedResponse> responses = chain.nextAroundStream(advisedRequest);
 		return new MessageAggregator().aggregateAdvisedResponse(responses, aggregatedAdvisedResponse -> {
-			System.out.println("\nResponse: " + aggregatedAdvisedResponse);
+			logger.info("\nResponse: " + aggregatedAdvisedResponse);
 		});
 	}
 

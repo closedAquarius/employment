@@ -7,7 +7,7 @@ import com.guangge.Interview.data.Resume;
 import com.guangge.Interview.data.ResumeVector;
 import com.guangge.Interview.repository.ResumeRepository;
 import com.guangge.Interview.repository.ResumeVectorRepository;
-import com.guangge.Interview.test.WrittenTestTools;
+import com.guangge.Interview.tools.WrittenTestTools;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.core.io.InputStreamResource;

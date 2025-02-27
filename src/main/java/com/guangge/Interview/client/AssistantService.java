@@ -1,7 +1,7 @@
 package com.guangge.Interview.client;
 
 import com.guangge.Interview.audio.services.TextToSpeechService;
-import com.guangge.Interview.test.JavaAssistant;
+import com.guangge.Interview.assistant.JavaAssistant;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.BrowserCallable;
 
