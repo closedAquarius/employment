@@ -63,6 +63,7 @@ public class LoginController {
             logger.error(ex.getMessage());
             return CommonResult.unauthorized("Token验证失败");
         }
-        return CommonResult.success("ok");
+        String username = decodedJWT.getClaim("userName").asString();
+        return CommonResult.success(username);
     }
 }

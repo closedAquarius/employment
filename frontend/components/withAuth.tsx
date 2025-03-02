@@ -18,6 +18,7 @@ const withAuth = (WrappedComponent) => {
             if (data.code == 401) {
               navigate('/');
             } else {
+              localStorage.setItem('username', data.data);
               setIsAuthenticated(true);
             }
         })

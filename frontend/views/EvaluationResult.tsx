@@ -14,8 +14,9 @@ export const config: ViewConfig = {
 function EvaluationResult() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isFirst,name, question, input, output, code } = location.state;
+  const { isFirst, question, input, output, code } = location.state;
   const [data, setData] = useState([]);
+  const name = localStorage.getItem('username');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,16 +80,16 @@ function EvaluationResult() {
         }
     };
     fetchData();
-  }, [name, question, input, output, code]);
+  }, [ question, input, output, code]);
 
   // 跳转到下一道题目
   const handleNextQuestion = () => {
-    navigate('/JavaCodeEditor', { state: { isFirst: false, name: name } } );
+    navigate('/JavaCodeEditor', { state: { isFirst: false } } );
   };
 
   // 跳转到笔试页面
   const handleStartTest = () => {
-    navigate("/writetest", { state: { name: name } });
+    navigate("/writetest");
   };
 
   return (

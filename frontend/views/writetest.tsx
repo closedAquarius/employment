@@ -23,7 +23,7 @@ const Writetest = () => {
   const [chatId, setChatId] = useState(nanoid());
   const [working, setWorking] = useState(false);
   const location = useLocation();
-  const { name } = location.state;
+  const name = localStorage.getItem('username');
   const [messages, setMessages] = useState<MessageItem[]>([{
     role: 'assistant',
     content: '欢迎您来到光哥面试系统! 请输入笔试者姓名。'
@@ -31,7 +31,7 @@ const Writetest = () => {
 
   useEffect(() => {
     // Update bookings when we have received the full response
-    console.log('name:' + name);
+
     if (name) {
         sendMessage(name);
     }

@@ -10,6 +10,7 @@ import { ClipLoader } from 'react-spinners';
 import thinkingAnimation from 'Frontend/assets/animations/think-animation.json'; // 从 LottieFiles 下载的动画文件
 import Lottie from 'lottie-react';
 import withAuth from 'Frontend/components/withAuth';
+import { ProgressBar } from '@vaadin/react-components/ProgressBar.js';
 
 export const config: ViewConfig = { menu: { order: 0, icon: 'line-awesome/svg/file.svg' }, title: '光哥笔试' };
 
@@ -25,7 +26,9 @@ const JavaCodeEditor  = () => {
   const lottieRef = useRef(null);
 
   const location = useLocation();
-  const { isFirst, name } = location.state || {}; // 获取状态
+  const { isFirst } = location.state || {}; // 获取状态
+
+  const name = localStorage.getItem('username');
 
   // 从后端获取代码
   useEffect(() => {
@@ -46,7 +49,7 @@ const JavaCodeEditor  = () => {
         console.error('获取代码失败：', err);
         setLoading(false);
       });
-  }, [isFirst, name]);
+  }, [isFirst]);
 
   // 初始化编辑器
   function handleEditorDidMount(editor, monacoInstance) {
@@ -77,13 +80,13 @@ const JavaCodeEditor  = () => {
   // 提交代码
   const submitCode = async () => {
      const code = editorRef.current.getValue();
-     navigate('/EvaluationResult', { state: { isFirst, name, question, input, output, code } });
+     navigate('/EvaluationResult', { state: { isFirst, question, input, output, code } });
   };
 
  if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <ClipLoader color="#36D7B7" size={50} />
+      <div>
+        <ProgressBar indeterminate />
       </div>
     );
   }
@@ -92,12 +95,12 @@ const JavaCodeEditor  = () => {
     <div style={{ width: '90%', height: '100%' ,padding: '20px',fontFamily: 'Arial, sans-serif',}}>
 
       <Details summary="Java编程" opened theme="filled" style={{fontSize: '15px',fontWeight: 'bold',}}>
-            <VerticalLayout style={{fontSize: '14px',fontWeight: 'bold',}}>
-              <span><p style={{fontWeight: 'bold',}}>题目描述：</p><p style={{fontSize: '13px',color: '#d7ba7d'}}>{question}</p></span>
-              <span><p style={{fontWeight: 'bold',}}>输入：</p><p style={{fontSize: '13px',color: '#d7ba7d'}}>{input}</p></span>
-              <span><p style={{fontWeight: 'bold',}}>输出：</p><p style={{fontSize: '13px',color: '#d7ba7d'}}>{output}</p></span>
-            </VerticalLayout>
-          </Details>
+        <VerticalLayout style={{fontSize: '14px',fontWeight: 'bold',}}>
+          <span><p style={{fontWeight: 'bold',}}>题目描述：</p><p style={{fontSize: '13px',color: '#d7ba7d'}}>{question}</p></span>
+          <span><p style={{fontWeight: 'bold',}}>输入：</p><p style={{fontSize: '13px',color: '#d7ba7d'}}>{input}</p></span>
+          <span><p style={{fontWeight: 'bold',}}>输出：</p><p style={{fontSize: '13px',color: '#d7ba7d'}}>{output}</p></span>
+        </VerticalLayout>
+      </Details>
 
       <div style={{ height: '500px', border: '1px solid #ccc', marginBottom: '20px' }}>
         <Editor
