@@ -11,6 +11,6 @@
 "input": "示例输入",
 "output": "示例输出"
 },
-"code": [public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}]
+"code": "public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}"
 }
 6. 除了输出格式以外内容别的不用输出

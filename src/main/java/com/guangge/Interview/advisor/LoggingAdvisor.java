@@ -1,6 +1,5 @@
-package com.guangge.Interview.services;
+package com.guangge.Interview.advisor;
 
-import com.guangge.Interview.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.advisor.api.AdvisedRequest;

@@ -1,5 +1,6 @@
 package com.guangge.Interview.tools;
 
+import com.guangge.Interview.assistant.record.InterViewRequest;
 import com.guangge.Interview.services.ResumeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,7 @@ public class Face2FaceTools {
 
     @Bean
     @Description("根据姓名获取简历")
-    public Function<WrittenTestTools.InterViewRequest, String> getResumeByName() {
+    public Function<InterViewRequest, String> getResumeByName() {
         return request -> {
             try {
                 String resume = resumeService.findInterView(request.name()).getRawText();
@@ -34,7 +35,7 @@ public class Face2FaceTools {
 
     @Bean
     @Description("根据序号获取简历")
-    public Function<WrittenTestTools.InterViewRequest, String> getResumeById() {
+    public Function<InterViewRequest, String> getResumeById() {
         return request -> {
             try {
                 String resume = resumeService.findInterView(Long.valueOf(request.number())).getRawText();
@@ -50,7 +51,7 @@ public class Face2FaceTools {
 
     @Bean
     @Description("更改面试结果")
-    public Function<WrittenTestTools.InterViewRequest, String> changeInterView() {
+    public Function<InterViewRequest, String> changeInterView() {
         return request -> {
             resumeService.changeInterview(request.name(),request.evaluate());
             return "";

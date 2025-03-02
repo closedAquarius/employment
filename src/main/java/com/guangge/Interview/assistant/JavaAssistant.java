@@ -1,6 +1,6 @@
 package com.guangge.Interview.assistant;
 
-import com.guangge.Interview.services.LoggingAdvisor;
+import com.guangge.Interview.advisor.LoggingAdvisor;
 import lombok.SneakyThrows;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
@@ -13,6 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
@@ -25,10 +26,10 @@ import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvis
 public class JavaAssistant {
 
     private final ChatClient chatClient;
-    @SneakyThrows
+
     public JavaAssistant(ChatClient.Builder modelBuilder, VectorStore vectorStore, ChatMemory chatMemory,
                          @Value("classpath:prompt/Interview-System-Prompt.st") Resource systemText,
-                         @Value("classpath:prompt/Java-System-Prompt.st") Resource userTextAdvisors) {
+                         @Value("classpath:prompt/Java-System-Prompt.st") Resource userTextAdvisors) throws IOException {
 
         this.chatClient = modelBuilder.defaultSystem(systemText)
                 .defaultAdvisors(

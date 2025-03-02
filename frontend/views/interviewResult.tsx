@@ -16,12 +16,12 @@ import { VerticalLayout } from '@vaadin/react-components/VerticalLayout.js';
 import { Avatar } from '@vaadin/react-components/Avatar.js';
 import { TextArea } from '@vaadin/react-components/TextArea.js';
 import newInterViewDialog from "./newInterViewDialog";
-
+import withAuth from 'Frontend/components/withAuth';
 import axios from 'axios';
 
 export const config: ViewConfig = { menu: { order: 2, icon: 'line-awesome/svg/globe-solid.svg' }, title: '面试结果' };
 
-export default function InterviewView() {
+const InterviewResult = () => {
   const [chatId, setChatId] = useState(nanoid());
   const [working, setWorking] = useState(false);
   const [interViews, setInterView] = useState<InterViewRecord[]>([]);
@@ -102,7 +102,7 @@ const handleSearch = () => {
     ClientService.findInterView(searchTerm).then(setInterView);
   };
 
-  return (
+return (
 <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
         <TextField
@@ -162,3 +162,5 @@ const handleSearch = () => {
 </div>
   );
 }
+
+export default withAuth(InterviewResult);

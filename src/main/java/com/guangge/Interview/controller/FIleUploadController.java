@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController()
@@ -29,9 +30,8 @@ public class FIleUploadController {
         this.vectorStore = vectorStore;
     }
 
-    @SneakyThrows
     @PostMapping("/resume/upload")
-    public ResponseEntity<String> uploadJavaDoc(@RequestParam("id") String number, @RequestParam MultipartFile file) {
+    public ResponseEntity<String> uploadJavaDoc(@RequestParam("id") String number, @RequestParam MultipartFile file) throws IOException {
         long id = Long.valueOf(number);
         resumeService.saveResume(id,file);
 
@@ -43,9 +43,8 @@ public class FIleUploadController {
         return ResponseEntity.ok().body("uploaded");
     }
 
-    @SneakyThrows
     @PostMapping("/knowledge/upload")
-    public String uploadKnowledge(@RequestParam MultipartFile file) {
+    public String uploadKnowledge(@RequestParam MultipartFile file) throws IOException {
         // 从IO流中读取文件
         TikaDocumentReader tikaDocumentReader = new TikaDocumentReader(new InputStreamResource(file.getInputStream()));
         // 将文本内容划分成更小的块

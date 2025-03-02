@@ -1,5 +1,6 @@
 package com.guangge.Interview.client;
 
+import com.guangge.Interview.assistant.record.InterViewRecord;
 import com.guangge.Interview.mail.MailService;
 import com.guangge.Interview.services.ResumeService;
 import com.guangge.Interview.tools.WrittenTestTools;
@@ -21,13 +22,13 @@ public class ClientService {
     }
 
 
-    public List<WrittenTestTools.InterViewRecord> getInterView() {return this.resumeService.getInterViews();}
+    public List<InterViewRecord> getInterView() {return this.resumeService.getInterViews();}
 
     public void sendMail(String name) {
         this.mailService.sendMailForAttachment(name);
     }
 
-    public List<WrittenTestTools.InterViewRecord> findInterView(String question) {
+    public List<InterViewRecord> findInterView(String question) {
         return this.resumeService.findInterViewsByQuestion(question);
     }
 }

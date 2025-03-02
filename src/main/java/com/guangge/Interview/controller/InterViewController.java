@@ -1,20 +1,25 @@
 package com.guangge.Interview.controller;
 
+import com.guangge.Interview.assistant.InterviewAssistant;
+import com.guangge.Interview.assistant.JavaAssistant;
+import com.guangge.Interview.assistant.ProgramAssistant;
+import com.guangge.Interview.assistant.record.ProgramRecord;
 import com.guangge.Interview.audio.services.AudioConverter;
 import com.guangge.Interview.audio.services.SpeechToTextService;
 import com.guangge.Interview.audio.services.TextToSpeechService;
-import com.guangge.Interview.assistant.InterviewAssistant;
-import com.guangge.Interview.assistant.JavaAssistant;
+import com.guangge.Interview.util.JacksonMapperUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
-import javax.sound.sampled.*;
-import java.io.*;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 
 @RestController
@@ -26,15 +31,17 @@ public class InterViewController {
     private final TextToSpeechService speechService;
     private final SpeechToTextService speechToTextService;
     private final ResourceLoader resourceLoader;
+    private final ProgramAssistant programAssistant;
 
     public InterViewController(JavaAssistant interViewAgent, InterviewAssistant interviewAssistant,
                                TextToSpeechService speechService, SpeechToTextService speechToTextService,
-                               ResourceLoader resourceLoader) {
+                               ResourceLoader resourceLoader, ProgramAssistant programAssistant) {
         this.interViewAgent = interViewAgent;
         this.interviewAssistant = interviewAssistant;
         this.speechService = speechService;
         this.speechToTextService = speechToTextService;
         this.resourceLoader = resourceLoader;
+        this.programAssistant = programAssistant;
     }
 
 
@@ -97,4 +104,25 @@ public class InterViewController {
                 .body(audioBytes);
     }
 
+    @GetMapping(value = "/makeProgram")
+    public ResponseEntity<ProgramRecord> program(@RequestParam("first") Boolean first,
+                                                 @RequestParam("name") String name) throws Exception {
+        String result = this.programAssistant.makeQuestion(first,name);
+        return ResponseEntity.ok(JacksonMapperUtils.json2pojo(result,ProgramRecord.class));
+    }
+
+    @PostMapping(value = "/checkProgram", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> checkProgram(@RequestParam("question") String question,
+                                               @RequestParam("input") String input,
+                                               @RequestParam("output") String output,
+                                               @RequestParam("code") String code) throws Exception {
+        String userContent = """
+                                题目：{question},
+                                示例输入:{input}
+                                示例输出:{output}
+                                回答内容:{code}
+                                """;
+        Flux<String> result = this.programAssistant.reviewQuestion(question,input,output,code);
+        return result;
+    }
 }

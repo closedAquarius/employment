@@ -2,22 +2,12 @@ package com.guangge.Interview.audio.services;
 
 import com.alibaba.dashscope.audio.asr.recognition.Recognition;
 import com.alibaba.dashscope.audio.asr.recognition.RecognitionParam;
-import com.alibaba.dashscope.audio.asr.transcription.*;
-import com.alibaba.nacos.shaded.com.google.gson.Gson;
-import com.alibaba.nacos.shaded.com.google.gson.GsonBuilder;
-import com.alibaba.nacos.shaded.com.google.gson.JsonObject;
 import com.guangge.Interview.util.JacksonMapperUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 

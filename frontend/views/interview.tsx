@@ -8,6 +8,7 @@ import talkingAnimation from 'Frontend/assets/animations/talking-animation.json'
 import thinkingAnimation from 'Frontend/assets/animations/think-animation.json'; // 从 LottieFiles 下载的动画文件
 import microphoneAnimation from 'Frontend/assets/animations/microphone-animation.json'; // 从 LottieFiles 下载的动画文件
 import { FaMicrophone, FaStop, FaPaperPlane } from 'react-icons/fa';
+import withAuth from 'Frontend/components/withAuth';
 
 export const config: ViewConfig = { menu: { order: 1, icon: 'line-awesome/svg/file.svg' }, title: '光哥面试' };
 
@@ -322,4 +323,4 @@ const AudioRecorder = () => {
   );
 };
 
-export default AudioRecorder;
+export default withAuth(AudioRecorder);

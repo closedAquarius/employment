@@ -1,6 +1,6 @@
 package com.guangge.Interview.assistant;
 
-import com.guangge.Interview.services.LoggingAdvisor;
+import com.guangge.Interview.advisor.LoggingAdvisor;
 import lombok.SneakyThrows;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;

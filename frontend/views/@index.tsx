@@ -1,77 +1,74 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, TextField, VerticalLayout } from '@vaadin/react-components';
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
-import {useEffect, useState} from "react";
-import {AssistantService, ClientService} from "Frontend/generated/endpoints";
-import InterViewRecords from "../generated/com/guangge/Interview/writtentest/InterViewRecord";
-import {GridColumn} from "@vaadin/react-components/GridColumn";
-import {Grid} from "@vaadin/react-components/Grid";
-import {MessageInput} from "@vaadin/react-components/MessageInput";
-import {nanoid} from "nanoid";
-import {SplitLayout} from "@vaadin/react-components/SplitLayout";
-import Message, {MessageItem} from "../components/Message";
-import MessageList from "Frontend/components/MessageList";
 
-export const config: ViewConfig = { menu: { order: 0, icon: 'line-awesome/svg/file.svg' }, title: '光哥笔试' };
+export const config: ViewConfig = {
+  route: 'login',
+  menu: {
+    exclude: true,
+  },
+};
 
-export default function InterviewView() {
-  const [chatId, setChatId] = useState(nanoid());
-  const [working, setWorking] = useState(false);
-  const [interViews, setInterView] = useState<InterViewRecord[]>([]);
-  const [messages, setMessages] = useState<MessageItem[]>([{
-    role: 'assistant',
-    content: '欢迎您来到光哥面试系统! 请输入笔试者姓名。'
-  }]);
+export default function LoginView() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [code, setCode] = useState(null);
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    // Update bookings when we have received the full response
-    if (!working) {
-      ClientService.getInterView().then(setInterView);
-    }
-  }, [working]);
-
-  function addMessage(message: MessageItem) {
-    setMessages(messages => [...messages, message]);
-  }
-
-  function appendToLatestMessage(chunk: string) {
-    setMessages(messages => {
-      const latestMessage = messages[messages.length - 1];
-      latestMessage.content += chunk;
-      return [...messages.slice(0, -1), latestMessage];
-    });
-  }
-
-  async function sendMessage(message: string) {
-    setWorking(true);
-    addMessage({
-      role: 'user',
-      content: message
-    });
-    let first = true;
-    AssistantService.interViewChat(chatId, message)
-      .onNext(token => {
-        if (first && token) {
-          addMessage({
-            role: 'assistant',
-            content: token
-          });
-
-          first = false;
-        } else {
-          appendToLatestMessage(token);
-        }
+  const handleLogin = () => {
+      const formData = new FormData();
+      formData.append('name', username);
+      formData.append('code', password);
+      fetch('http://localhost:8080/login', {
+        method: 'POST',
+        body: formData,
       })
-      .onError(() => setWorking(false))
-      .onComplete(() => setWorking(false));
-  }
+      .then((res) => res.json())
+      .then((data) => {
+          setCode(data.code); // 更新状态
+          setMessage(data.message);
+      }).catch((err) => {
+        console.error('失败：', err);
+      });
+  };
+
+  // 监听 code 的变化
+  useEffect(() => {
+    if (code === 200) {
+      navigate('/JavaCodeEditor', { state: { isFirst: true, name: username } } ); // 登录成功后跳转到主页面
+    } else if (code !== null) {
+      alert(message); // 显示错误提示
+    }
+  }, [code, message, navigate]);
 
   return (
-    <SplitLayout className="h-full">
-      <div className="flex flex-col gap-m p-m box-border h-full" style={{width: '50%'}}>
-        <h3>笔试题</h3>
-        <MessageList messages={messages} className="flex-grow overflow-scroll msgp"  />
-        <MessageInput onSubmit={e => sendMessage(e.detail.value)}  className="px-0" disabled={working} />
-      </div>
-    </SplitLayout>
-
+    <VerticalLayout
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        backgroundColor: '#f5f5f5',
+      }}
+    >
+      <h1>登录</h1>
+      <TextField
+        label="用户名"
+        value={username}
+        onValueChanged={(e) => setUsername(e.detail.value)}
+        style={{ width: '300px', marginBottom: '10px' }}
+      />
+      <TextField
+        label="邀请码"
+        type="password"
+        value={password}
+        onValueChanged={(e) => setPassword(e.detail.value)}
+        style={{ width: '300px', marginBottom: '20px' }}
+      />
+      <Button onClick={handleLogin} theme="primary">
+        登录
+      </Button>
+    </VerticalLayout>
   );
 }

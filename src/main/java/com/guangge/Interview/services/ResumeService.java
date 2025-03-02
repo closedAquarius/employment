@@ -1,5 +1,6 @@
 package com.guangge.Interview.services;
 
+import com.guangge.Interview.assistant.record.InterViewRecord;
 import com.guangge.Interview.audio.services.AudioService;
 import com.guangge.Interview.data.InterViewStatus;
 import com.guangge.Interview.data.IsDoneStatus;
@@ -51,8 +52,8 @@ public class ResumeService {
         }
     }
 
-    private WrittenTestTools.InterViewRecord toInterViewDetails(Resume resume){
-        return new WrittenTestTools.InterViewRecord(
+    private InterViewRecord toInterViewDetails(Resume resume){
+        return new InterViewRecord(
                 resume.getId().toString(),
                 resume.getName(),
                 resume.getScore(),
@@ -68,7 +69,7 @@ public class ResumeService {
      * 返回所有面试者
      * @return 面试者
      */
-    public List<WrittenTestTools.InterViewRecord> getInterViews() {
+    public List<InterViewRecord> getInterViews() {
         List<Resume> resume = this.resumeRepository.findAll(Sort.by("id").descending());
         return resume.stream().map(this::toInterViewDetails).toList();
     }
@@ -121,12 +122,12 @@ public class ResumeService {
         this.resumeRepository.save(resume);
     }
 
-    public WrittenTestTools.InterViewRecord getInterViewDetails(String name) {
+    public InterViewRecord getInterViewDetails(String name) {
         var resume = findInterView(name);
         return toInterViewDetails(resume);
     }
 
-    public List<WrittenTestTools.InterViewRecord> findInterViewsByQuestion(String question) {
+    public List<InterViewRecord> findInterViewsByQuestion(String question) {
         float[] embedding = this.embeddingService.generateEmbedding(question);
         System.out.println("Embedding length: "+ embedding.length);
         System.out.println("Embedding values: "+ Arrays.toString(embedding));

@@ -5,6 +5,7 @@
   "dependencies": {
     "@ffmpeg/core": "^0.12.10",
     "@ffmpeg/ffmpeg": "^0.12.15",
+    "@monaco-editor/react": "^4.7.0",
     "@polymer/polymer": "3.5.1",
     "@vaadin/bundles": "24.4.0-beta3",
     "@vaadin/common-frontend": "0.0.19",
@@ -35,7 +36,7 @@
     "react-dom": "18.3.1",
     "react-icons": "^5.4.0",
     "react-markdown": "^9.0.1",
-    "react-router-dom": "6.23.1",
+    "react-router-dom": "^6.23.1",
     "react-spinners": "^0.15.0"
   },
   "devDependencies": {
@@ -125,7 +126,7 @@
       "workbox-core": "7.1.0",
       "workbox-precaching": "7.1.0"
     },
-    "hash": "f6be476d12107a1f6a28e2ed1557c130e4e51ff28810280bed6110d4bf9b4997"
+    "hash": "735f9be5b516e163c4fa1566d4d3d02d48a77b944621caab64f24cabd038b4ec"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -161,6 +162,7 @@
     "framer-motion": "$framer-motion",
     "lottie-react": "$lottie-react",
     "axios": "$axios",
-    "react-icons": "$react-icons"
+    "react-icons": "$react-icons",
+    "@monaco-editor/react": "$@monaco-editor/react"
   }
 }
