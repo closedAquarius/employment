@@ -15,7 +15,7 @@
 
 	<properties>
 		<java.version>17</java.version>
-		<vaadin.version>24.4.0.beta3</vaadin.version>
+		<vaadin.version>24.6.5</vaadin.version>
 		<spring-ai.version>1.0.0-SNAPSHOT</spring-ai.version>
 		<spring-ai-alibaba.version>1.0.0-M5.1</spring-ai-alibaba.version>
 	</properties>

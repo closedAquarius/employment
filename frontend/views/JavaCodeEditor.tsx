@@ -11,6 +11,7 @@ import thinkingAnimation from 'Frontend/assets/animations/think-animation.json';
 import Lottie from 'lottie-react';
 import withAuth from 'Frontend/components/withAuth';
 import { ProgressBar } from '@vaadin/react-components/ProgressBar.js';
+import { motion } from 'framer-motion';
 
 export const config: ViewConfig = { menu: { order: 0, icon: 'line-awesome/svg/file.svg' }, title: '光哥笔试' };
 
@@ -22,20 +23,27 @@ const JavaCodeEditor  = () => {
   const [question, setQuestion] = useState('');
   const editorRef = useRef(null);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const lottieRef = useRef(null);
-
+  const [showStartButton, setShowStartButton] = useState(true); // 是否显示“开始面试”按钮
   const location = useLocation();
-  const { isFirst } = location.state || {}; // 获取状态
+  const { isFirst } = location.state || { isFirst: true }; // 获取状态
 
   const name = localStorage.getItem('username');
 
-  // 从后端获取代码
   useEffect(() => {
+    setShowStartButton(isFirst);
+    if (!isFirst) {
+        startTest();
+    }
+  }, [isFirst]);
+  // 从后端获取代码
+  function startTest() {
     const apiUrl = isFirst
       ? `http://localhost:8080/interview/makeProgram?first=true&name=${name}`
       : `http://localhost:8080/interview/makeProgram?first=false&name=${name}`;
-
+    setShowStartButton(false); // 隐藏“开始面试”按钮
+    setLoading(true);
     fetch(apiUrl)
       .then((res) => res.json())
       .then((data) => {
@@ -49,7 +57,7 @@ const JavaCodeEditor  = () => {
         console.error('获取代码失败：', err);
         setLoading(false);
       });
-  }, [isFirst]);
+  }
 
   // 初始化编辑器
   function handleEditorDidMount(editor, monacoInstance) {
@@ -85,12 +93,47 @@ const JavaCodeEditor  = () => {
 
  if (loading) {
     return (
+    <div>
       <div>
         <ProgressBar indeterminate />
       </div>
+      <div style={{ textAlign: 'center',
+                              position: 'fixed',
+                              top: '20%',
+                              left: '50%',
+                              transform: 'translate(-50%, -50%)' }}>
+          <p>问题生成中...</p>
+      </div>
+    </div>
     );
   }
 
+ if (showStartButton) {
+    return (
+    <div style={{ textAlign: 'center',
+                        position: 'fixed',
+                        top: '20%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)' }}>
+    <motion.button
+      onClick={startTest}
+      style={{
+        padding: '15px 30px',
+        fontSize: '18px',
+        borderRadius: '10px',
+        border: 'none',
+        backgroundColor: '#4CAF50',
+        color: 'white',
+        cursor: 'pointer',
+      }}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
+    >
+      开始笔试
+    </motion.button>
+    </div>
+    );
+ }
   return (
     <div style={{ width: '90%', height: '100%' ,padding: '20px',fontFamily: 'Arial, sans-serif',}}>
 

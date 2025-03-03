@@ -39,7 +39,7 @@ public class LoginController {
                                              HttpServletResponse response  ) throws Exception {
         Interviewer interviewer = this.interviewerService.longin(name,code);
         Sessions.loginUser(interviewer.getName(),
-                false,
+                true,
                 secret,
                 response);
         return CommonResult.success("ok");
