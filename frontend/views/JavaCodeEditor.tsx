@@ -13,7 +13,7 @@ import withAuth from 'Frontend/components/withAuth';
 import { ProgressBar } from '@vaadin/react-components/ProgressBar.js';
 import { motion } from 'framer-motion';
 
-export const config: ViewConfig = { menu: { order: 0, icon: 'line-awesome/svg/file.svg' }, title: '光哥笔试' };
+export const config: ViewConfig = { menu: { order: 0, icon: 'vaadin:academy-cap' }, title: '光哥笔试' };
 
 const JavaCodeEditor  = () => {
 
@@ -48,8 +48,8 @@ const JavaCodeEditor  = () => {
       .then((res) => res.json())
       .then((data) => {
         setCode(data.code);
-        setInput(data.example.input); // 设置示例
-        setOutput(data.example.output); // 设置示例
+        setInput(data.input); // 设置示例
+        setOutput(data.output); // 设置示例
         setQuestion(data.question); // 设置问题描述
         setLoading(false);
       })

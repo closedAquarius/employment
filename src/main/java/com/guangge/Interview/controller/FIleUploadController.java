@@ -2,7 +2,7 @@ package com.guangge.Interview.controller;
 
 import com.guangge.Interview.data.Resume;
 import com.guangge.Interview.services.ResumeService;
-import lombok.SneakyThrows;
+import com.guangge.Interview.services.ResumeVectorService;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
@@ -24,10 +24,12 @@ public class FIleUploadController {
 
     private final ResumeService resumeService;
     private final VectorStore vectorStore;
+    private final ResumeVectorService resumeVectorService;
 
-    public FIleUploadController(ResumeService resumeService, VectorStore vectorStore) {
+    public FIleUploadController(ResumeService resumeService, VectorStore vectorStore, ResumeVectorService resumeVectorService) {
         this.resumeService = resumeService;
         this.vectorStore = vectorStore;
+        this.resumeVectorService = resumeVectorService;
     }
 
     @PostMapping("/resume/upload")
@@ -38,7 +40,7 @@ public class FIleUploadController {
         Resume resume = resumeService.findInterView(id);
 
         // 生成向量存储
-        resumeService.saveResumeVector(resume);
+        resumeVectorService.saveResumeVector(resume);
 
         return ResponseEntity.ok().body("uploaded");
     }

@@ -16,6 +16,7 @@ const withAuth = (WrappedComponent) => {
         .then((response) => response.json())
         .then((data) => {
             if (data.code == 401) {
+              localStorage.removeItem('username');
               navigate('/');
             } else {
               localStorage.setItem('username', data.data);
@@ -23,9 +24,11 @@ const withAuth = (WrappedComponent) => {
             }
         })
         .catch((err) => {
+           localStorage.removeItem('username');
            navigate('/');
         });
       } catch {
+        localStorage.removeItem('username');
         navigate('/');
       }
     }, [history]);

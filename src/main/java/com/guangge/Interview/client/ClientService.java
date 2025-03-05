@@ -3,7 +3,7 @@ package com.guangge.Interview.client;
 import com.guangge.Interview.assistant.record.InterViewRecord;
 import com.guangge.Interview.mail.MailService;
 import com.guangge.Interview.services.ResumeService;
-import com.guangge.Interview.tools.WrittenTestTools;
+import com.guangge.Interview.services.ResumeVectorService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.hilla.BrowserCallable;
 
@@ -15,10 +15,12 @@ import java.util.List;
 public class ClientService {
     private final ResumeService resumeService;
     private final MailService mailService;
+    private final ResumeVectorService resumeVectorService;
 
-    public ClientService(ResumeService resumeService, MailService mailService) {
+    public ClientService(ResumeService resumeService, MailService mailService, ResumeVectorService resumeVectorService) {
         this.resumeService = resumeService;
         this.mailService = mailService;
+        this.resumeVectorService = resumeVectorService;
     }
 
 
@@ -29,6 +31,6 @@ public class ClientService {
     }
 
     public List<InterViewRecord> findInterView(String question) {
-        return this.resumeService.findInterViewsByQuestion(question);
+        return this.resumeVectorService.findInterViewsByQuestion(question);
     }
 }

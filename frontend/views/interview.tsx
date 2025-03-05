@@ -10,7 +10,7 @@ import microphoneAnimation from 'Frontend/assets/animations/microphone-animation
 import { FaMicrophone, FaStop, FaPaperPlane } from 'react-icons/fa';
 import withAuth from 'Frontend/components/withAuth';
 
-export const config: ViewConfig = { menu: { order: 1, icon: 'line-awesome/svg/file.svg' }, title: '光哥面试' };
+export const config: ViewConfig = { menu: { order: 1, icon: 'vaadin:users' }, title: '光哥面试' };
 
 const AudioRecorder = () => {
   const [isWelcomePlaying, setIsWelcomePlaying] = useState(false); // 是否正在播放欢迎语音

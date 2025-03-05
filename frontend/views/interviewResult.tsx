@@ -19,7 +19,7 @@ import newInterViewDialog from "./newInterViewDialog";
 import withAuth from 'Frontend/components/withAuth';
 import axios from 'axios';
 
-export const config: ViewConfig = { menu: { order: 2, icon: 'line-awesome/svg/globe-solid.svg' }, title: '面试结果' };
+export const config: ViewConfig = { menu: { order: 2, icon: 'vaadin:records' }, title: '面试结果' };
 
 const InterviewResult = () => {
   const [chatId, setChatId] = useState(nanoid());
@@ -103,7 +103,7 @@ const handleSearch = () => {
   };
 
 return (
-<div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+<div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', height: '80%' }}>
       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
         <TextField
           placeholder="输入搜索内容"
@@ -120,7 +120,7 @@ return (
         </Button>
       </div>
 
-      <div className="flex flex-col gap-m p-m box-border" style={{width: '100%'}} >
+      <div className="flex flex-col gap-m p-m box-border" style={{width: '100%', height: '100%'}} >
         <h3>候选者名单</h3>
         <Grid items={interViews} className="flex-shrink-0" theme="row-stripes">
           <GridColumn path="number" header="候选者" renderer={employeeRenderer} autoWidth/>
@@ -145,7 +145,7 @@ return (
                 {({ item: interView }) => (
                   <Button
                      onClick={() => {
-                              BookingService.sendMail(interView.number,interView.name);
+                              ClientService.sendMail(interView.name);
                             }}>
                      ✉
                   </Button>

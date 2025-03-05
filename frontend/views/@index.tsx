@@ -21,6 +21,7 @@ export default function LoginView() {
   const navigate = useNavigate();
   const [disabled, setDisabled] = useState(false);
   const [error, setError] = useState(false); // 用于显示错误信息
+  const [logincount, setLogincount] = useState(0);
 
   const handleLogin = (event) => {
       setDisabled(true); // 禁用按钮，防止重复提交
@@ -37,12 +38,13 @@ export default function LoginView() {
       .then((data) => {
           setCode(data.code); // 更新状态
           setMessage(data.message);
+          setLogincount(logincount + 1);
       }).catch((err) => {
         console.error('失败：', err);
       });
       setError(true);  // 显示错误信息
       setDisabled(false); // 重新启用按钮
-      console.info(disabled);
+      console.info('disabled:' + disabled);
   };
 
   // 监听 code 的变化
@@ -58,15 +60,18 @@ export default function LoginView() {
           .then((response) => response.json())
           .then((data) => {
               if (data.code == 401) {
+                localStorage.removeItem('username');
                 navigate('/');
               } else {
                 navigate('/JavaCodeEditor', { state: { isFirst: true, name: name } } ); // 登录成功后跳转到主页面
               }
           })
           .catch((err) => {
+             localStorage.removeItem('username');
              navigate('/');
           });
         } catch {
+          localStorage.removeItem('username');
           navigate('/');
         }
     }
@@ -77,8 +82,7 @@ export default function LoginView() {
       setError(true);  // 显示错误信息
       setDisabled(false); // 重新启用按钮
     }
-    console.info(disabled);
-  }, [code, navigate]);
+  }, [code, navigate,logincount]);
 
    const i18n = {
     header: {
