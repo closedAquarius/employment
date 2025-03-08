@@ -1,0 +1,68 @@
+[
+  {
+    "route": "",
+    "flowLayout": false,
+    "params": {},
+    "title": "Main Layout",
+    "children": [
+      {
+        "route": "login",
+        "title": "登录",
+        "skipLayouts": true,
+        "menu": {
+          "exclude": true
+        },
+        "flowLayout": false,
+        "params": {}
+      },
+      {
+        "route": "EvaluationResult",
+        "menu": {
+          "exclude": true
+        },
+        "flowLayout": false,
+        "params": {},
+        "title": "with Auth"
+      },
+      {
+        "route": "interview",
+        "menu": {
+          "order": 1,
+          "icon": "vaadin:users"
+        },
+        "title": "光哥面试",
+        "flowLayout": false,
+        "params": {}
+      },
+      {
+        "route": "interviewResult",
+        "menu": {
+          "order": 2,
+          "icon": "vaadin:records"
+        },
+        "title": "面试结果",
+        "flowLayout": false,
+        "params": {}
+      },
+      {
+        "route": "JavaCodeEditor",
+        "menu": {
+          "order": 0,
+          "icon": "vaadin:academy-cap"
+        },
+        "title": "光哥笔试",
+        "flowLayout": false,
+        "params": {}
+      },
+      {
+        "route": "writetest",
+        "menu": {
+          "exclude": true
+        },
+        "flowLayout": false,
+        "params": {},
+        "title": "with Auth"
+      }
+    ]
+  }
+]
