@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,27 +34,16 @@ public class LoginController {
 
     @PostMapping(value = "/login")
     public CommonResult<String> login(@RequestParam("name") String name,
-                                      @RequestParam("code") String code,
-                                      HttpServletResponse response  ) throws Exception {
+                                      @RequestParam("code") String code) throws Exception {
         Interviewer interviewer = this.interviewerService.longin(name,code);
-        Sessions.loginUser(interviewer.getName(),
+        String token = Sessions.loginUser(interviewer.getName(),
                 true,
-                secret,
-                response);
-        return CommonResult.success("ok");
+                secret);
+        return CommonResult.success(token);
     }
 
     @PostMapping(value = "/auth/verify-token")
-    public CommonResult<String> verifyToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        String token = "";
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(AuthConstant.COOKIE_NAME)) {
-                token = cookie.getValue();
-                break;
-            }
-        }
-        //token = "Bearer " + token;
+    public CommonResult<String> verifyToken(@RequestHeader("token") String token) {
         DecodedJWT decodedJWT = null;
         try {
             decodedJWT = Sign.verifyToken(token, secret);

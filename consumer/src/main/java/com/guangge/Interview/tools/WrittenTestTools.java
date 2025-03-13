@@ -1,7 +1,7 @@
 package com.guangge.Interview.tools;
 
-import com.guangge.Interview.assistant.record.InterViewRecord;
-import com.guangge.Interview.assistant.record.InterViewRequest;
+import com.guangge.Interview.record.InterViewRecord;
+import com.guangge.Interview.record.InterViewRequest;
 import com.guangge.Interview.services.ResumeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

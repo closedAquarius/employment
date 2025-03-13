@@ -13,7 +13,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.thymeleaf.TemplateEngine;
 
 import java.io.File;
 import java.util.Date;
@@ -25,8 +24,6 @@ public class MailService {
     private String mailUsername;
     @Resource
     private JavaMailSender javaMailSender;
-    @Resource
-    private TemplateEngine templateEngine;
 
     @Autowired
     private ResumeService resumeService;

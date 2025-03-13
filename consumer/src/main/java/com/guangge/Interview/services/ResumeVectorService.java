@@ -1,8 +1,8 @@
 package com.guangge.Interview.services;
 
-import com.guangge.Interview.assistant.record.InterViewRecord;
 import com.guangge.Interview.data.Resume;
 import com.guangge.Interview.data.ResumeVector;
+import com.guangge.Interview.record.InterViewRecord;
 import com.guangge.Interview.repository.ResumeVectorRepository;
 import com.guangge.Interview.util.Dto2Record;
 import org.springframework.stereotype.Service;

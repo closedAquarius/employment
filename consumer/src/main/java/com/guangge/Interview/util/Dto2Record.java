@@ -1,7 +1,7 @@
 package com.guangge.Interview.util;
 
-import com.guangge.Interview.assistant.record.InterViewRecord;
 import com.guangge.Interview.data.Resume;
+import com.guangge.Interview.record.InterViewRecord;
 
 public class Dto2Record {
     public static InterViewRecord toInterViewDetails(Resume resume){

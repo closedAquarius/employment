@@ -1,7 +1,5 @@
 package com.guangge.Interview;
 
-import com.vaadin.flow.component.page.AppShellConfigurator;
-import com.vaadin.flow.theme.Theme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.memory.ChatMemory;
@@ -11,8 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-@Theme(value = "customer-support-agent")
-public class Application implements AppShellConfigurator {
+public class Application {
 
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 

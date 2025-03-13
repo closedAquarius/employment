@@ -1,10 +1,10 @@
 package com.guangge.Interview.services;
 
-import com.guangge.Interview.assistant.record.InterViewRecord;
 import com.guangge.Interview.audio.services.AudioService;
 import com.guangge.Interview.data.InterViewStatus;
 import com.guangge.Interview.data.IsDoneStatus;
 import com.guangge.Interview.data.Resume;
+import com.guangge.Interview.record.InterViewRecord;
 import com.guangge.Interview.repository.ResumeRepository;
 import com.guangge.Interview.util.Dto2Record;
 import org.springframework.ai.document.Document;
