@@ -59,7 +59,7 @@ const Writetest = () => {
 
     // 初始化 EventSource
     const eventSource = new EventSource(
-      `http://localhost:8080/frontend/interViewChat?chatId=${chatId}&userMessage=${encodeURIComponent(message)}`
+      `http://localhost:8080/interview/chat?chatId=${chatId}&userMessage=${encodeURIComponent(message)}`
     );
 
     let first = true;

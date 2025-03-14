@@ -2,6 +2,7 @@ package com.guangge.Interview.controller;
 
 import com.guangge.Interview.comsumer.client.ConsumerClient;
 import com.guangge.Interview.util.CommonResult;
+import com.guangge.Interview.vo.UserResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,8 +18,8 @@ public class LoginController {
     }
 
     @PostMapping(value = "/login")
-    public CommonResult<String> login(@RequestParam("name") String name,
-                                      @RequestParam("code") String code) {
+    public CommonResult<UserResponse> login(@RequestParam("name") String name,
+                                            @RequestParam("code") String code) {
         return consumerClient.login(name,code);
     }
 

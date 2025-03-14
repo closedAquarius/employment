@@ -7,6 +7,7 @@ import com.guangge.Interview.auth.Sign;
 import com.guangge.Interview.data.Interviewer;
 import com.guangge.Interview.services.InterviewerService;
 import com.guangge.Interview.util.CommonResult;
+import com.guangge.Interview.vo.UserResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,13 +34,17 @@ public class LoginController {
 
 
     @PostMapping(value = "/login")
-    public CommonResult<String> login(@RequestParam("name") String name,
-                                      @RequestParam("code") String code) throws Exception {
+    public CommonResult<UserResponse> login(@RequestParam("name") String name,
+                                            @RequestParam("code") String code) throws Exception {
         Interviewer interviewer = this.interviewerService.longin(name,code);
         String token = Sessions.loginUser(interviewer.getName(),
                 true,
                 secret);
-        return CommonResult.success(token);
+        UserResponse userResponse = new UserResponse();
+        userResponse.setUserId(interviewer.getId());
+        userResponse.setUserName(interviewer.getName());
+        userResponse.setToken(token);
+        return CommonResult.success(userResponse);
     }
 
     @PostMapping(value = "/auth/verify-token")

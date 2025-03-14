@@ -35,9 +35,4 @@ public class FrontendController {
     public List<InterViewRecord> findInterView(@RequestParam("question") String question) {
         return this.consumerClient.findInterView(question);
     }
-
-    @GetMapping(value = "/interViewChat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> interViewChat(@RequestParam("chatId") String chatId, @RequestParam("userMessage") String userMessage)  {
-         return this.consumerService.interViewChat(chatId,userMessage);
-    }
 }

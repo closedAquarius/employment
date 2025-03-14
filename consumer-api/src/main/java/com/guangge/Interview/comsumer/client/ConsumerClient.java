@@ -3,22 +3,21 @@ package com.guangge.Interview.comsumer.client;
 import com.guangge.Interview.record.InterViewRecord;
 import com.guangge.Interview.record.ProgramRecord;
 import com.guangge.Interview.util.CommonResult;
+import com.guangge.Interview.vo.UserResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@FeignClient(name = ConsumerConstant.SERVICE_NAME, url = "${consumer-service-endpoint}")
+@FeignClient(name = ConsumerConstant.SERVICE_NAME, url = "${consumer-service-endpoint}", configuration = FeignConfig.class)
 public interface ConsumerClient {
     @PostMapping(value = "/login")
-    CommonResult<String> login(@RequestParam("name") String name,
-                                      @RequestParam("code") String code);
+    CommonResult<UserResponse> login(@RequestParam("name") String name,
+                                     @RequestParam("code") String code);
 
     @PostMapping(value = "/auth/verify-token")
     CommonResult<String> verifyToken(@RequestHeader("token") String token);
@@ -32,9 +31,9 @@ public interface ConsumerClient {
     @GetMapping(value = "/frontend/findInterView")
     List<InterViewRecord> findInterView(@RequestParam("question") String question);
 
-    @PostMapping(value="/interview/face2faceChat", produces = "audio/wav")
-    ResponseEntity<byte[]> face2faceChat(@RequestParam("chatId") String chatId,
-                                                @RequestParam("audio") MultipartFile audio);
+    @PostMapping(value="/interview/face2faceChat", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "audio/wav")
+    ResponseEntity<byte[]> face2faceChat(@RequestParam("chatId") String chatId,@RequestParam(value ="userName", required = false) String userName,
+                                                @RequestPart(value = "audio", required = false) MultipartFile audio);
 
     @GetMapping(value="/interview/welcomemp3", produces = "audio/mp3")
     ResponseEntity<byte[]> welcomemp3();

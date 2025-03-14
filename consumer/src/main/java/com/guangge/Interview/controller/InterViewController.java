@@ -8,11 +8,14 @@ import com.guangge.Interview.audio.services.SpeechToTextService;
 import com.guangge.Interview.audio.services.TextToSpeechService;
 import com.guangge.Interview.record.ProgramRecord;
 import com.guangge.Interview.util.JacksonMapperUtils;
+import com.guangge.Interview.vo.ChatReqeust;
+import com.guangge.Interview.vo.CheckProgramRequest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
@@ -45,8 +48,14 @@ public class InterViewController {
     }
 
 
-    private Flux<String> interViewChat(String chatId, String userMessage)  {
-        return interViewAgent.chat(chatId, userMessage);
+    /**
+     * 笔试题面试接口
+     * @param chatReqeust 回话内容
+     * @return 面试官回答内容
+     */
+    @PostMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> chat(@RequestBody ChatReqeust chatReqeust)  {
+        return interViewAgent.chat(chatReqeust.getChatId(), chatReqeust.getUserMessage());
     }
 
     /**
@@ -59,16 +68,21 @@ public class InterViewController {
      * @throws UnsupportedAudioFileException
      */
     @PostMapping(value="/face2faceChat", produces = "audio/wav")
-    public ResponseEntity<byte[]> face2faceChat(@RequestParam("chatId") String chatId,
-                                                @RequestParam("audio") MultipartFile audio) throws IOException, InterruptedException, UnsupportedAudioFileException {
+    public ResponseEntity<byte[]> face2faceChat(@RequestParam("chatId") String chatId,@RequestParam(value ="userName", required = false) String userName,
+                                                @RequestPart(value = "audio", required = false) MultipartFile audio) throws IOException, InterruptedException, UnsupportedAudioFileException {
         String completed = "";
-        File tempFile = File.createTempFile("audio-", ".opus");
-        audio.transferTo(tempFile);
-        File convertFile = AudioConverter.convertToWav(tempFile);
-        // 语音转文字
-        String text = speechToTextService.transcribeAudio(convertFile);
-        tempFile.delete();
-        convertFile.delete();
+        String text = "";
+        if (StringUtils.hasLength(userName)) {
+            text = userName;
+        } else {
+            File tempFile = File.createTempFile("audio-", ".opus");
+            audio.transferTo(tempFile);
+            File convertFile = AudioConverter.convertToWav(tempFile);
+            // 语音转文字
+            text = speechToTextService.transcribeAudio(convertFile);
+            tempFile.delete();
+            convertFile.delete();
+        }
 
         // 获取大模型响应
         String response = interviewAssistant.chat(chatId,text);
@@ -112,17 +126,14 @@ public class InterViewController {
     }
 
     @PostMapping(value = "/checkProgram", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> checkProgram(@RequestParam("question") String question,
-                                               @RequestParam("input") String input,
-                                               @RequestParam("output") String output,
-                                               @RequestParam("code") String code) throws Exception {
+    public Flux<String> checkProgram(@RequestBody CheckProgramRequest request) throws Exception {
         String userContent = """
                                 题目：{question},
                                 示例输入:{input}
                                 示例输出:{output}
                                 回答内容:{code}
                                 """;
-        Flux<String> result = this.programAssistant.reviewQuestion(question,input,output,code);
+        Flux<String> result = this.programAssistant.reviewQuestion(request.getQuestion(),request.getInput(),request.getOutput(),request.getCode());
         return result;
     }
 }

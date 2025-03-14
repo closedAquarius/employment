@@ -14,22 +14,15 @@ import java.util.List;
 @RestController()
 @RequestMapping("frontend")
 public class FrontendController {
-    private final JavaAssistant interViewAgent;
     private final ResumeService resumeService;
     private final MailService mailService;
     private final ResumeVectorService resumeVectorService;
 
-    public FrontendController(JavaAssistant interViewAgent, ResumeService resumeService,
+    public FrontendController(ResumeService resumeService,
                               MailService mailService, ResumeVectorService resumeVectorService) {
-        this.interViewAgent = interViewAgent;
         this.resumeService = resumeService;
         this.mailService = mailService;
         this.resumeVectorService = resumeVectorService;
-    }
-
-    @GetMapping(value = "/interViewChat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> interViewChat(@RequestParam("chatId") String chatId, @RequestParam("userMessage") String userMessage)  {
-        return interViewAgent.chat(chatId, userMessage);
     }
 
     @GetMapping(value = "/interView")

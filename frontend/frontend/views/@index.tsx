@@ -37,8 +37,9 @@ export default function LoginView() {
       .then((data) => {
           setCode(data.code); // 更新状态
           setLogincount(logincount + 1);
-          localStorage.setItem('token', data.data);
-          console.info('token1:' + data.data);
+          localStorage.setItem('token', data.data.token);
+          localStorage.setItem('userId', data.data.userId);
+          console.info("test:" + data.data.userId);
       }).catch((err) => {
         console.error('失败：', err);
       });

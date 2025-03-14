@@ -20,15 +20,31 @@ function EvaluationResult() {
 
   useEffect(() => {
     // 将 FormData 数据编码为 URL 查询参数
-    const params = new URLSearchParams();
+    /*const params = new URLSearchParams();
     params.append('question', question);
     params.append('input', input);
     params.append('output', output);
-    params.append('code', code);
+    params.append('code', code);*/
+
+    const params = {
+        question: question,
+        input: input,
+        output: output,
+        code: code
+    };
+
+    // 将参数对象转换为 JSON 字符串
+    const jsonParams = JSON.stringify(params);
+
+    // 使用 encodeURIComponent 编码 JSON 字符串
+    const encodedJson = encodeURIComponent(jsonParams);
+
+    // 将编码后的字符串转换为 Base64
+    const encodedParams = btoa(encodedJson);
 
     // 初始化 EventSource
     const eventSource = new EventSource(
-      `http://localhost:8080/interview/checkProgram?${params.toString()}`
+      `http://localhost:8080/interview/checkProgram?data=${encodeURIComponent(encodedParams)}`
     );
 
     // 超时处理

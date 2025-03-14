@@ -9,11 +9,11 @@ import thinkingAnimation from 'Frontend/assets/animations/think-animation.json';
 import microphoneAnimation from 'Frontend/assets/animations/microphone-animation.json'; // 从 LottieFiles 下载的动画文件
 import { FaMicrophone, FaStop, FaPaperPlane } from 'react-icons/fa';
 import withAuth from 'Frontend/components/withAuth';
+import FaceVerificationDialog from './FaceVerificationDialog';
 
 export const config: ViewConfig = { menu: { order: 1, icon: 'vaadin:users' }, title: '光哥面试' };
 
 const AudioRecorder = () => {
-  const [isWelcomePlaying, setIsWelcomePlaying] = useState(false); // 是否正在播放欢迎语音
   const [showStartButton, setShowStartButton] = useState(true); // 是否显示“开始面试”按钮
   const [showAnswerButton, setShowAnswerButton] = useState(false); // 是否显示“回答”按钮
   const [isRecording, setIsRecording] = useState(false);
@@ -25,18 +25,38 @@ const AudioRecorder = () => {
   const lottieRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isFaceVerified, setIsFaceVerified] = useState(false); // 人脸识别状态
+
+  const handleVerificationSuccess = () => {
+    setIsFaceVerified(true); // 人脸识别成功后启用开始按钮
+  };
 
   // 播放欢迎语音
   const playWelcomeAudio = async () => {
+    if (!isFaceVerified) return; // 如果人脸识别未通过，不执行
+
     setShowStartButton(false); // 隐藏“开始面试”按钮
-    setIsWelcomePlaying(true); // 标记正在播放欢迎语音
+    setIsRecording(false);
+    setIsProcessing(true);
+
+    const formData = new FormData();
+    formData.append('chatId', chatId);
+    formData.append('userName', localStorage.getItem('username'));
+
     try {
-      const response = await fetch('http://localhost:8080/interview/welcomemp3', {
-        method: 'Get'
+      const response = await fetch('http://localhost:8080/interview/face2faceChat', {
+        method: 'POST',
+        body: formData,
       });
 
       const responseBlob = await response.blob();
       const audioUrl = URL.createObjectURL(responseBlob);
+
+      // 获取状态信息
+      const status = response.headers.get('X-Chat-Status');
+      const completed = status === 'completed';
+      setIsCompleted(completed);
+
       setAudioUrl(audioUrl);
       setIsProcessing(false);
       playAudio(audioUrl);
@@ -84,6 +104,7 @@ const AudioRecorder = () => {
   const sendAudioToBackend = async (audioBlob) => {
     const formData = new FormData();
     formData.append('chatId', chatId);
+    formData.append('userName', '');
     formData.append('audio', audioBlob, 'recording.webm');
 
     try {
@@ -143,7 +164,6 @@ const AudioRecorder = () => {
     audio.onended = () => {
       setIsPlaying(false);
       setIsRecording(false);
-      setIsWelcomePlaying(false);
       setShowAnswerButton(true); // 显示“回答”按钮
       if (!isCompleted) {
         startRecording();
@@ -153,6 +173,8 @@ const AudioRecorder = () => {
 
   return (
   <div>
+   {/* 人脸识别对话框 */}
+   {!isFaceVerified && <FaceVerificationDialog onVerificationSuccess={handleVerificationSuccess} />}
    <div style={{ textAlign: 'center',
                     position: 'fixed',
                     top: '20%',
