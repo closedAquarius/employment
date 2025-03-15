@@ -21,6 +21,8 @@ import axios from 'axios';
 
 export const config: ViewConfig = { menu: { order: 2, icon: 'vaadin:records' }, title: '面试结果' };
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const InterviewResult = () => {
   const [chatId, setChatId] = useState(nanoid());
   const [working, setWorking] = useState(false);
@@ -31,7 +33,7 @@ const InterviewResult = () => {
   useEffect(() => {
     // Update bookings when we have received the full response
     if (!working) {
-      fetch('http://localhost:8080/frontend/interView')
+      fetch(`${apiBaseUrl}/frontend/interView`)
             .then(response => {
               if (!response.ok) {
                 throw new Error('获取面试记录失败');
@@ -78,7 +80,7 @@ const handleUpload = async (number: String, event) => {
     formData.append('id', number);
 
     try {
-      const response = await axios.post('http://localhost:8080/fileupload/resume/upload', formData, {
+      const response = await axios.post(`${apiBaseUrl}/fileupload/resume/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       alert('上传成功');
@@ -109,7 +111,7 @@ function employeeRenderer({ item: interViews }) {
 }
 
 const handleSearch = () => {
-    fetch(`http://localhost:8080/frontend/findInterView?question=${searchTerm}`)
+    fetch(`${apiBaseUrl}/frontend/findInterView?question=${searchTerm}`)
                 .then(response => {
                   if (!response.ok) {
                     throw new Error('获取面试记录失败');
@@ -165,7 +167,7 @@ return (
                 {({ item: interView }) => (
                   <Button
                      onClick={() => {
-                              fetch('http://localhost:8080/frontend/sendMail', {
+                              fetch(`${apiBaseUrl}/frontend/sendMail`, {
                                         method: 'POST',
                                         headers: {
                                           'Content-Type': 'application/x-www-form-urlencoded',

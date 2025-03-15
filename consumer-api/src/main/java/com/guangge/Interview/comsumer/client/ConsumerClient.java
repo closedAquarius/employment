@@ -4,7 +4,6 @@ import com.guangge.Interview.record.InterViewRecord;
 import com.guangge.Interview.record.ProgramRecord;
 import com.guangge.Interview.util.CommonResult;
 import com.guangge.Interview.vo.UserResponse;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

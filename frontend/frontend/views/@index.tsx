@@ -13,6 +13,8 @@ export const config: ViewConfig = {
   },
 };
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
 export default function LoginView() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +31,7 @@ export default function LoginView() {
       const formData = new FormData();
       formData.append('name', username);
       formData.append('code', password);
-      fetch('http://localhost:8080/login', {
+      fetch(`${apiBaseUrl}/login`, {
         method: 'POST',
         body: formData,
       })
@@ -54,7 +56,7 @@ export default function LoginView() {
     console.info('token2:' + token);
     if (name != '') {
       try {
-          const response = fetch('http://localhost:8080/auth/verify-token', {
+          const response = fetch(`${apiBaseUrl}/auth/verify-token`, {
                   method: 'POST',
                   headers: {
                     'token': token

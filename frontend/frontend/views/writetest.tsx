@@ -10,6 +10,8 @@ import MessageList from "Frontend/components/MessageList";
 import { useNavigate, useLocation } from "react-router-dom";
 import withAuth from 'Frontend/components/withAuth';
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
 export const config: ViewConfig = {
   route: 'writetest',
   menu: {
@@ -59,7 +61,7 @@ const Writetest = () => {
 
     // 初始化 EventSource
     const eventSource = new EventSource(
-      `http://localhost:8080/interview/chat?chatId=${chatId}&userMessage=${encodeURIComponent(message)}`
+      `${apiBaseUrl}/interview/chat?chatId=${chatId}&userMessage=${encodeURIComponent(message)}`
     );
 
     let first = true;

@@ -5,7 +5,7 @@
 	<modules>
 		<module>consumer</module>
 		<module>frontend</module>
-        <module>community</module>
+        <module>common</module>
         <module>consumer-api</module>
     </modules>
 	<parent>

@@ -11,6 +11,8 @@ export const config: ViewConfig = {
   },
 };
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
 function EvaluationResult() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,7 +46,7 @@ function EvaluationResult() {
 
     // 初始化 EventSource
     const eventSource = new EventSource(
-      `http://localhost:8080/interview/checkProgram?data=${encodeURIComponent(encodedParams)}`
+      `${apiBaseUrl}/interview/checkProgram?data=${encodeURIComponent(encodedParams)}`
     );
 
     // 超时处理

@@ -5,6 +5,8 @@ import { TextField } from '@vaadin/react-components/TextField.js';
 import { VerticalLayout } from '@vaadin/react-components/VerticalLayout.js';
 import dialogBasicStyles from './dialog-basic-styles';
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const  newInterViewDialog() = ({ isOpen, onClose }) {
   return  (
     <>
