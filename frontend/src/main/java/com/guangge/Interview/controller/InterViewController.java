@@ -2,7 +2,6 @@ package com.guangge.Interview.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.guangge.Interview.Application;
 import com.guangge.Interview.comsumer.client.ConsumerClient;
 import com.guangge.Interview.record.ProgramRecord;
 import com.guangge.Interview.services.ConsumerService;
