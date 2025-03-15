@@ -11,12 +11,12 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @Theme(value = "customer-support-agent")
 @EnableFeignClients
-public class Application implements AppShellConfigurator {
+public class FrontendApplication implements AppShellConfigurator {
 
-    private static final Logger logger = LoggerFactory.getLogger(Application.class);
+    private static final Logger logger = LoggerFactory.getLogger(FrontendApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(FrontendApplication.class, args);
     }
 
 
