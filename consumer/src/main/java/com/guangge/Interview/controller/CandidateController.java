@@ -1,6 +1,6 @@
 package com.guangge.Interview.controller;
 
-import com.guangge.Interview.services.InterviewerService;
+import com.guangge.Interview.services.CandidatesService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("candidate")
 public class CandidateController {
 
-    private final InterviewerService interviewerService;
+    private final CandidatesService interviewerService;
 
     
-    public CandidateController(InterviewerService interviewerService) {
+    public CandidateController(CandidatesService interviewerService) {
         this.interviewerService = interviewerService;
     }
 

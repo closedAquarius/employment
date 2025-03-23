@@ -1,6 +1,7 @@
 package com.guangge.Interview.controller;
 
 import com.guangge.Interview.comsumer.client.ConsumerClient;
+import com.guangge.Interview.record.CandidateRecord;
 import com.guangge.Interview.record.InterViewRecord;
 import com.guangge.Interview.services.ConsumerService;
 import org.springframework.http.MediaType;
@@ -34,5 +35,10 @@ public class FrontendController {
     @GetMapping(value = "/findInterView")
     public List<InterViewRecord> findInterView(@RequestParam("question") String question) {
         return this.consumerClient.findInterView(question);
+    }
+
+    @GetMapping(value = "/candidates")
+    public List<CandidateRecord> getCandidates() {
+        return this.consumerClient.getCandidates();
     }
 }

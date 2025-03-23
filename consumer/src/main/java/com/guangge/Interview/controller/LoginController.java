@@ -1,16 +1,12 @@
 package com.guangge.Interview.controller;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.guangge.Interview.auth.AuthConstant;
 import com.guangge.Interview.auth.Sessions;
 import com.guangge.Interview.auth.Sign;
-import com.guangge.Interview.data.Interviewer;
-import com.guangge.Interview.services.InterviewerService;
+import com.guangge.Interview.data.Candidates;
+import com.guangge.Interview.services.CandidatesService;
 import com.guangge.Interview.util.CommonResult;
 import com.guangge.Interview.vo.UserResponse;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,26 +19,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    private final InterviewerService interviewerService;
+    private final CandidatesService candidatesService;
 
     @Value("${auth.token.secret}")
     private String secret;
 
-    public LoginController(InterviewerService interviewerService) {
-        this.interviewerService = interviewerService;
+    public LoginController(CandidatesService interviewerService) {
+        this.candidatesService = interviewerService;
     }
 
 
     @PostMapping(value = "/login")
     public CommonResult<UserResponse> login(@RequestParam("name") String name,
                                             @RequestParam("code") String code) throws Exception {
-        Interviewer interviewer = this.interviewerService.longin(name,code);
-        String token = Sessions.loginUser(interviewer.getName(),
+        Candidates candidates = this.candidatesService.longin(name,code);
+        String token = Sessions.loginUser(candidates.getName(),
                 true,
                 secret);
         UserResponse userResponse = new UserResponse();
-        userResponse.setUserId(interviewer.getId());
-        userResponse.setUserName(interviewer.getName());
+        userResponse.setUserId(candidates.getId());
+        userResponse.setUserName(candidates.getName());
         userResponse.setToken(token);
         return CommonResult.success(userResponse);
     }

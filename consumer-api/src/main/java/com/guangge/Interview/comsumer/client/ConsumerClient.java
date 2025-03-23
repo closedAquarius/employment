@@ -1,5 +1,6 @@
 package com.guangge.Interview.comsumer.client;
 
+import com.guangge.Interview.record.CandidateRecord;
 import com.guangge.Interview.record.InterViewRecord;
 import com.guangge.Interview.record.ProgramRecord;
 import com.guangge.Interview.util.CommonResult;
@@ -24,6 +25,9 @@ public interface ConsumerClient {
     @GetMapping(value = "/frontend/interView")
     List<InterViewRecord> getInterView();
 
+    @GetMapping(value = "/frontend/candidates")
+    List<CandidateRecord> getCandidates();
+
     @PostMapping(value = "/frontend/sendMail")
     void sendMail(@RequestParam("name") String name);
 
@@ -40,4 +44,8 @@ public interface ConsumerClient {
     @GetMapping(value = "/interview/makeProgram")
     ResponseEntity<ProgramRecord> program(@RequestParam("first") Boolean first,
                                                  @RequestParam("name") String name);
+
+    @PostMapping(value = "/resume/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    CommonResult<String> uploadResume(@RequestPart("resume") MultipartFile resumeFile,
+                                             @RequestParam("jd") String jdText);
 }
