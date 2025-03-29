@@ -9,8 +9,6 @@ export const config: ViewConfig = {
   },
 };
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
 const FaceVerificationDialog = ({ onVerificationSuccess }) => {
   const webcamRef = useRef(null);
   const [image, setImage] = useState(null);
@@ -22,7 +20,7 @@ const FaceVerificationDialog = ({ onVerificationSuccess }) => {
     setImage(imageSrc);
     setIsLoading(true);
     console.info("userid:",localStorage.getItem('userId'));
-    fetch(`${apiBaseUrl}/api/verify-face`, {
+    fetch(`/api/verify-face`, {
       method: 'POST',
       body: JSON.stringify({ image: imageSrc, userId: localStorage.getItem('userId') }),
       headers: {

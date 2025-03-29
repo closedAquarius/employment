@@ -15,8 +15,8 @@ public class RestExceptionAdvice {
     private static final Logger logger = LoggerFactory.getLogger(RestExceptionAdvice.class);
 
     @ResponseBody
-    @ExceptionHandler(value= RestException.class)
-    public CommonResult<Map<String, Object>> restException(RestException e, HttpServletRequest request) {
+    //@ExceptionHandler(value= Exception.class)
+    public CommonResult<Map<String, Object>> restException(Exception e, HttpServletRequest request) {
         logger.error(e.getMessage());
         return CommonResult.failed(e.getMessage());
     }

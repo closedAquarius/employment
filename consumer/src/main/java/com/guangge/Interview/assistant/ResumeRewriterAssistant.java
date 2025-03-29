@@ -28,13 +28,12 @@ public class ResumeRewriterAssistant {
     private final ChatClient chatClient;
     private Resource userTextAdvisors;
 
-    public ResumeRewriterAssistant(ChatClient.Builder modelBuilder, VectorStore vectorStore, ChatMemory chatMemory,
+    public ResumeRewriterAssistant(ChatClient.Builder modelBuilder, VectorStore vectorStore,
                                    @Value("classpath:prompt/resume-optimizer-system-prompt.st") Resource systemText,
                                    @Value("classpath:prompt/resume-optimizer-user-prompt.st") Resource userTextAdvisors) throws IOException {
         this.userTextAdvisors = userTextAdvisors;
         this.chatClient = modelBuilder.defaultSystem(s -> s.text(systemText))
                 .defaultAdvisors(
-                        new PromptChatMemoryAdvisor(chatMemory),
                         new QuestionAnswerAdvisor(vectorStore, SearchRequest.builder().similarityThreshold(0.5).build(),
                                 userTextAdvisors.getContentAsString(Charset.defaultCharset())),
                         new LoggingAdvisor()
@@ -45,7 +44,6 @@ public class ResumeRewriterAssistant {
 
     /**
      * 重写简历
-     * @param chatId 聊天ID
      * @param jdText 需求JD
      * @param resumeText 简历
      * @param keyword 关键词

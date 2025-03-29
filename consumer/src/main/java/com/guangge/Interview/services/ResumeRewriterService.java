@@ -1,13 +1,19 @@
 package com.guangge.Interview.services;
 
 import com.guangge.Interview.assistant.ResumeRewriterAssistant;
+import com.guangge.Interview.record.EducationRecord;
+import com.guangge.Interview.record.ProjectExperienceRecord;
+import com.guangge.Interview.record.WorkExperienceRecord;
 import com.guangge.Interview.util.MarkdownToPdfConverter;
+import com.guangge.Interview.vo.CvRequest;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +21,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +36,14 @@ public class ResumeRewriterService {
     private String pythonScriptPath;
     @Value("${python.script.html_to_pdf.path}")
     private String html2PdfPath;
+    @Value("classpath:templates/resume.txt")
+    private Resource resume;
+    @Value("classpath:templates/education.txt")
+    private Resource education;
+    @Value("classpath:templates/work.txt")
+    private Resource work;
+    @Value("classpath:templates/project.txt")
+    private Resource project;
 
     private final JDKeywordExtractor jdKeywordExtractor;
     private final ResumeRewriterAssistant resumeRewriterAssistant;
@@ -42,16 +59,12 @@ public class ResumeRewriterService {
     /**
      *使用Python的PyMuPDF库来解析PDF文件
      * @param resumeFile 简历文件
-     * @param jdText 需求
-     * @return
+     * @param jdText 招聘要求
+     * @return 简历文件名
      * @throws IOException
      * @throws InterruptedException
      */
     public String processResume(MultipartFile resumeFile, String jdText) throws IOException, InterruptedException {
-        // 1. 提取简历文本
-        //String resumeText = extractTextFromPDF(resumeFile);
-        //logger.info("提取的简历文本: " + resumeText);
-
         // 从IO流中读取文件
         TikaDocumentReader tikaDocumentReader = new TikaDocumentReader(new InputStreamResource(resumeFile.getInputStream()));
 
@@ -66,22 +79,32 @@ public class ResumeRewriterService {
         // 3. 改写简历
         String rewrittenResume = this.resumeRewriterAssistant.rewirter(jdText, resumeText, jdKeywords);
 
-        String outputPath = PDF_STORAGE_PATH + resumeFile.getOriginalFilename(); // 生成的PDF文件路径
-        //PDFGenerator.generatePDF(rewrittenResume, outputPath);
-        String html = MarkdownToPdfConverter.markdownToHtml(rewrittenResume);
-        html = "<html><head><meta charset=\\\"UTF-8\\\"/><style>" +
-                "body { font-family: 宋体, SimSun;} " +
-                "h1 { color: #333366;} " +
-                "h2 { color: #666699;border-bottom: 1px solid #ddd;padding-bottom: 5px; margin-bottom: 20px;  } " +
-                "ul { list-style-type: square; } " +
-                "li { font-size: 18px;}" +
-                "</style></head><body>" +
-                html +
-                "</body></html>";
-        html2Pdf(html, outputPath);
-        //generateMarkdown(questions);
+        String originalFilename = resumeFile.getOriginalFilename();
+        // 4.生成pdf
+        String output = this.makePdf(originalFilename,rewrittenResume);
 
-        return "pdf/" + resumeFile.getOriginalFilename();
+        return output;
+    }
+
+    /**
+     * 生成简历
+     * @param cvRequest 简历信息
+     * @return 简历文件名
+     */
+    public String createResume(CvRequest cvRequest) throws IOException, InterruptedException {
+        String resumeText = this.makeCvTxt(cvRequest);
+        // 2. 提取JD关键词
+        String jdKeywords = jdKeywordExtractor.extractKeywords(cvRequest.getJd());
+        logger.info("提取的JD关键词: " + jdKeywords);
+
+        // 3. 改写简历
+        String rewrittenResume = this.resumeRewriterAssistant.rewirter(cvRequest.getJd(), resumeText, jdKeywords);
+
+        String originalFilename = cvRequest.getName();
+        // 4.生成pdf
+        String output = this.makePdf(originalFilename,rewrittenResume);
+
+        return output;
     }
 
     private String extractTextFromPDF(MultipartFile resumeFile) throws IOException, InterruptedException {
@@ -104,17 +127,99 @@ public class ResumeRewriterService {
         return resumeText;
     }
 
-    private void html2Pdf(String html,String outputPath) throws IOException, InterruptedException {
-        // 调用 extract_text.py 提取文本
-        ProcessBuilder processBuilder = new ProcessBuilder("python", html2PdfPath, html, outputPath);
-        processBuilder.redirectErrorStream(true); // 合并标准输出和错误输出
-        Process process = processBuilder.start();
+    private String makePdf(String originalFilename,String rewrittenResume) throws IOException, InterruptedException {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String timestamp = LocalDateTime.now().format(dtf);
 
-        // 读取输出
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String resumePdfName = FilenameUtils.removeExtension(originalFilename) + "_" + timestamp + ".pdf";
+        String outputPath = PDF_STORAGE_PATH + resumePdfName; // 生成的PDF文件路径
 
-        // 等待进程结束
-        int exitCode = process.waitFor();
-        System.out.println("Python script executed with exit code: " + exitCode);
+        String html = MarkdownToPdfConverter.markdownToHtml(rewrittenResume);
+        html = "<html><head><meta charset=\\\"UTF-8\\\"/><style>" +
+                "body { font-family: 宋体, SimSun;} " +
+                "h1 { color: #333366;} " +
+                "h2 { color: #666699;border-bottom: 1px solid #ddd;padding-bottom: 5px; margin-bottom: 20px;  } " +
+                "ul { list-style-type: square; } " +
+                "li { font-size: 18px;}" +
+                "</style></head><body>" +
+                html +
+                "</body></html>";
+        MarkdownToPdfConverter.html2Pdf(html, outputPath, html2PdfPath);
+
+        return "pdf/" + resumePdfName;
+    }
+    /**
+     * 根据页面内容生成简历文本
+     * @param cvReqeust 简历信息
+     * @return 简历文本
+     */
+    private String makeCvTxt(CvRequest cvReqeust) throws IOException {
+        String cv = resume.getContentAsString(Charset.defaultCharset());
+        cv = cv
+                .replace("{name}", cvReqeust.getName())
+                .replace("{sex}", cvReqeust.getSex())
+                .replace("{birthDate}", cvReqeust.getBirthDate())
+                .replace("{email}", cvReqeust.getEmail())
+                .replace("{phone}", cvReqeust.getPhone());
+
+        StringBuilder sb = new StringBuilder();
+        List<EducationRecord> educationRecords = cvReqeust.getEducationRecords();
+        if (educationRecords != null) {
+            educationRecords.forEach(educationRecord -> {
+                try {
+                    String txt = education.getContentAsString(Charset.defaultCharset());
+                    txt = txt
+                            .replace("{begin}", educationRecord.getBegin())
+                            .replace("{end}", educationRecord.getEnd())
+                            .replace("{university}", educationRecord.getUniversity())
+                            .replace("{major}", educationRecord.getMajor())
+                            .replace("{degree}", educationRecord.getDegree());
+                    sb.append(txt);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            });
+        }
+        cv = cv.replace("{education}",sb.toString());
+        sb.setLength(0);
+        List<WorkExperienceRecord> workExperienceRecords = cvReqeust.getWorkExperienceRecords();
+        if (workExperienceRecords != null) {
+            workExperienceRecords.forEach(workExperienceRecord -> {
+                try {
+                    String contentAsString = work.getContentAsString(Charset.defaultCharset());
+                    contentAsString = contentAsString
+                            .replace("{begin}", workExperienceRecord.getBegin())
+                            .replace("{end}", workExperienceRecord.getEnd())
+                            .replace("{company}", workExperienceRecord.getCompany())
+                            .replace("{workContent}", workExperienceRecord.getWorkContent());
+                    sb.append(contentAsString);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            });
+        }
+        cv = cv.replace("{work}",sb.toString());
+        sb.setLength(0);
+        List<ProjectExperienceRecord> projectExperienceRecords = cvReqeust.getProjectExperienceRecords();
+        if (projectExperienceRecords != null) {
+            projectExperienceRecords.forEach(projectExperienceRecord -> {
+                try {
+                    String contentAsString = project.getContentAsString(Charset.defaultCharset());
+                    contentAsString = contentAsString
+                            .replace("{begin}", projectExperienceRecord.getBegin())
+                            .replace("{end}", projectExperienceRecord.getEnd())
+                            .replace("{name}", projectExperienceRecord.getName())
+                            .replace("{content}", projectExperienceRecord.getContent())
+                            .replace("{skills}", projectExperienceRecord.getSkills());
+                    sb.append(contentAsString);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        cv = cv.replace("{project}",sb.toString());
+        return cv;
     }
 }

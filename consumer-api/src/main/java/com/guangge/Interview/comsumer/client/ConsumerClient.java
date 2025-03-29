@@ -4,6 +4,7 @@ import com.guangge.Interview.record.CandidateRecord;
 import com.guangge.Interview.record.InterViewRecord;
 import com.guangge.Interview.record.ProgramRecord;
 import com.guangge.Interview.util.CommonResult;
+import com.guangge.Interview.vo.CvRequest;
 import com.guangge.Interview.vo.UserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -48,4 +49,7 @@ public interface ConsumerClient {
     @PostMapping(value = "/resume/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     CommonResult<String> uploadResume(@RequestPart("resume") MultipartFile resumeFile,
                                              @RequestParam("jd") String jdText);
+
+    @PostMapping(value = "/resume/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    CommonResult<String> createCv(@RequestBody CvRequest cvRequest);
 }

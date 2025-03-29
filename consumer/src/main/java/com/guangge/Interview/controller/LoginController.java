@@ -28,7 +28,13 @@ public class LoginController {
         this.candidatesService = interviewerService;
     }
 
-
+    /**
+     * 登录
+     * @param name 登录名
+     * @param code 邀请code
+     * @return 登录信息
+     * @throws Exception
+     */
     @PostMapping(value = "/login")
     public CommonResult<UserResponse> login(@RequestParam("name") String name,
                                             @RequestParam("code") String code) throws Exception {
@@ -43,6 +49,11 @@ public class LoginController {
         return CommonResult.success(userResponse);
     }
 
+    /**
+     * JWT认证
+     * @param token token
+     * @return 认证信息
+     */
     @PostMapping(value = "/auth/verify-token")
     public CommonResult<String> verifyToken(@RequestHeader("token") String token) {
         DecodedJWT decodedJWT = null;

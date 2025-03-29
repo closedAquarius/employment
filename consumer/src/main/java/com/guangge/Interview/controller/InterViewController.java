@@ -125,6 +125,12 @@ public class InterViewController {
         return ResponseEntity.ok(JacksonMapperUtils.json2pojo(result,ProgramRecord.class));
     }
 
+    /**
+     * 检查结果
+     * @param request 信息
+     * @return 结果
+     * @throws Exception
+     */
     @PostMapping(value = "/checkProgram", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> checkProgram(@RequestBody CheckProgramRequest request) throws Exception {
         String userContent = """

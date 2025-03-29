@@ -20,8 +20,6 @@ import axios from 'axios';
 
 export const config: ViewConfig = { menu: { order: 2, icon: 'vaadin:records' }, title: '候选者名单' };
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
 const Candidates = () => {
   const [working, setWorking] = useState(false);
   const [candidates, setCandidates] = useState<CandidateRecord[]>([]);
@@ -31,7 +29,7 @@ const Candidates = () => {
   useEffect(() => {
     // Update bookings when we have received the full response
     if (!working) {
-      fetch(`${apiBaseUrl}/frontend/candidates`)
+      fetch(`/frontend/candidates`)
             .then(response => {
               if (!response.ok) {
                 throw new Error('获取候选人记录失败');
@@ -63,7 +61,7 @@ const handleUpload = async (number: String, event) => {
     formData.append('id', number);
 
     try {
-      const response = await axios.post(`${apiBaseUrl}/fileupload/resume/upload`, formData, {
+      const response = await axios.post(`/fileupload/resume/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       alert('上传成功');
@@ -112,7 +110,7 @@ return (
                 {({ item: candidates }) => (
                   <Button
                      onClick={() => {
-                              fetch(`${apiBaseUrl}/frontend/sendMail`, {
+                              fetch(`/frontend/sendMail`, {
                                         method: 'POST',
                                         headers: {
                                           'Content-Type': 'application/x-www-form-urlencoded',

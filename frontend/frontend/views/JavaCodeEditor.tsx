@@ -15,8 +15,6 @@ import { motion } from 'framer-motion';
 
 export const config: ViewConfig = { menu: { order: 0, icon: 'vaadin:academy-cap' }, title: '光哥笔试' };
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
 const JavaCodeEditor  = () => {
 
   const [code, setCode] = useState('');
@@ -42,8 +40,8 @@ const JavaCodeEditor  = () => {
   // 从后端获取代码
   function startTest() {
     const apiUrl = isFirst
-      ? `${apiBaseUrl}/interview/makeProgram?first=true&name=${name}`
-      : `${apiBaseUrl}/interview/makeProgram?first=false&name=${name}`;
+      ? `/interview/makeProgram?first=true&name=${name}`
+      : `/interview/makeProgram?first=false&name=${name}`;
     setShowStartButton(false); // 隐藏“开始面试”按钮
     setLoading(true);
     fetch(apiUrl)

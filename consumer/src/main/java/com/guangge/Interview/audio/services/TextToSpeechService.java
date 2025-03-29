@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 
 @Service
 public class TextToSpeechService {
-    @Value("${spring.ai.dash-scope.api-key}")
+    @Value("${spring.ai.dash-scope.audio.api-key}")
     private String apiKey;
 
     @Value("${spring.ai.dash-scope.audio.options.model}")

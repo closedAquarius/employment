@@ -1,13 +1,15 @@
 package com.guangge.Interview.controller;
 
 import com.guangge.Interview.comsumer.client.ConsumerClient;
+import com.guangge.Interview.record.EducationRecord;
 import com.guangge.Interview.util.CommonResult;
+import com.guangge.Interview.vo.CvRequest;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController()
 @RequestMapping("/resume")
@@ -23,5 +25,10 @@ public class ResumeRewriterController {
     public CommonResult<String> uploadResume(@RequestParam("resume") MultipartFile resumeFile,
                                              @RequestParam("jd") String jdText) {
         return this.consumerClient.uploadResume(resumeFile,jdText);
+    }
+
+    @PostMapping(value = "/create")
+    public CommonResult<String> createCv(@RequestBody CvRequest cvRequest) {
+        return this.consumerClient.createCv(cvRequest);
     }
 }
