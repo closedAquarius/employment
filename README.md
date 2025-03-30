@@ -58,6 +58,15 @@ Rag处理: Postgre Vector
 3.面试结果界面
 ![image](https://github.com/user-attachments/assets/3b984882-3edd-47a1-8215-1b34ed2d557e)
 
+##🗣️ 项目迭代视频
+1.第一次迭代
+<video width="100%" src="[https://github.com/user-attachments/assets/98523cf3-dac8-4127-9649-d91a997e3ef5](https://github.com/xgwangdl/AI-Interview/blob/master/docs/step1.mp4)" controls></video>
+2.第二次迭代：增加口语面试
+<video width="100%" src="[https://github.com/user-attachments/assets/98523cf3-dac8-4127-9649-d91a997e3ef5](https://github.com/xgwangdl/AI-Interview/blob/master/docs/step2.mp4)" controls></video>
+3.第三次迭代：增加程序题和人脸识别
+<video width="100%" src="[https://github.com/user-attachments/assets/98523cf3-dac8-4127-9649-d91a997e3ef5](https://github.com/xgwangdl/AI-Interview/blob/master/docs/step3.mp4)" controls></video>
+3.第四次迭代：增加建立生成以及口语会话
+<video width="100%" src="[https://github.com/user-attachments/assets/98523cf3-dac8-4127-9649-d91a997e3ef5](https://github.com/xgwangdl/AI-Interview/blob/master/docs/step4.mp4)" controls></video>
 
 ## ⚡ 快速开始
 
