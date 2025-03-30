@@ -32,6 +32,13 @@ public class FIleUploadController {
         this.resumeVectorService = resumeVectorService;
     }
 
+    /**
+     * 面试者简历
+     * @param number
+     * @param file
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/resume/upload")
     public ResponseEntity<String> uploadJavaDoc(@RequestParam("id") String number, @RequestParam MultipartFile file) throws IOException {
         long id = Long.valueOf(number);
@@ -45,6 +52,12 @@ public class FIleUploadController {
         return ResponseEntity.ok().body("uploaded");
     }
 
+    /**
+     * 知识库上传
+     * @param file 知识库文件
+     * @return ok
+     * @throws IOException
+     */
     @PostMapping("/knowledge/upload")
     public String uploadKnowledge(@RequestParam MultipartFile file) throws IOException {
         // 从IO流中读取文件

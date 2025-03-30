@@ -1,29 +1,38 @@
 package com.guangge.Interview.services;
 
 import com.guangge.Interview.audio.services.AudioService;
+import com.guangge.Interview.controller.LoginController;
 import com.guangge.Interview.data.InterViewStatus;
 import com.guangge.Interview.data.IsDoneStatus;
 import com.guangge.Interview.data.Resume;
 import com.guangge.Interview.record.InterViewRecord;
 import com.guangge.Interview.repository.ResumeRepository;
 import com.guangge.Interview.util.Dto2Record;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ResumeService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ResumeService.class);
+
     private final AudioService audioService;
     private final ResumeRepository resumeRepository;
-
 
     public ResumeService(AudioService audioService, ResumeRepository resumeRepository) {
         this.audioService = audioService;
@@ -45,8 +54,8 @@ public class ResumeService {
     }
 
     /**
-     * 返回所有面试者
-     * @return 面试者
+     * 返回所有面试者面试信息
+     * @return 面试者信息
      */
     public List<InterViewRecord> getInterViews() {
         List<Resume> resume = this.resumeRepository.findAll(Sort.by("id").descending());
@@ -105,6 +114,4 @@ public class ResumeService {
         var resume = findInterView(name);
         return Dto2Record.toInterViewDetails(resume);
     }
-
-
 }

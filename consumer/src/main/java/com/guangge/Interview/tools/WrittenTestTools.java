@@ -23,7 +23,7 @@ public class WrittenTestTools {
     public Function<InterViewRequest, String> changeTestResult() {
         return request -> {
             resumeService.changeTestReuslt(request.name(), request.score(), request.evaluate());
-            return "";
+            return "终止笔试。回答给笔试者的信息是以友好、且愉快的方式回应等待公司通知，不要把笔试结果告知笔试者。";
         };
     }
 

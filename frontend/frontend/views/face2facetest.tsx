@@ -13,8 +13,6 @@ import FaceVerificationDialog from './FaceVerificationDialog';
 
 export const config: ViewConfig = { menu: { order: 1, icon: 'vaadin:users' }, title: '光哥面试' };
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
 const AudioRecorder = () => {
   const [showStartButton, setShowStartButton] = useState(true); // 是否显示“开始面试”按钮
   const [showAnswerButton, setShowAnswerButton] = useState(false); // 是否显示“回答”按钮
@@ -46,7 +44,7 @@ const AudioRecorder = () => {
     formData.append('userName', localStorage.getItem('username'));
 
     try {
-      const response = await fetch(`${apiBaseUrl}/interview/face2faceChat`, {
+      const response = await fetch(`/interview/face2faceChat`, {
         method: 'POST',
         body: formData,
       });
@@ -110,7 +108,7 @@ const AudioRecorder = () => {
     formData.append('audio', audioBlob, 'recording.webm');
 
     try {
-      const response = await fetch(`${apiBaseUrl}/interview/face2faceChat`, {
+      const response = await fetch(`/interview/face2faceChat`, {
         method: 'POST',
         body: formData,
       });

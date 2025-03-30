@@ -1,6 +1,8 @@
 package com.guangge.Interview.util;
 
+import com.guangge.Interview.data.Candidates;
 import com.guangge.Interview.data.Resume;
+import com.guangge.Interview.record.CandidateRecord;
 import com.guangge.Interview.record.InterViewRecord;
 
 public class Dto2Record {
@@ -15,5 +17,16 @@ public class Dto2Record {
                 resume.getMp3Path(),
                 resume.getInterviewEvaluate()
         );
+    }
+
+    public static CandidateRecord toCandidateRecord(Candidates candidates) {
+        return new CandidateRecord(
+                candidates.getId(),
+                candidates.getName(),
+                candidates.getCv(),
+                candidates.getEmail(),
+                candidates.getBirth(),
+                candidates.getStatus().toString(),
+                candidates.getPictureUrl());
     }
 }

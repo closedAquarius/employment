@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "Interviewer")
-public class Interviewer {
+@Table(name = "candidates")
+public class Candidates {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,8 +31,13 @@ public class Interviewer {
     @Column(name = "birth", nullable = true)
     private Date birth;
 
+    // 状态 1.待定 2.通知面试 3.面试完毕
     @Column(name = "status", nullable = true)
-    private int status;
+    @Convert(converter = CandidateStatusConverter.class)
+    private CandidateStatus status;
+
+    @Column(name = "picture_url", nullable = true)
+    private String pictureUrl;
 
     public Long getId() {
         return id;
@@ -82,11 +87,19 @@ public class Interviewer {
         this.birth = birth;
     }
 
-    public int getStatus() {
+    public CandidateStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(CandidateStatus status) {
         this.status = status;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 }
