@@ -5,6 +5,8 @@ import { Button, VerticalLayout, HorizontalLayout } from '@vaadin/react-componen
 import ResumeForm from './ResumeForm';
 import { Notification } from '@vaadin/react-components/Notification.js';
 import withAuth from 'Frontend/components/withAuth';
+import Lottie from 'lottie-react';
+import rewriter from 'Frontend/assets/animations/resumeRewriter.json';
 
 export const config: ViewConfig = {
   menu: {
@@ -45,7 +47,8 @@ function NewCv() {
     if (resumeUrl) {
       const link = document.createElement('a');
       link.href = resumeUrl;
-      link.download = 'resume.pdf';
+      const fileName = resumeUrl.split('/').pop();
+      link.download = fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -56,20 +59,68 @@ function NewCv() {
     <VerticalLayout>
       <ResumeForm onGenerate={handleGenerateResume} />
 
+      {/* 加载动画 */}
+      {isLoading && (
+        <>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              zIndex: 999,
+            }}
+          ></div>
+          <div
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 1000,
+              textAlign: 'center',
+            }}
+          >
+            <Lottie
+              animationData={rewriter}
+              loop={true}
+              style={{ width: '300px', height: '300px' }}
+            />
+            <p style={{ marginTop: '10px', fontSize: '18px', color: '#333' }}>正在生成简历，请稍候...</p>
+          </div>
+        </>
+      )}
+
       {/* 简历操作按钮 */}
       {resumeUrl && (
-        <HorizontalLayout>
+        <HorizontalLayout style={{ gap: '10px' }}>
           <Button
-            theme="primary"
+            theme="primary success"
             onClick={() => window.open(resumeUrl, '_blank')}
             disabled={isLoading}
+            style={{
+                  padding: '10px 20px',
+                  fontSize: '16px',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                }}
           >
             浏览简历
           </Button>
           <Button
-            theme="primary"
+            theme="primary success"
             onClick={downloadResume}
             disabled={isLoading}
+            style={{
+                  padding: '10px 20px',
+                  fontSize: '16px',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                }}
           >
             下载简历
           </Button>

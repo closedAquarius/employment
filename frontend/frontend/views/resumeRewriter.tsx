@@ -45,12 +45,12 @@ const resumeRewriter = () => {
           style={{ width: '100%' }}
         >
           <Tab theme="icon-on-top">
-            <Icon icon="vaadin:cog" />
-            <span>完善简历</span>
-          </Tab>
-          <Tab theme="icon-on-top">
             <Icon icon="vaadin:user" />
             <span>简历生成</span>
+          </Tab>
+          <Tab theme="icon-on-top">
+            <Icon icon="vaadin:cog" />
+            <span>完善简历</span>
           </Tab>
         </Tabs>
       </div>
@@ -68,8 +68,8 @@ const resumeRewriter = () => {
           borderRadius: 'var(--lumo-border-radius-m)',
           boxShadow: 'var(--lumo-box-shadow-s)'
         }}>
-          {selectedTab === 0 && <ModifyCv />}
-          {selectedTab === 1 && <NewCv />}
+          {selectedTab === 0 && <NewCv />}
+          {selectedTab === 1 && <ModifyCv />}
         </div>
       </div>
     </div>

@@ -125,7 +125,8 @@ function ModifyCv() {
         responseType: 'blob',
       });
 
-      saveAs(response.data, 'modified_resume.pdf');
+      const fileName = pdfUrl.split('/').pop();
+      saveAs(response.data, fileName);
     } catch (error) {
       console.error('下载简历时出错：', error);
       alert('下载简历时出错，请检查网络或后端服务');
