@@ -103,7 +103,10 @@ Rag处理: Postgre Vector
 
 ```bash
 # 1. 克隆仓库
+java部分
 git clone https://github.com/xgwangdl/AI-Interview.git
+python部分
+git clone https://github.com/xgwangdl/AI-Interview-py.git
 
 # 2. 启动服务（需要Docker）
 cd ai-interviewer
