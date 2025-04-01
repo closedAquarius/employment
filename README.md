@@ -47,43 +47,54 @@ Rag处理: Postgre Vector
 数据库: Postgresql
 ```
 
+##🗣️ 项目迭代视频
+<tr>
+<td width="50%">
+<h5>第四次迭代<h5>
+<p>新增自动生成简历和外语口语会话练习</p>
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/52a52a13-e21c-4b89-98b4-da8c0ef91234" width="450" controls></video>
+</p>
+</td>
+<td width="50%">
+<h5>第三次迭代</h5>
+<p>新增程序题和人脸识别</p>
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/16e440a9-9c97-4cb1-a36e-639f7ad22bc4" width="450" controls></video>
+</p>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<h5>第二次迭代</h5>
+<p>增加口语面试</p>
+[观看视频](https://github.com/xgwangdl/AI-Interview/blob/master/docs/step2.mp4)
+</td>
+<td width="50%">
+<h5>第一次迭代</h5>
+<p>项目搭建</p>
+[观看视频](https://github.com/xgwangdl/AI-Interview/blob/master/docs/step1.mp4)
+</td>
+</tr>
+
 ## 🚩 项目展示
-1.笔试面试界面
-![image](https://github.com/user-attachments/assets/177a52f5-6413-4d8f-9071-1cf5ee6205a6)
-2.面试界面
+1.登录界面
+![image](https://github.com/user-attachments/assets/84f996dc-e97c-43a0-a39d-7f21f87d9824)
+2.程序和笔试面试界面
+![image](https://github.com/user-attachments/assets/0dc0f4af-2ac7-48f9-9f4a-40d071b26de3)
+![image](https://github.com/user-attachments/assets/292710b6-ee46-440b-a006-0a393d5522ce)
+
+3.面试界面
+人脸识别
+![image](https://github.com/user-attachments/assets/d5ba9d39-c33e-498f-912a-1e38809eb4f8)
 面试官提问
 ![image](https://github.com/user-attachments/assets/f77a2319-4274-498e-9478-b567bbf26fda)
 面试者回答
 ![image](https://github.com/user-attachments/assets/75cdd8a2-f7ba-4e9a-aa9c-8a298ec20133)
-3.面试结果界面
-![image](https://github.com/user-attachments/assets/3b984882-3edd-47a1-8215-1b34ed2d557e)
-
-##🗣️ 项目迭代视频
-<tr>
-<td width="50%">
-<h3>第一次迭代</h3>
-<p>项目搭建</p>
-[观看视频](https://github.com/xgwangdl/AI-Interview/blob/master/docs/step1.mp4)
-</td>
-<td width="50%">
-<h3>第二次迭代</h3>
-<p>增加口语面试</p>
-[观看视频](https://github.com/xgwangdl/AI-Interview/blob/master/docs/step2.mp4)
-</td>
-</tr>
-
-<tr>
-<td width="50%">
-<h3>第三次迭代</h3>
-<p>增加程序题和人脸识别</p>
-[观看视频](https://github.com/xgwangdl/AI-Interview/blob/master/docs/step3.mp4)
-</td>
-<td width="50%">
-<h3>第四次迭代</h3>
-<p>增加建立生成以及口语会话</p>
-[观看视频](https://github.com/xgwangdl/AI-Interview/blob/master/docs/step4.mp4)
-</td>
-</tr>
+4.简历生成界面
+![image](https://github.com/user-attachments/assets/e8e046ae-2661-42d2-bd04-4b608df61467)
+5.口语练习界面
+![image](https://github.com/user-attachments/assets/758037e4-5038-4516-ae1d-cd2187c9b936)
 
 
 ## ⚡ 快速开始
