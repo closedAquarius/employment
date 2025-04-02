@@ -45,6 +45,8 @@
 Rag处理: Postgre Vector
 
 数据库: Postgresql
+
+Python 的实时通信库: FastRTC
 ```
 
 ##🗣️ 项目迭代视频
