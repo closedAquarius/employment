@@ -142,3 +142,7 @@ Spring-Ai-Alibaba - Rapid generative AI application development
 
 ⭐ If this project helps you, please give us a star in the upper right corner!
 📢 Stay updated: Click Watch to get notifications for new features
+
+## 🌱 Growth  
+[![Star History Chart](https://api.star-history.com/svg?repos=xgwangdl/AI-Interview)](https://star-history.com/#xgwangdl/AI-Interview)  
+*Thanks for starring!*
