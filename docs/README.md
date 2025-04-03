@@ -143,3 +143,7 @@ Spring-Ai-Alibaba - 快速开发生成式 AI 应用
 
 ⭐ 如果这个项目对您有帮助，请点击右上角Star支持我们的开发！
 📢 关注更新：点击Watch按钮获取最新功能通知
+
+## 🌱 成长轨迹  
+[![Star History Chart](https://api.star-history.com/svg?repos=xgwangdl/AI-Interview)](https://star-history.com/#xgwangdl/AI-Interview)  
+*感谢每一位Star支持者！*
