@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
 @Theme(value = "customer-support-agent")
@@ -19,4 +21,8 @@ public class FrontendApplication implements AppShellConfigurator {
         SpringApplication.run(FrontendApplication.class, args);
     }
 
+    @Bean
+    public WebClient webClient() {
+        return WebClient.builder().build();
+    }
 }
