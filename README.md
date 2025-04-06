@@ -109,7 +109,8 @@ The Real-Time Communication Library for Python: FastRTC
 ![image](https://github.com/user-attachments/assets/758037e4-5038-4516-ae1d-cd2187c9b936)
 
 6.Simulating Distinctive Interview Experiences with Tech Leaders' Personas
-![image](https://github.com/user-attachments/assets/ed928647-81f1-47f4-aed7-f026b21528af)
+![image](https://github.com/user-attachments/assets/3a63560a-79b7-40e1-9a9f-e5e760172cd9)
+
 
 ##🚀 Quick Start
 Start your first AI interview in 5 minutes:
