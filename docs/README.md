@@ -52,6 +52,13 @@ Python 的实时通信库: FastRTC
 ##🗣️ 项目迭代视频
 <tr>
 <td width="50%">
+<h5>第五次迭代<h5>
+<p>多风格面试官人格矩阵</p>
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/c81d6f3f-51e4-4d88-bfab-11beb17ae662" width="450" controls></video>
+</p>
+</td>
+<td width="50%">
 <h5>第四次迭代<h5>
 <p>新增自动生成简历和外语口语会话练习</p>
 <p align="center">
@@ -97,7 +104,8 @@ Python 的实时通信库: FastRTC
 ![image](https://github.com/user-attachments/assets/e8e046ae-2661-42d2-bd04-4b608df61467)
 5.口语练习界面
 ![image](https://github.com/user-attachments/assets/758037e4-5038-4516-ae1d-cd2187c9b936)
-
+6.老板面试界面
+![image](https://github.com/user-attachments/assets/ed928647-81f1-47f4-aed7-f026b21528af)
 
 ## ⚡ 快速开始
 
