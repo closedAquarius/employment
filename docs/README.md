@@ -105,7 +105,8 @@ Python 的实时通信库: FastRTC
 5.口语练习界面
 ![image](https://github.com/user-attachments/assets/758037e4-5038-4516-ae1d-cd2187c9b936)
 6.老板面试界面
-![image](https://github.com/user-attachments/assets/ed928647-81f1-47f4-aed7-f026b21528af)
+![image](https://github.com/user-attachments/assets/012af5fb-3a13-40ce-b7dd-5878f759e44c)
+
 
 ## ⚡ 快速开始
 
