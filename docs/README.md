@@ -1,73 +1,72 @@
-# 🤖 AI Interviewer - 下一代智能面试官系统
+# 🤖 AI Interviewer - Next-Gen Intelligent Interview System
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://makeapullrequest.com)
 [![GitHub Stars](https://img.shields.io/github/stars/yourname/ai-interviewer?style=social)](https://github.com/yourname/ai-interviewer)
 
-**首个支持全流程技术面试的开源AI系统** | **RESTful API设计** | **代码实操评估** | **多模态行为分析**
+**The first open-source AI system supporting full-cycle technical interviews** | **RESTful API Design** | **Code Practice Evaluation** | **Multimodal Behavior Analysis**
 
 <p align="center">
   <img src="docs/demo.gif" alt="Demo" width="800">
 </p>
 
-## 🌟 为什么选择AI Interviewer？
+## 🌟 Why Choose AI Interviewer?
 
-### 开发者痛点
-- 😰 技术面试缺乏真实场景练习
-- 📚 传统刷题无法培养沟通表达能力
-- ⏳ 人工模拟面试成本高昂
+### Developer Pain Points
+- 😰 Lack of realistic technical interview practice
+- 📚 Traditional coding practice doesn't improve communication skills
+- ⏳ High cost of human mock interviews
 
-### 我们的优势
-✅ **轻量级架构** - 基于REST API，易于集成  
-✅ **深度技术评估** - AST解析+LLM代码评审双引擎  
-✅ **智能进化系统** - 每周自动更新面试题库  
-✅ **多模态分析** - 语音/代码/表情多维度评估
+### Our Advantages
+✅ **Lightweight Architecture** - REST API based, easy to integrate  
+✅ **In-Depth Technical Assessment** - AST parsing + LLM code review dual engine  
+✅ **Smart Evolution System** - Weekly automatic interview question updates  
+✅ **Multimodal Analysis** - Voice/code/expression multi-dimensional evaluation
 
-## 🚀 核心功能速览
+## 🚀 Core Features
 
-| 功能模块         | 技术亮点                          | 应用场景                   |
-|------------------|-----------------------------------|---------------------------|
-| 智能问答引擎     | GPT-4 + 本地知识库混合推理        | 技术概念考察               |
-| 代码实操评估     | JavaParser + 自定义规则引擎       | 算法题/系统设计题实战      |
-| 语音交互系统     | REST API + 异步任务队列           | 模拟技术沟通场景           |
-| 行为分析仪表盘   | OpenCV情绪识别 + 代码热力图       | 面试表现多维可视化         |
+| Feature Module      | Technical Highlights               | Use Case                     |
+|---------------------|------------------------------------|-----------------------------|
+| Smart Q&A Engine    | GPT-4 + Local Knowledge Base       | Technical concept evaluation|
+| Code Evaluation     | JavaParser + Custom Rule Engine    | Algorithm/system design     |
+| Voice Interaction   | REST API + Async Task Queue        | Technical communication     |
+| Behavior Dashboard  | OpenCV emotion recognition + Code heatmap | Interview performance visualization |
 
-## 🛠️ 核心技术栈
+## 🛠️ Tech Stack
 ```bash
-智能引擎: Spring Boot + QWen-Max
+AI Engine: Spring Boot + QWen-Max
 
-语音识别: Vosk + FFmpeg
+Speech Recognition: Vosk + FFmpeg
 
-语音合成: Sambert
+Speech Synthesis: Sambert
 
-代码分析: JavaParser + ANTLR
+Code Analysis: JavaParser + ANTLR
 
-Rag处理: Postgre Vector
+Rag Processing: Postgre Vector
 
-数据库: Postgresql
+Database: Postgresql
 
-Python 的实时通信库: FastRTC
+The Real-Time Communication Library for Python: FastRTC
 ```
-
-##🗣️ 项目迭代视频
+##🗣️ Project Iteration Videos
 <tr>
 <td width="50%">
-<h5>第五次迭代<h5>
-<p>多风格面试官人格矩阵</p>
+<h5>Iteration 5<h5>
+<p>Simulating Distinctive Interview Experiences with Tech Leaders' Personas</p>
 <p align="center">
   <video src="https://github.com/user-attachments/assets/c81d6f3f-51e4-4d88-bfab-11beb17ae662" width="450" controls></video>
 </p>
 </td>
 <td width="50%">
-<h5>第四次迭代<h5>
-<p>新增自动生成简历和外语口语会话练习</p>
+<h5>Iteration 4<h5>
+<p>Added resume generation and foreign language conversation practice</p>
 <p align="center">
   <video src="https://github.com/user-attachments/assets/52a52a13-e21c-4b89-98b4-da8c0ef91234" width="450" controls></video>
 </p>
 </td>
 <td width="50%">
-<h5>第三次迭代</h5>
-<p>新增程序题和人脸识别</p>
+<h5>Iteration 3</h5>
+<p>Added coding challenges and facial recognition</p>
 <p align="center">
   <video src="https://github.com/user-attachments/assets/16e440a9-9c97-4cb1-a36e-639f7ad22bc4" width="450" controls></video>
 </p>
@@ -75,84 +74,86 @@ Python 的实时通信库: FastRTC
 </tr>
 <tr>
 <td width="50%">
-<h5>第二次迭代</h5>
-<p>增加口语面试</p>
+<h5>Iteration 2</h5>
+<p>Added voice interview</p>
 [观看视频](https://github.com/xgwangdl/AI-Interview/blob/master/docs/step2.mp4)
 </td>
 <td width="50%">
-<h5>第一次迭代</h5>
-<p>项目搭建</p>
+<h5>Iteration 1</h5>
+<p>Project setup</p>
 [观看视频](https://github.com/xgwangdl/AI-Interview/blob/master/docs/step1.mp4)
 </td>
 </tr>
 
-## 🚩 项目展示
-1.登录界面
-![image](https://github.com/user-attachments/assets/84f996dc-e97c-43a0-a39d-7f21f87d9824)
-2.程序和笔试面试界面
-![image](https://github.com/user-attachments/assets/0dc0f4af-2ac7-48f9-9f4a-40d071b26de3)
-![image](https://github.com/user-attachments/assets/292710b6-ee46-440b-a006-0a393d5522ce)
+## 🚩 Project Showcase
 
-3.面试界面
-人脸识别
-![image](https://github.com/user-attachments/assets/d5ba9d39-c33e-498f-912a-1e38809eb4f8)
-面试官提问
-![image](https://github.com/user-attachments/assets/f77a2319-4274-498e-9478-b567bbf26fda)
-面试者回答
-![image](https://github.com/user-attachments/assets/75cdd8a2-f7ba-4e9a-aa9c-8a298ec20133)
-4.简历生成界面
-![image](https://github.com/user-attachments/assets/e8e046ae-2661-42d2-bd04-4b608df61467)
-5.口语练习界面
+1. Login Interface  
+![image](https://github.com/user-attachments/assets/84f996dc-e97c-43a0-a39d-7f21f87d9824)  
+
+2. Coding & Written Test Interface  
+![image](https://github.com/user-attachments/assets/0dc0f4af-2ac7-48f9-9f4a-40d071b26de3)  
+![image](https://github.com/user-attachments/assets/292710b6-ee46-440b-a006-0a393d5522ce)  
+
+3. Interview Interface  
+- Facial Recognition  
+![image](https://github.com/user-attachments/assets/d5ba9d39-c33e-498f-912a-1e38809eb4f8)  
+- Interviewer Questions  
+![image](https://github.com/user-attachments/assets/f77a2319-4274-498e-9478-b567bbf26fda)  
+- Candidate Response  
+![image](https://github.com/user-attachments/assets/75cdd8a2-f7ba-4e9a-aa9c-8a298ec20133)  
+
+4. Resume Generation Interface  
+![image](https://github.com/user-attachments/assets/e8e046ae-2661-42d2-bd04-4b608df61467)  
+
+5. Speaking Practice Interface  
 ![image](https://github.com/user-attachments/assets/758037e4-5038-4516-ae1d-cd2187c9b936)
-6.老板面试界面
-![image](https://github.com/user-attachments/assets/012af5fb-3a13-40ce-b7dd-5878f759e44c)
+
+6.Simulating Distinctive Interview Experiences with Tech Leaders' Personas
+![image](https://github.com/user-attachments/assets/3a63560a-79b7-40e1-9a9f-e5e760172cd9)
 
 
-## ⚡ 快速开始
-
-5分钟开启你的第一次AI面试：
-
+##🚀 Quick Start
+Start your first AI interview in 5 minutes:
 ```bash
-# 1. 克隆仓库
-java部分
+# 1. Clone repositories
+Java part:
 git clone https://github.com/xgwangdl/AI-Interview.git
-python部分
+Python part:
 git clone https://github.com/xgwangdl/AI-Interview-py.git
 
-# 2. 启动服务（需要Docker）
+# 2. Start services (requires Docker)
 cd ai-interviewer
 docker-compose up -d
 
-# 3. 访问API文档
+# 3. Access API docs
 open http://localhost:8080/swagger-ui.html
 
-# 项目名称
-作者: 大连光哥  
-技术栈: JAVA、AI 、React 
-邮箱: xgwangdl@163.com
+# Project Info
+Author: Dalian Guangge  
+Tech Stack: JAVA, AI, React 
+Email: xgwangdl@163.com
 ```
+📜 License
+Apache License 2.0 - You are free to:
 
-📜 开源协议
-本项目采用 Apache License 2.0，您可自由地：
+Modify and deploy privately ✅
 
-修改并私有化部署 ✅
+Use in commercial products ✅
 
-用于商业产品 ✅
+Maintain original copyright notice ⚠️
 
-保留原始版权声明 ⚠️
+🙌 Acknowledgments
+Special thanks to these excellent open-source projects:
 
-🙌 致谢
-特别感谢这些优秀开源项目：
+Spring Boot - Core REST API framework
 
-Spring Boot - REST API核心框架
+QWen-max - Alibaba's QWen large model
 
-QWen-max - 阿里千问大模型
+Spring-Ai-Alibaba - Rapid generative AI application development
 
-Spring-Ai-Alibaba - 快速开发生成式 AI 应用
+⭐ If this project helps you, please give us a star in the upper right corner!
+📢 Stay updated: Click Watch to get notifications for new features
 
-⭐ 如果这个项目对您有帮助，请点击右上角Star支持我们的开发！
-📢 关注更新：点击Watch按钮获取最新功能通知
-
-## 🌱 成长轨迹  
+## 🌱 Growth  
 [![Star History Chart](https://api.star-history.com/svg?repos=xgwangdl/AI-Interview)](https://star-history.com/#xgwangdl/AI-Interview)  
-*感谢每一位Star支持者！*
+*Thanks for starring!*
