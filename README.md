@@ -122,7 +122,7 @@ git clone https://github.com/xgwangdl/AI-Interview-py.git
 # 2. 启动服务
 docker暂时没做，需要本地运行。
 1.JDK17+
-2.使用的数据库postgreSql，但是需要注意使用带有支持向量库的postgreSql。数据库的DDL已经上传，数据目前没有上传
+2.使用的数据库postgreSql，但是需要注意使用带有支持向量库的postgreSql。数据库的DDL和数据已经上传
 3.申请阿里千问大模型，有免费额度可以使用
 3.另外那个Python项目（AI-Interview-py）也需要启动，里面包括人脸识别，Gemini和Azure Openai的服务启动
 4.口语练习需要谷歌的Gemini大模型申请虽然有免费额度但需要科学上网
