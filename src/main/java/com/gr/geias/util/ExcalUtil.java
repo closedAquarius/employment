@@ -55,7 +55,7 @@ public class ExcalUtil {
     }
 
     public Set<String> getExcludeColumn(String id,String studentNum,String name,String gender,String classGrade,String specialty,String college,String area,String unit,String way,String salary) {
-        Set<String> set = new HashSet<>();
+        Set<String> set = new HashSet<String>();
         if (id==null){
             set.add("informationId");
         }
@@ -93,7 +93,7 @@ public class ExcalUtil {
     }
 
     private List getdata(Integer num, PersonInfo personInfo) {
-        List<EmploymentInformationExcal> list = new ArrayList<>();
+        List<EmploymentInformationExcal> list = new ArrayList<EmploymentInformationExcal>();
         int indexNum = PageMath.pageNumtoRowIndex(num, 100);
         List<EmploymentInformation> employmentInformations =
                 employmentInformationMapper.queryList(null, indexNum,

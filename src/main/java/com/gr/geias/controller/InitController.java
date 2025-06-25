@@ -70,7 +70,7 @@ public class InitController {
     @RequestMapping("/getleve")
     public Map<String,Object> getLeve(@Param("levelId")Integer levelId,HttpServletRequest request){
 
-        Map<String,Object> map = new HashMap<>(3);
+        Map<String,Object> map = new HashMap<String,Object>(3);
         PersonInfo person = (PersonInfo)request.getSession().getAttribute("person");
         if (levelId!=null && levelId==0){
             if (person.getEnableStatus()==EnableStatusEnums.schoolmaster.getState()){
@@ -99,7 +99,7 @@ public class InitController {
 
 
     private Map<String, Object> getArea(Integer areaId) {
-        Map<String, Object> map = new HashMap<>(5);
+        Map<String, Object> map = new HashMap<String, Object>(5);
         if (areaId == 0) {
             List<Area> area = areaService.getArea(null);
             map.put("success", true);

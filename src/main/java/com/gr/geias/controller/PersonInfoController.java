@@ -45,7 +45,7 @@ public class PersonInfoController {
     public Map<String, Object> login(@RequestParam(value = "username") String username,
                                      @RequestParam(value = "password") String password,
                                      HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         if (username == null || username.equals("") || password == null || password.equals("")) {
             map.put("success", false);
             map.put("errMsg", "用户名或者密码为空");
@@ -70,7 +70,7 @@ public class PersonInfoController {
 
     @RequestMapping(value = "/getuser")
     public Map<String, Object> getUser(HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>(2);
+        Map<String, Object> map = new HashMap<String, Object>(2);
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
         map.put("success", true);
         map.put("person", person);
@@ -82,7 +82,7 @@ public class PersonInfoController {
                                           @RequestParam("personname") String personname,
                                           @RequestParam("username") String username,
                                           @RequestParam("password") String password) {
-        Map<String, Object> map = new HashMap<>(2);
+        Map<String, Object> map = new HashMap<String, Object>(2);
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
         person.setUsername(username);
         person.setPassword(password);
@@ -101,7 +101,7 @@ public class PersonInfoController {
     @RequestMapping("/addFase")
     public Map<String, Object> addFase(@RequestParam("file") String file,
                                        HttpServletRequest request) throws Exception {
-        Map<String, Object> map = new HashMap<>(2);
+        Map<String, Object> map = new HashMap<String, Object>(2);
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
         String[] split = file.split(",");
         Boolean aBoolean = personInfoService.addFace(person, split[1]);
@@ -118,7 +118,7 @@ public class PersonInfoController {
     @RequestMapping("/faseLogin")
     public Map<String, Object> faseLogin(@RequestParam("file") String file,
                                          HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>(2);
+        Map<String, Object> map = new HashMap<String, Object>(2);
         String[] split = file.split(",");
         PersonInfo personInfo = personInfoService.checkFace(split[1]);
         if (personInfo == null) {

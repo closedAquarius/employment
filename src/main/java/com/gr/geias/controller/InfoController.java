@@ -37,7 +37,7 @@ public class InfoController {
 
     @RequestMapping("/getcollege")
     public Map<String, Object> getCollege() {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         List<College> collegeList = collegeService.getCollege(null);
         map.put("success", true);
         map.put("collegeList", collegeList);
@@ -46,7 +46,7 @@ public class InfoController {
 
     @RequestMapping("/getspecialty")
     public Map<String, Object> getSpecialty(@RequestParam("collegeId") Integer collegeId) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         List<Specialty> specialty = specialtyService.getSpecialty(collegeId);
         map.put("success", true);
         map.put("specialtyList", specialty);
@@ -55,7 +55,7 @@ public class InfoController {
 
     @RequestMapping("/getclassgrade")
     public Map<String, Object> getClassGrade(@RequestParam("specialtyId") Integer specialtyId) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         List<ClassGrade> classGrade = classGradeService.getClassGrade(specialtyId, null);
         map.put("success", true);
         map.put("classGradeList", classGrade);
@@ -64,7 +64,7 @@ public class InfoController {
 
     @RequestMapping("/getinit")
     public Map<String, Object> getinit() {
-        Map<String, Object> map = new HashMap<>(4);
+        Map<String, Object> map = new HashMap<String, Object>(4);
         List<Area> area = areaService.getArea(null);
         map.put("areaList", area);
         List<EmploymentWay> employmentWay = employmentWayService.getEmploymentWay();
@@ -88,7 +88,7 @@ public class InfoController {
                                                  @RequestParam("employmentwayId") Integer employmentwayId,
                                                  @RequestParam("salary") String salary,
                                                  @RequestParam(value = "update", required = false) Boolean update) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         if(jiuye>1){
             //todo
         }

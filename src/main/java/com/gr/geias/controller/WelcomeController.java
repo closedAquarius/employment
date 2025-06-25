@@ -39,12 +39,13 @@ public class WelcomeController {
     @RequestMapping(value = "/getcountbyarea", method = RequestMethod.GET)
     public Map<String, Object> getCountByArea(HttpServletRequest request) {
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
-        Map<String, Object> ruslt = new HashMap<>(4);
+        Map<String, Object> ruslt = new HashMap<String, Object>(4);
         if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
             Integer integer = organizationNumService.geiAllCollegeSum();
             Integer count = employmentInformationService.getCount(null, person, null);
             ruslt.put("success", true);
             ruslt.put("yijiuye", count);
+            System.out.println(integer + " " + count);
             ruslt.put("weijiuye", integer - count);
             return ruslt;
         }
@@ -76,8 +77,8 @@ public class WelcomeController {
     @RequestMapping(value = "/getcountbysalary", method = RequestMethod.GET)
     public Map<String, Object> getCountBySalary(HttpServletRequest request) {
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
-        Map<String, Object> ruslt = new HashMap<>(4);
-        List<Integer> list = new ArrayList<>();
+        Map<String, Object> ruslt = new HashMap<String, Object>(4);
+        List<Integer> list = new ArrayList<Integer>();
         for (int i = 0; i < SALARY.length; i++) {
             Integer count = employmentInformationService.getCount(null, person, SALARY[i]);
             list.add(count);
@@ -90,14 +91,14 @@ public class WelcomeController {
     @RequestMapping(value = "/getcountorg", method = RequestMethod.GET)
     public Map<String, Object> getCountOrg(HttpServletRequest request) {
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
-        Map<String, Object> ruslt = new HashMap<>(4);
-        List<String> nameList = new ArrayList<>();
-        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> ruslt = new HashMap<String, Object>(4);
+        List<String> nameList = new ArrayList<String>();
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
             List<College> collegeList = collegeService.getCollege(null);
             for (int i = 0; i < collegeList.size(); i++) {
                 College college = collegeList.get(i);
-                Map<String, Object> map = new HashMap<>(2);
+                Map<String, Object> map = new HashMap<String, Object>(2);
                 EmploymentInformation employmentInformation = new EmploymentInformation();
                 employmentInformation.setCollege(college);
                 Integer count = employmentInformationService.getCount(employmentInformation, null, null);
@@ -111,7 +112,7 @@ public class WelcomeController {
             List<Specialty> specialtyList = specialtyService.getSpecialty(person.getCollegeId());
             for (int i = 0; i < specialtyList.size(); i++) {
                 Specialty specialty = specialtyList.get(i);
-                Map<String, Object> map = new HashMap<>(2);
+                Map<String, Object> map = new HashMap<String, Object>(2);
                 EmploymentInformation employmentInformation = new EmploymentInformation();
                 employmentInformation.setSpecialty(specialty);
                 Integer count = employmentInformationService.getCount(employmentInformation, null, null);
@@ -125,7 +126,7 @@ public class WelcomeController {
             List<ClassGrade> classGradeList = classGradeService.getClassGrade(null, person.getPersonId());
             for (int i = 0; i < classGradeList.size(); i++) {
                 ClassGrade classGrade = classGradeList.get(i);
-                Map<String, Object> map = new HashMap<>(2);
+                Map<String, Object> map = new HashMap<String, Object>(2);
                 EmploymentInformation employmentInformation = new EmploymentInformation();
                 employmentInformation.setClassGrade(classGrade);
                 Integer count = employmentInformationService.getCount(employmentInformation, null, null);
@@ -144,9 +145,9 @@ public class WelcomeController {
     @RequestMapping(value = "/getcountorgratio", method = RequestMethod.GET)
     public Map<String, Object> getCountOrgRatio(HttpServletRequest request) {
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
-        Map<String, Object> ruslt = new HashMap<>(4);
-        List<String> nameList = new ArrayList<>();
-        List<Float> list = new ArrayList<>();
+        Map<String, Object> ruslt = new HashMap<String, Object>(4);
+        List<String> nameList = new ArrayList<String>();
+        List<Float> list = new ArrayList<Float>();
 
         if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
             List<College> collegeList = collegeService.getCollege(null);

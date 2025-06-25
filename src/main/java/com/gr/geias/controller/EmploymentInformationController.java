@@ -66,7 +66,7 @@ public class EmploymentInformationController {
                           @RequestParam(value = "name", required = false) String name,
                           @RequestParam(value = "salary", required = false) String salary,
                           HttpServletRequest request) {
-        Map<String,Object> map = new HashMap<>(3);
+        Map<String,Object> map = new HashMap<String,Object>(3);
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
         EmploymentInformation employmentInformation = new EmploymentInformation();
         if (areaId != null) {
@@ -133,8 +133,8 @@ public class EmploymentInformationController {
     public Map<String,Object> getCountByArea(HttpServletRequest request){
         PersonInfo person = (PersonInfo)request.getSession().getAttribute("person");
         List<Area> areaList = areaService.getArea(null);
-        Map<String,Object> ruslt = new HashMap<>(2);
-        List<AreaCount> list = new ArrayList<>(36);
+        Map<String,Object> ruslt = new HashMap<String,Object>(2);
+        List<AreaCount> list = new ArrayList<AreaCount>(36);
         try{
             EmploymentInformation employmentInformation = new EmploymentInformation();
             for (int i = 0; i < areaList.size(); i++) {
@@ -165,8 +165,8 @@ public class EmploymentInformationController {
     public Map<String,Object> getCountByEmploymentWay(HttpServletRequest request){
         PersonInfo person = (PersonInfo)request.getSession().getAttribute("person");
         List<EmploymentWay> areaList = employmentWayService.getEmploymentWay();
-        Map<String,Object> ruslt = new HashMap<>(2);
-        List<AreaCount> list = new ArrayList<>(6);
+        Map<String,Object> ruslt = new HashMap<String,Object>(2);
+        List<AreaCount> list = new ArrayList<AreaCount>(6);
         try{
             EmploymentInformation employmentInformation = new EmploymentInformation();
             for (int i = 0; i < areaList.size(); i++) {
@@ -198,9 +198,9 @@ public class EmploymentInformationController {
     public Map<String,Object> getCountByUnitKind(HttpServletRequest request){
         PersonInfo person = (PersonInfo)request.getSession().getAttribute("person");
         List<UnitKind> areaList = unitKindService.getUnitKind();
-        Map<String,Object> ruslt = new HashMap<>(2);
-        List<AreaCount> list = new ArrayList<>(6);
-        List<String> stringList = new ArrayList<>(6);
+        Map<String,Object> ruslt = new HashMap<String,Object>(2);
+        List<AreaCount> list = new ArrayList<AreaCount>(6);
+        List<String> stringList = new ArrayList<String>(6);
         try{
             EmploymentInformation employmentInformation = new EmploymentInformation();
             for (int i = 0; i < areaList.size(); i++) {

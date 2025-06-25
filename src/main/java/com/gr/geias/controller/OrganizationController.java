@@ -46,9 +46,9 @@ public class OrganizationController {
      */
     @RequestMapping(value = "/getcollegelist", method = RequestMethod.GET)
     public Map<String, Object> getCollegeList(@RequestParam(value = "name", required = false) String name) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         List<College> college = collegeService.getCollege(null);
-        List<CollegeAndPerson> list = new ArrayList<>();
+        List<CollegeAndPerson> list = new ArrayList<CollegeAndPerson>();
         for (int i = 0; i < college.size(); i++) {
             CollegeAndPerson collegeAndPerson = new CollegeAndPerson();
             College college1 = college.get(i);
@@ -72,7 +72,7 @@ public class OrganizationController {
      */
     @RequestMapping(value = "/getcollegeadmin", method = RequestMethod.GET)
     public Map<String, Object> getCollegeAdmin(@RequestParam(value = "collegeadminId", required = false) Integer collegeadminId) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         List<PersonInfo> collegePerson = personInfoService.getCollegePerson();
         if (collegePerson.size() > 0) {
             map.put("success", true);
@@ -95,7 +95,7 @@ public class OrganizationController {
     @RequestMapping(value = "/addcollege", method = RequestMethod.GET)
     public Map<String, Object> addCollege(@RequestParam("collegeName") String collegeName,
                                           @RequestParam("personId") Integer personId) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         if (collegeName == null || collegeName.equals("") || personId == null || personId == 0) {
             map.put("success", false);
             map.put("errMsg", "输入信息错误");
@@ -126,7 +126,7 @@ public class OrganizationController {
     public Map<String, Object> updateCollege(@RequestParam(value = "collegeName", required = false) String collegeName,
                                              @RequestParam(value = "personId", required = false) Integer personId,
                                              @RequestParam("collegeId") Integer collegeId) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         if (personId == null || personId == 0) {
             personId = null;
         }
@@ -154,7 +154,7 @@ public class OrganizationController {
      */
     @RequestMapping(value = "/delcollege", method = RequestMethod.GET)
     public Map<String, Object> delCollege(@RequestParam("collegeId") Integer collegeId) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         if (collegeId != null && collegeId != null) {
             try {
                 collegeService.delCollege(collegeId);
@@ -178,7 +178,7 @@ public class OrganizationController {
      */
     @RequestMapping(value = "/getcollegeinit", method = RequestMethod.GET)
     public Map<String, Object> getCollegeinit(HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
         List<College> college = null;
         if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
@@ -207,7 +207,7 @@ public class OrganizationController {
     @RequestMapping(value = "/getspecialty", method = RequestMethod.GET)
     public Map<String, Object> getSpecialty(@RequestParam(value = "collegeId", required = false) Integer collegeId,
                                             HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
         List<Specialty> specialtyList = null;
         College college = null;
@@ -232,7 +232,7 @@ public class OrganizationController {
                 specialtyList = specialtyService.getSpecialty(college.getCollegeId());
             }
         }
-        List<SpecialtyAndCollege> list = new ArrayList<>();
+        List<SpecialtyAndCollege> list = new ArrayList<SpecialtyAndCollege>();
         for (int i = 0; i < specialtyList.size(); i++) {
             Specialty specialty = specialtyList.get(i);
             SpecialtyAndCollege specialtyAndCollege = new SpecialtyAndCollege();
@@ -258,7 +258,7 @@ public class OrganizationController {
     public Map<String, Object> addSpecialty(@RequestParam("specialtyName") String specialtyName,
                                             @RequestParam("collegeId") Integer collegeId,
                                             HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         if (specialtyName == null || specialtyName.equals("") || collegeId == null || collegeId == 0) {
             map.put("success", false);
             map.put("errMsg", "输入信息错误！");
@@ -296,7 +296,7 @@ public class OrganizationController {
     public Map<String, Object> updateSpecialty(@RequestParam("specialtyId") Integer specialtyId,
                                                @RequestParam(value = "specialtyName") String specialtyName,
                                                @RequestParam(value = "collegeId") Integer collegeId) {
-        Map<String, Object> map = new HashMap<>(2);
+        Map<String, Object> map = new HashMap<String, Object>(2);
         if (specialtyName == null || specialtyName.equals("") || collegeId == null || collegeId == 0) {
             map.put("success", false);
             map.put("errMsg", "输入信息错误");
@@ -324,7 +324,7 @@ public class OrganizationController {
      */
     @RequestMapping(value = "/delspecialty", method = RequestMethod.GET)
     public Map<String, Object> delSpecialty(@RequestParam("specialtyId") Integer specialtyId) {
-        Map<String, Object> map = new HashMap<>(2);
+        Map<String, Object> map = new HashMap<String, Object>(2);
         try {
             Boolean aBoolean = specialtyService.delSpecialty(specialtyId);
             if (aBoolean) {
@@ -348,7 +348,7 @@ public class OrganizationController {
      */
     @RequestMapping(value = "/getspecialtyinit", method = RequestMethod.GET)
     public Map<String, Object> getSpecialty(@RequestParam("collegeId") Integer collegeId) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         try {
             List<Specialty> specialty = specialtyService.getSpecialty(collegeId);
             map.put("success", true);
@@ -368,11 +368,11 @@ public class OrganizationController {
      */
     @RequestMapping(value = "/getclassgrade", method = RequestMethod.GET)
     public Map<String, Object> getClassGrade(@RequestParam("specialtyId") Integer specialtyId) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         try {
             Specialty specialtyById = specialtyService.getSpecialtyById(specialtyId);
             List<ClassGrade> classGradeList = classGradeService.getClassGrade(specialtyId, null);
-            List<ClassGradeAndSpecialty> list = new ArrayList<>();
+            List<ClassGradeAndSpecialty> list = new ArrayList<ClassGradeAndSpecialty>();
             for (int i = 0; i < classGradeList.size(); i++) {
                 ClassGradeAndSpecialty classGradeAndSpecialty = new ClassGradeAndSpecialty();
                 ClassGrade classGrade = classGradeList.get(i);
@@ -402,7 +402,7 @@ public class OrganizationController {
      */
     @RequestMapping(value = "/getpersoninit", method = RequestMethod.GET)
     public Map<String, Object> getpersoninit(@RequestParam("collegeId") Integer collegeId, HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo penson = (PersonInfo) request.getSession().getAttribute("person");
         List<PersonInfo> personByCollegeId = null;
         if (penson.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
@@ -438,7 +438,7 @@ public class OrganizationController {
                                              @RequestParam("collegeId") Integer collegeId,
                                              @RequestParam("specialtyId") Integer specialtyId,
                                              @RequestParam("sum") Integer sum) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         if (personId == null || classGradeName == null || collegeId == null || specialtyId == null || sum == null) {
             map.put("success", false);
             map.put("errMsg", "信息输入错误");
@@ -487,7 +487,7 @@ public class OrganizationController {
                                                 @RequestParam("collegeId") Integer collegeId,
                                                 @RequestParam("specialtyId") Integer specialtyId,
                                                 @RequestParam("sum") Integer sum) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         if (classId == null || personId == null || classGradeName == null || collegeId == null
                 || specialtyId == null || sum == null) {
             map.put("success", false);
@@ -530,7 +530,7 @@ public class OrganizationController {
     @RequestMapping(value = "/delclassgrade", method = RequestMethod.GET)
     public Map<String, Object> delClassGrade(@RequestParam("classId") Integer classId,
                                              @RequestParam("specialtyId") Integer specialtyId) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         try {
             Boolean aBoolean = classGradeService.delClassGrade(classId);
             Specialty specialtyById = specialtyService.getSpecialtyById(specialtyId);
@@ -560,7 +560,7 @@ public class OrganizationController {
     public Map<String, Object> getperson_0(@RequestParam(value = "collegeId", required = false) Integer collegeId,
                                            HttpServletRequest request) {
 
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
         List<PersonInfo> personInfoList = null;
         College college = null;
@@ -615,7 +615,7 @@ public class OrganizationController {
                                            @RequestParam("collegeId") Integer collegeId,
                                            @RequestParam("password") String password,
                                            @RequestParam("username") String username) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo personInfo = new PersonInfo();
         personInfo.setCollegeId(collegeId);
         personInfo.setEnableStatus(0);
@@ -647,7 +647,7 @@ public class OrganizationController {
      */
     @RequestMapping("/getpersonById")
     public Map<String, Object> getPersonInit(@RequestParam("personId") Integer personId, HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo person = personInfoService.getPersonById(personId);
         map.put("success", true);
         map.put("person", person);
@@ -670,7 +670,7 @@ public class OrganizationController {
                                               @RequestParam("collegeId") Integer collegeId,
                                               @RequestParam("username") String username,
                                               @RequestParam("password") String password) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo personInfo = new PersonInfo();
         List<ClassGrade> classGrade = classGradeService.getClassGrade(null, personId);
         PersonInfo personById = personInfoService.getPersonById(personId);
@@ -713,7 +713,7 @@ public class OrganizationController {
     @RequestMapping("/delperson_0")
     public Map<String, Object> delPerson(@RequestParam("personId") Integer personId,
                                          HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         try {
             Boolean aBoolean = personInfoService.delPerson(personId);
             if (aBoolean) {
@@ -736,9 +736,9 @@ public class OrganizationController {
      */
     @RequestMapping("/getperson_1")
     public Map<String, Object> getperson_1() {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         List<PersonInfo> personInfoList = personInfoService.getPerson1();
-        List<CollegeAndPerson> list = new ArrayList<>();
+        List<CollegeAndPerson> list = new ArrayList<CollegeAndPerson>();
         for (int i = 0; i < personInfoList.size(); i++) {
             CollegeAndPerson collegeAndPerson = new CollegeAndPerson();
             PersonInfo personInfo = personInfoList.get(i);
@@ -768,7 +768,7 @@ public class OrganizationController {
     public Map<String, Object> addPerson_1(@RequestParam("personName") String personName,
                                            @RequestParam("password") String password,
                                            @RequestParam("username") String username) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo personInfo = new PersonInfo();
         personInfo.setCollegeId(null);
         personInfo.setEnableStatus(1);
@@ -806,7 +806,7 @@ public class OrganizationController {
                                               @RequestParam("personname") String personname,
                                               @RequestParam("username") String username,
                                               @RequestParam("password") String password) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo personInfo = new PersonInfo();
         personInfo.setPersonId(personId);
         personInfo.setUsername(username);
@@ -839,7 +839,7 @@ public class OrganizationController {
     @RequestMapping("/delperson_1")
     public Map<String, Object> delPerson_1(@RequestParam("personId") Integer personId,
                                            HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>(3);
+        Map<String, Object> map = new HashMap<String, Object>(3);
         try {
             Boolean aBoolean = personInfoService.delPerson(personId);
             if (aBoolean) {
@@ -862,23 +862,23 @@ public class OrganizationController {
     @RequestMapping("/getorganizationinfo")
     public Map<String,Object> getOrganizationInfo(){
         List<College> collegeList = collegeService.getCollege(null);
-        Map<String,Object> school = new HashMap<>(4);
+        Map<String,Object> school = new HashMap<String, Object>(4);
         school.put("name", "XXX大学");
         school.put("symbolSize", 100);
         school.put("draggable", true);
         school.put("value", 27);
         school.put("x", 0);
         school.put("y", 0);
-        Map<String,Object> map = new HashMap<>(5);
-        List<Map<String,Object>> data = new ArrayList<>();
-        List<String> nameList = new ArrayList<>();
-        List<Map<String,Object>> links = new ArrayList<>();
-        List<Map<String,Object>> categories = new ArrayList<>();
+        Map<String,Object> map = new HashMap<String, Object>(5);
+        List<Map<String,Object>> data = new ArrayList<Map<String,Object>>();
+        List<String> nameList = new ArrayList<String>();
+        List<Map<String,Object>> links = new ArrayList<Map<String,Object>>();
+        List<Map<String,Object>> categories = new ArrayList<Map<String,Object>>();
         data.add(school);
         for (int i = 0; i < collegeList.size(); i++) {
-            Map<String,Object> collegeOrganization = new HashMap<>(7);
-            Map<String,Object> collegeLinks = new HashMap<>(2);
-            Map<String,Object> collegeCategories = new HashMap<>(1);
+            Map<String,Object> collegeOrganization = new HashMap<String,Object>(7);
+            Map<String,Object> collegeLinks = new HashMap<String,Object>(2);
+            Map<String,Object> collegeCategories = new HashMap<String,Object>(1);
             College college = collegeList.get(i);
             collegeOrganization.put("name", college.getCollegeName());
             collegeOrganization.put("symbolSize", 60);
@@ -897,8 +897,8 @@ public class OrganizationController {
             List<Specialty> specialtyList = specialtyService.getSpecialty(college.getCollegeId());
             for (int j = 0; j <specialtyList.size(); j++) {
                 Specialty specialty = specialtyList.get(j);
-                Map<String,Object> specialtyOrganization = new HashMap<>(5);
-                Map<String,Object> specialtyLinks = new HashMap<>(2);
+                Map<String,Object> specialtyOrganization = new HashMap<String,Object>(5);
+                Map<String,Object> specialtyLinks = new HashMap<String,Object>(2);
                 specialtyOrganization.put("name", specialty.getSpecialtyName());
                 specialtyOrganization.put("symbolSize", 30);
                 specialtyOrganization.put("draggable", true);
