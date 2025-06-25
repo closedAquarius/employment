@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : mysql
+ Source Server         : 软件工程
  Source Server Type    : MySQL
- Source Server Version : 50726
+ Source Server Version : 80037 (8.0.37)
  Source Host           : localhost:3306
- Source Schema         : GraduateEmploymentInfo
+ Source Schema         : graduateemploymentinfo
 
  Target Server Type    : MySQL
- Target Server Version : 50726
+ Target Server Version : 80037 (8.0.37)
  File Encoding         : 65001
 
- Date: 26/03/2020 13:21:38
+ Date: 25/06/2025 22:23:03
 */
 
 SET NAMES utf8mb4;
@@ -21,20 +21,19 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Table structure for tb_area
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_area`;
-CREATE TABLE `tb_area` (
-  `area_id` int(10) NOT NULL AUTO_INCREMENT,
-  `area_name` varchar(100) NOT NULL,
-  `parent_id` int(10) DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`area_id`),
-  KEY `tb_area_parent` (`parent_id`),
-  CONSTRAINT `tb_area_parent` FOREIGN KEY (`parent_id`) REFERENCES `tb_area` (`area_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8;
+CREATE TABLE `tb_area`  (
+  `area_id` int NOT NULL AUTO_INCREMENT,
+  `area_name` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `parent_id` int NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`area_id`) USING BTREE,
+  INDEX `tb_area_parent`(`parent_id` ASC) USING BTREE,
+  CONSTRAINT `tb_area_parent` FOREIGN KEY (`parent_id`) REFERENCES `tb_area` (`area_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 68 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_area
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_area` VALUES (4, '四川', NULL, '2020-03-06 13:39:59');
 INSERT INTO `tb_area` VALUES (5, '重庆', NULL, '2020-03-06 13:40:14');
 INSERT INTO `tb_area` VALUES (6, '成都', 4, '2020-03-06 13:46:34');
@@ -98,174 +97,193 @@ INSERT INTO `tb_area` VALUES (64, '天津市', NULL, '2020-03-06 23:50:49');
 INSERT INTO `tb_area` VALUES (65, '深圳', 10, '2020-03-06 23:52:25');
 INSERT INTO `tb_area` VALUES (66, '香港', NULL, '2020-03-07 00:00:09');
 INSERT INTO `tb_area` VALUES (67, '澳门', NULL, '2020-03-07 00:00:16');
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_class_grade
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_class_grade`;
-CREATE TABLE `tb_class_grade` (
-  `class_id` int(10) NOT NULL AUTO_INCREMENT,
-  `class_name` varchar(100) NOT NULL,
-  `specialty_id` int(10) DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  `admin_id` int(10) DEFAULT NULL,
-  PRIMARY KEY (`class_id`),
-  KEY `tb_class_grade_tb_specialty` (`specialty_id`),
-  KEY `tb_class_grade_tb_person_info` (`admin_id`),
-  CONSTRAINT `tb_class_grade_tb_person_info` FOREIGN KEY (`admin_id`) REFERENCES `tb_person_info` (`person_id`),
-  CONSTRAINT `tb_class_grade_tb_specialty` FOREIGN KEY (`specialty_id`) REFERENCES `tb_specialty` (`specialty_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+CREATE TABLE `tb_class_grade`  (
+  `class_id` int NOT NULL AUTO_INCREMENT,
+  `class_name` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `specialty_id` int NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  `admin_id` int NULL DEFAULT NULL,
+  PRIMARY KEY (`class_id`) USING BTREE,
+  INDEX `tb_class_grade_tb_specialty`(`specialty_id` ASC) USING BTREE,
+  INDEX `tb_class_grade_tb_person_info`(`admin_id` ASC) USING BTREE,
+  CONSTRAINT `tb_class_grade_tb_person_info` FOREIGN KEY (`admin_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `tb_class_grade_tb_specialty` FOREIGN KEY (`specialty_id`) REFERENCES `tb_specialty` (`specialty_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Records of tb_class_grade
+-- ----------------------------
+INSERT INTO `tb_class_grade` VALUES (1, '软件工程2016级1班', 1, '2025-06-25 22:22:23', 3);
+INSERT INTO `tb_class_grade` VALUES (2, '信息管理2016级1班', 2, '2025-06-25 22:22:23', 3);
 
 -- ----------------------------
 -- Table structure for tb_college
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_college`;
-CREATE TABLE `tb_college` (
-  `college_id` int(10) NOT NULL AUTO_INCREMENT,
-  `college_name` varchar(100) NOT NULL,
-  `create_time` datetime DEFAULT NULL,
-  `admin_id` int(10) DEFAULT NULL,
-  PRIMARY KEY (`college_id`),
-  KEY `tb_college_tb_person_info` (`admin_id`),
-  CONSTRAINT `tb_college_tb_person_info` FOREIGN KEY (`admin_id`) REFERENCES `tb_person_info` (`person_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+CREATE TABLE `tb_college`  (
+  `college_id` int NOT NULL AUTO_INCREMENT,
+  `college_name` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  `admin_id` int NULL DEFAULT NULL,
+  PRIMARY KEY (`college_id`) USING BTREE,
+  INDEX `tb_college_tb_person_info`(`admin_id` ASC) USING BTREE,
+  CONSTRAINT `tb_college_tb_person_info` FOREIGN KEY (`admin_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Records of tb_college
+-- ----------------------------
+INSERT INTO `tb_college` VALUES (1, '计算机学院', '2025-06-25 22:22:23', 3);
+INSERT INTO `tb_college` VALUES (2, '管理学院', '2025-06-25 22:22:23', 3);
 
 -- ----------------------------
 -- Table structure for tb_employment_information
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_employment_information`;
-CREATE TABLE `tb_employment_information` (
-  `information_id` int(10) NOT NULL AUTO_INCREMENT,
-  `student_num` int(10) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `class_id` int(10) NOT NULL,
-  `area_id` int(10) NOT NULL,
-  `unit_id` int(10) NOT NULL,
-  `salary` varchar(10) NOT NULL,
-  `employment_way_id` int(10) NOT NULL,
-  `msg` varchar(10000) DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  `gender` int(1) NOT NULL,
-  `college_id` int(10) NOT NULL,
-  `specialty_id` int(10) NOT NULL,
-  PRIMARY KEY (`information_id`),
-  UNIQUE KEY `student_num_qurey` (`student_num`) USING BTREE,
-  KEY `tb_employment_information_tb_class_grade` (`class_id`),
-  KEY `tb_employment_information_tb_area` (`area_id`),
-  KEY `tb_employment_information_tb_unit_kind` (`unit_id`),
-  KEY `tb_employment_information_tb_employment_way` (`employment_way_id`),
-  KEY `tb_employment_information_tb_college` (`college_id`) USING BTREE,
-  KEY `tb_employment_information_tb_specialty` (`specialty_id`),
-  CONSTRAINT `tb_employment_information_tb_area` FOREIGN KEY (`area_id`) REFERENCES `tb_area` (`area_id`),
-  CONSTRAINT `tb_employment_information_tb_class_grade` FOREIGN KEY (`class_id`) REFERENCES `tb_class_grade` (`class_id`),
-  CONSTRAINT `tb_employment_information_tb_college` FOREIGN KEY (`college_id`) REFERENCES `tb_college` (`college_id`),
-  CONSTRAINT `tb_employment_information_tb_employment_way` FOREIGN KEY (`employment_way_id`) REFERENCES `tb_employment_way` (`employment_way_id`),
-  CONSTRAINT `tb_employment_information_tb_specialty` FOREIGN KEY (`specialty_id`) REFERENCES `tb_specialty` (`specialty_id`),
-  CONSTRAINT `tb_employment_information_tb_unit_kind` FOREIGN KEY (`unit_id`) REFERENCES `tb_unit_kind` (`unit_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1033 DEFAULT CHARSET=utf8;
+CREATE TABLE `tb_employment_information`  (
+  `information_id` int NOT NULL AUTO_INCREMENT,
+  `student_num` int NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `class_id` int NOT NULL,
+  `area_id` int NOT NULL,
+  `unit_id` int NOT NULL,
+  `salary` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `employment_way_id` int NOT NULL,
+  `msg` varchar(10000) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  `gender` int NOT NULL,
+  `college_id` int NOT NULL,
+  `specialty_id` int NOT NULL,
+  PRIMARY KEY (`information_id`) USING BTREE,
+  UNIQUE INDEX `student_num_qurey`(`student_num` ASC) USING BTREE,
+  INDEX `tb_employment_information_tb_class_grade`(`class_id` ASC) USING BTREE,
+  INDEX `tb_employment_information_tb_area`(`area_id` ASC) USING BTREE,
+  INDEX `tb_employment_information_tb_unit_kind`(`unit_id` ASC) USING BTREE,
+  INDEX `tb_employment_information_tb_employment_way`(`employment_way_id` ASC) USING BTREE,
+  INDEX `tb_employment_information_tb_college`(`college_id` ASC) USING BTREE,
+  INDEX `tb_employment_information_tb_specialty`(`specialty_id` ASC) USING BTREE,
+  CONSTRAINT `tb_employment_information_tb_area` FOREIGN KEY (`area_id`) REFERENCES `tb_area` (`area_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `tb_employment_information_tb_class_grade` FOREIGN KEY (`class_id`) REFERENCES `tb_class_grade` (`class_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `tb_employment_information_tb_college` FOREIGN KEY (`college_id`) REFERENCES `tb_college` (`college_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `tb_employment_information_tb_employment_way` FOREIGN KEY (`employment_way_id`) REFERENCES `tb_employment_way` (`employment_way_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `tb_employment_information_tb_specialty` FOREIGN KEY (`specialty_id`) REFERENCES `tb_specialty` (`specialty_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `tb_employment_information_tb_unit_kind` FOREIGN KEY (`unit_id`) REFERENCES `tb_unit_kind` (`unit_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 1036 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Records of tb_employment_information
+-- ----------------------------
+INSERT INTO `tb_employment_information` VALUES (1033, 20200101, '张三', 1, 6, 1, '8000', 2, '工作地点在成都', '2025-06-25 22:22:23', 1, 1, 1);
+INSERT INTO `tb_employment_information` VALUES (1034, 20200102, '李四', 1, 9, 2, '7000', 1, '河北老家工作', '2025-06-25 22:22:23', 0, 1, 1);
+INSERT INTO `tb_employment_information` VALUES (1035, 20200103, '王五', 2, 11, 3, '9000', 3, '公务员编制', '2025-06-25 22:22:23', 1, 2, 2);
 
 -- ----------------------------
 -- Table structure for tb_employment_way
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_employment_way`;
-CREATE TABLE `tb_employment_way` (
-  `employment_way_id` int(10) NOT NULL AUTO_INCREMENT,
-  `vay_name` varchar(100) NOT NULL,
-  `create_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`employment_way_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+CREATE TABLE `tb_employment_way`  (
+  `employment_way_id` int NOT NULL AUTO_INCREMENT,
+  `vay_name` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`employment_way_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_employment_way
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_employment_way` VALUES (1, '学校双选会', '2020-03-06 13:57:09');
 INSERT INTO `tb_employment_way` VALUES (2, '互联网招聘平台', '2020-03-06 13:57:27');
 INSERT INTO `tb_employment_way` VALUES (3, '个人寻找', '2020-03-06 13:57:45');
 INSERT INTO `tb_employment_way` VALUES (4, '朋友推荐', '2020-03-06 13:57:59');
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_organization_num
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_organization_num`;
-CREATE TABLE `tb_organization_num` (
-  `num_id` int(10) NOT NULL AUTO_INCREMENT,
-  `sum` int(10) NOT NULL,
-  `class_id` int(10) DEFAULT NULL,
-  `college_id` int(10) DEFAULT NULL,
-  `specialty_id` int(10) DEFAULT NULL,
-  PRIMARY KEY (`num_id`),
-  KEY `tb_organization_num_tb_class_grade` (`class_id`),
-  KEY `tb_organization_num_tb_college` (`college_id`),
-  KEY `tb_organization_num_tb_specialty` (`specialty_id`),
-  CONSTRAINT `tb_organization_num_tb_class_grade` FOREIGN KEY (`class_id`) REFERENCES `tb_class_grade` (`class_id`),
-  CONSTRAINT `tb_organization_num_tb_college` FOREIGN KEY (`college_id`) REFERENCES `tb_college` (`college_id`),
-  CONSTRAINT `tb_organization_num_tb_specialty` FOREIGN KEY (`specialty_id`) REFERENCES `tb_specialty` (`specialty_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8;
+CREATE TABLE `tb_organization_num`  (
+  `num_id` int NOT NULL AUTO_INCREMENT,
+  `sum` int NOT NULL,
+  `class_id` int NULL DEFAULT NULL,
+  `college_id` int NULL DEFAULT NULL,
+  `specialty_id` int NULL DEFAULT NULL,
+  PRIMARY KEY (`num_id`) USING BTREE,
+  INDEX `tb_organization_num_tb_class_grade`(`class_id` ASC) USING BTREE,
+  INDEX `tb_organization_num_tb_college`(`college_id` ASC) USING BTREE,
+  INDEX `tb_organization_num_tb_specialty`(`specialty_id` ASC) USING BTREE,
+  CONSTRAINT `tb_organization_num_tb_class_grade` FOREIGN KEY (`class_id`) REFERENCES `tb_class_grade` (`class_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `tb_organization_num_tb_college` FOREIGN KEY (`college_id`) REFERENCES `tb_college` (`college_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `tb_organization_num_tb_specialty` FOREIGN KEY (`specialty_id`) REFERENCES `tb_specialty` (`specialty_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 72 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Records of tb_organization_num
+-- ----------------------------
+INSERT INTO `tb_organization_num` VALUES (1, 40, 1, 1, 1);
+INSERT INTO `tb_organization_num` VALUES (2, 35, 2, 2, 2);
 
 -- ----------------------------
 -- Table structure for tb_person_info
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_person_info`;
-CREATE TABLE `tb_person_info` (
-  `person_id` int(10) NOT NULL AUTO_INCREMENT,
-  `enable_Status` int(2) DEFAULT '0',
-  `person_name` varchar(100) NOT NULL,
-  `create_time` datetime DEFAULT NULL,
-  `password` varchar(20) NOT NULL,
-  `username` varchar(20) NOT NULL,
-  `college_id` int(10) DEFAULT NULL,
-  PRIMARY KEY (`person_id`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+CREATE TABLE `tb_person_info`  (
+  `person_id` int NOT NULL AUTO_INCREMENT,
+  `enable_Status` int NULL DEFAULT 0,
+  `person_name` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  `password` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `username` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `college_id` int NULL DEFAULT NULL,
+  PRIMARY KEY (`person_id`) USING BTREE,
+  UNIQUE INDEX `username`(`username` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_person_info
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_person_info` VALUES (3, 2, '超级管理员', '2020-03-06 19:27:50', 'admin1', 'admin', NULL);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_specialty
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_specialty`;
-CREATE TABLE `tb_specialty` (
-  `specialty_id` int(10) NOT NULL AUTO_INCREMENT,
-  `specialty_name` varchar(100) NOT NULL,
-  `college_id` int(10) NOT NULL,
-  `create_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`specialty_id`),
-  KEY `tb_specialty_tb_college` (`college_id`),
-  CONSTRAINT `tb_specialty_tb_college` FOREIGN KEY (`college_id`) REFERENCES `tb_college` (`college_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+CREATE TABLE `tb_specialty`  (
+  `specialty_id` int NOT NULL AUTO_INCREMENT,
+  `specialty_name` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `college_id` int NOT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`specialty_id`) USING BTREE,
+  INDEX `tb_specialty_tb_college`(`college_id` ASC) USING BTREE,
+  CONSTRAINT `tb_specialty_tb_college` FOREIGN KEY (`college_id`) REFERENCES `tb_college` (`college_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 40 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Records of tb_specialty
+-- ----------------------------
+INSERT INTO `tb_specialty` VALUES (1, '软件工程', 1, '2025-06-25 22:22:23');
+INSERT INTO `tb_specialty` VALUES (2, '信息管理', 2, '2025-06-25 22:22:23');
 
 -- ----------------------------
 -- Table structure for tb_unit_kind
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_unit_kind`;
-CREATE TABLE `tb_unit_kind` (
-  `unit_id` int(10) NOT NULL AUTO_INCREMENT,
-  `unit_name` varchar(100) NOT NULL,
-  `create_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`unit_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+CREATE TABLE `tb_unit_kind`  (
+  `unit_id` int NOT NULL AUTO_INCREMENT,
+  `unit_name` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `create_time` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`unit_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_unit_kind
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_unit_kind` VALUES (1, '国企', '2020-03-06 13:56:23');
 INSERT INTO `tb_unit_kind` VALUES (2, '私企', '2020-03-06 13:56:29');
 INSERT INTO `tb_unit_kind` VALUES (3, '公务员', '2020-03-06 13:56:36');
 INSERT INTO `tb_unit_kind` VALUES (4, '事业单位', '2020-03-06 13:56:43');
-COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
