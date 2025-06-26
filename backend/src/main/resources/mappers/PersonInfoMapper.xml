@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gr.geias.repository.PersonInfoRepository">
+
+    <!-- 更新用户所属学院 -->
+    <update id="updatePerseonofCollege">
+        update tb_person_info
+        set college_id = #{personInfo.collegeId}
+        where person_id = #{personInfo.personId}
+    </update>
+
+    <!-- 更新人员信息 -->
+    <update id="updatePerson">
+        update tb_person_info
+        <set>
+            <if test="person.personName != null">
+                person_name = #{person.personName},
+            </if>
+            <if test="person.username != null">
+                username = #{person.username},
+            </if>
+            <if test="person.password != null">
+                password = #{person.password},
+            </if>
+            <if test="person.enableStatus != null">
+                enable_Status = #{person.enableStatus},
+            </if>
+            <if test="person.collegeId != null">
+                college_id = #{person.collegeId},
+            </if>
+            <if test="person.faceToken != null">
+                face_token = #{person.faceToken},
+            </if>
+        </set>
+        where person_id = #{person.personId}
+    </update>
+</mapper> 
