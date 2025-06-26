@@ -3,6 +3,7 @@ package com.gr.geias.model;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 专业信息实体类
@@ -26,5 +27,9 @@ public class Specialty implements Serializable {
      * 所属学院ID
      */
     private Integer collegeId;
-
-} 
+    
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+}

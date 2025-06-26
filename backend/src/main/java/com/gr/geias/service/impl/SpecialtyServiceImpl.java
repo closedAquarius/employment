@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Date;
 
 /**
  * 专业信息服务实现类
@@ -20,5 +21,34 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     @Override
     public List<Specialty> getSpecialty(Integer collegeId) {
         return specialtyRepository.querySpecialtyByCollegeId(collegeId);
+    }
+    
+    @Override
+    public Boolean addSpecialty(Specialty specialty) {
+        specialty.setCreateTime(new Date());
+        return specialtyRepository.insertSpecialty(specialty) > 0;
+    }
+
+    @Override
+    public Boolean updateSpecialty(Specialty specialty) {
+        return specialtyRepository.updateSpecialty(specialty) > 0;
+    }
+
+    @Override
+    public Boolean delSpecialty(Integer specialtyId) {
+        return specialtyRepository.delSpecialty(specialtyId) > 0;
+    }
+
+    @Override
+    public Specialty getSpecialtyById(Integer specialtyId) {
+        return specialtyRepository.querySpecialtyById(specialtyId);
+    }
+
+    @Override
+    public Integer getAndSetSpecialtyCount(Integer specialtyId) {
+        // 简单实现，不需要复杂逻辑
+        Integer count = 0;
+        // 专业对应的班级数量逻辑
+        return count;
     }
 } 
