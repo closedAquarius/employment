@@ -169,7 +169,7 @@ public class OrganizationController {
     @RequestMapping(value = "/getcollegeinit", method = RequestMethod.GET)
     public Map<String, Object> getCollegeinit(@RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<String, Object>(3);
-        Claims claims = JwtUtil.parseToken(token);
+        Claims claims = JwtUtil.parseAccessToken(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         List<College> college = null;
@@ -201,7 +201,7 @@ public class OrganizationController {
         Map<String, Object> map = new HashMap<>(3);
 
         try {
-            Claims claims = JwtUtil.parseToken(token);
+            Claims claims = JwtUtil.parseAccessToken(token);
             Integer userId = (Integer) claims.get("userId");
             PersonInfo person = personInfoService.getPersonById(userId);
 
@@ -279,7 +279,7 @@ public class OrganizationController {
             map.put("errMsg", "输入信息错误！");
             return map;
         }
-        Claims claims = JwtUtil.parseToken(token);
+        Claims claims = JwtUtil.parseAccessToken(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         Specialty specialty = new Specialty();
@@ -420,7 +420,7 @@ public class OrganizationController {
     @RequestMapping(value = "/getpersoninit", method = RequestMethod.GET)
     public Map<String, Object> getpersoninit(@RequestParam("collegeId") Integer collegeId, @RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<String, Object>(3);
-        Claims claims = JwtUtil.parseToken(token);
+        Claims claims = JwtUtil.parseAccessToken(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         List<PersonInfo> personByCollegeId = null;
@@ -580,7 +580,7 @@ public class OrganizationController {
 
         Map<String, Object> map = new HashMap<>(3);
         try {
-            Claims claims = JwtUtil.parseToken(token);
+            Claims claims = JwtUtil.parseAccessToken(token);
             Integer userId = (Integer) claims.get("userId");
             PersonInfo person = personInfoService.getPersonById(userId);
 

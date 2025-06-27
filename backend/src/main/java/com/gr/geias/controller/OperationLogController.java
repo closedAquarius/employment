@@ -51,7 +51,7 @@ public class OperationLogController {
         Map<String, Object> result = new HashMap<>();
         try {
             // 获取当前用户信息
-            Claims claims = JwtUtil.parseToken(token);
+            Claims claims = JwtUtil.parseAccessToken(token);
             Integer userId = (Integer) claims.get("userId");
             PersonInfo person = personInfoService.getPersonById(userId);
             if (person == null) {

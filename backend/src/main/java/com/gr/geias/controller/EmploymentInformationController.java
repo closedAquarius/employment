@@ -58,7 +58,7 @@ public class EmploymentInformationController {
                           @RequestParam(value = "salary", required = false) String salary) {
         Map<String,Object> map = new HashMap<String,Object>(3);
         try {
-        Claims claims = JwtUtil.parseToken(token);
+        Claims claims = JwtUtil.parseAccessToken(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         EmploymentInformation employmentInformation = new EmploymentInformation();
@@ -129,7 +129,7 @@ public class EmploymentInformationController {
     public Map<String,Object> getCountByArea(@RequestHeader("Authorization") String token) {
         Map<String,Object> result = new HashMap<>(2);
         try {
-            Claims claims = JwtUtil.parseToken(token);
+            Claims claims = JwtUtil.parseAccessToken(token);
             Integer userId = (Integer) claims.get("userId");
             PersonInfo person = personInfoService.getPersonById(userId);
 
@@ -161,7 +161,7 @@ public class EmploymentInformationController {
      */
     @RequestMapping(value = "/getcountbyemploymentway",method = RequestMethod.GET)
     public Map<String,Object> getCountByEmploymentWay(@RequestHeader("Authorization") String token) {
-        Claims claims = JwtUtil.parseToken(token);
+        Claims claims = JwtUtil.parseAccessToken(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         List<EmploymentWay> areaList = employmentWayService.getEmploymentWay();
@@ -195,7 +195,7 @@ public class EmploymentInformationController {
      */
     @RequestMapping(value = "/getcountbyunitkind",method = RequestMethod.GET)
     public Map<String,Object> getCountByUnitKind(@RequestHeader("Authorization") String token){
-        Claims claims = JwtUtil.parseToken(token);
+        Claims claims = JwtUtil.parseAccessToken(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         List<UnitKind> areaList = unitKindService.getUnitKind();
@@ -247,7 +247,7 @@ public class EmploymentInformationController {
                          @RequestParam(value = "salary",required = false)String salary){
         try {
             String token = authorization.startsWith("Bearer ") ? authorization.substring(7) : authorization;
-            Claims claims = JwtUtil.parseToken(token);
+            Claims claims = JwtUtil.parseAccessToken(token);
             Integer userId = (Integer) claims.get("userId");
             PersonInfo personInfo = personInfoService.getPersonById(userId);
 

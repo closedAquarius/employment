@@ -63,7 +63,7 @@ public class InitController {
     public Map<String,Object> getLeve(@Param("levelId")Integer levelId,@RequestHeader("Authorization") String token){
 
         Map<String,Object> map = new HashMap<String,Object>(3);
-        Claims claims = JwtUtil.parseToken(token);
+        Claims claims = JwtUtil.parseAccessToken(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         if (levelId!=null && levelId==0){

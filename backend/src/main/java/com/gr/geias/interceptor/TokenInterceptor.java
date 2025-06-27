@@ -17,8 +17,8 @@ public class TokenInterceptor implements HandlerInterceptor {
         String token = request.getHeader("Authorization");
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7); // 去掉 "Bearer "
-            if (JwtUtil.validateToken(token)) {
-                Claims claims = JwtUtil.parseToken(token);
+            if (JwtUtil.validateAccessToken(token)) {
+                Claims claims = JwtUtil.parseAccessToken(token);
                 request.setAttribute("userId", claims.get("userId"));
                 return true;
             }

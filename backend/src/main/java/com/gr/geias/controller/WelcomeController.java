@@ -36,7 +36,7 @@ public class WelcomeController {
 
     @RequestMapping(value = "/getcountbyarea", method = RequestMethod.GET)
     public Map<String, Object> getCountByArea(@RequestHeader("Authorization") String token) {
-        Claims claims = JwtUtil.parseToken(token);
+        Claims claims = JwtUtil.parseAccessToken(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
@@ -76,7 +76,7 @@ public class WelcomeController {
 
     @RequestMapping(value = "/getcountbysalary", method = RequestMethod.GET)
     public Map<String, Object> getCountBySalary(@RequestHeader("Authorization") String token) {
-        Claims claims = JwtUtil.parseToken(token);
+        Claims claims = JwtUtil.parseAccessToken(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
@@ -92,7 +92,7 @@ public class WelcomeController {
 
     @RequestMapping(value = "/getcountorg", method = RequestMethod.GET)
     public Map<String, Object> getCountOrg(@RequestHeader("Authorization") String token) {
-        Claims claims = JwtUtil.parseToken(token);
+        Claims claims = JwtUtil.parseAccessToken(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
@@ -148,7 +148,7 @@ public class WelcomeController {
 
     @RequestMapping(value = "/getcountorgratio", method = RequestMethod.GET)
     public Map<String, Object> getCountOrgRatio(@RequestHeader("Authorization") String token) {
-        Claims claims = JwtUtil.parseToken(token);
+        Claims claims = JwtUtil.parseAccessToken(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
