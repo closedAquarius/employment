@@ -7,7 +7,7 @@ import dialogBasicStyles from './dialog-basic-styles';
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-const  newInterViewDialog() = ({ isOpen, onClose }) {
+const  newInterViewDialog = ({ isOpen, onClose }) => {
   return  (
     <>
       <Dialog
@@ -44,3 +44,4 @@ const  newInterViewDialog() = ({ isOpen, onClose }) {
     </>
   );
 }
+export default newInterViewDialog;

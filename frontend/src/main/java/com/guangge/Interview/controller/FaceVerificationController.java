@@ -31,6 +31,7 @@ public class FaceVerificationController {
 
     @PostMapping("/register-face")
     public String registerFace(@RequestBody RegisterFaceRequest request) {
+        System.out.println("请求注册");
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

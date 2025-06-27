@@ -1,0 +1,156 @@
+[
+  {
+    "route": "",
+    "flowLayout": false,
+    "params": {},
+    "title": "Main Layout",
+    "children": [
+      {
+        "route": "login",
+        "title": "登录",
+        "skipLayouts": true,
+        "menu": {
+          "exclude": true
+        },
+        "flowLayout": false,
+        "params": {}
+      },
+      {
+        "route": "candidates",
+        "menu": {
+          "order": 2,
+          "icon": "vaadin:records"
+        },
+        "title": "候选者名单",
+        "flowLayout": false,
+        "params": {}
+      },
+      {
+        "route": "EvaluationResult",
+        "menu": {
+          "exclude": true
+        },
+        "flowLayout": false,
+        "params": {},
+        "title": "with Auth"
+      },
+      {
+        "route": "face2facetest",
+        "menu": {
+          "order": 1,
+          "icon": "vaadin:users"
+        },
+        "title": "光哥面试",
+        "flowLayout": false,
+        "params": {}
+      },
+      {
+        "route": "FaceRegisterDialog",
+        "flowLayout": false,
+        "params": {},
+        "title": "Face Register Dialog"
+      },
+      {
+        "route": "FaceVerificationDialog",
+        "menu": {
+          "exclude": true
+        },
+        "flowLayout": false,
+        "params": {},
+        "title": "Face Verification Dialog"
+      },
+      {
+        "route": "interviewResult",
+        "menu": {
+          "order": 3,
+          "icon": "vaadin:records"
+        },
+        "title": "面试结果",
+        "flowLayout": false,
+        "params": {}
+      },
+      {
+        "route": "JavaCodeEditor",
+        "menu": {
+          "order": 0,
+          "icon": "vaadin:academy-cap"
+        },
+        "title": "光哥笔试",
+        "flowLayout": false,
+        "params": {}
+      },
+      {
+        "route": "ModifyCv",
+        "menu": {
+          "exclude": true
+        },
+        "flowLayout": false,
+        "params": {},
+        "title": "with Auth"
+      },
+      {
+        "route": "NewCv",
+        "menu": {
+          "exclude": true
+        },
+        "flowLayout": false,
+        "params": {},
+        "title": "with Auth"
+      },
+      {
+        "route": "newInterViewDialog",
+        "flowLayout": false,
+        "params": {},
+        "title": "new Inter Dialog"
+      },
+      {
+        "route": "ResumeForm",
+        "menu": {
+          "exclude": true
+        },
+        "flowLayout": false,
+        "params": {},
+        "title": "Resume Form"
+      },
+      {
+        "route": "resumeRewriter",
+        "menu": {
+          "order": 4,
+          "icon": "vaadin:clipboard-user"
+        },
+        "title": "修改简历",
+        "flowLayout": false,
+        "params": {}
+      },
+      {
+        "route": "spokenlanguage",
+        "menu": {
+          "order": 5,
+          "icon": "vaadin:chat"
+        },
+        "title": "口语练习",
+        "flowLayout": false,
+        "params": {}
+      },
+      {
+        "route": "talkToAzure",
+        "menu": {
+          "order": 6,
+          "icon": "vaadin:bold"
+        },
+        "title": "老板面试",
+        "flowLayout": false,
+        "params": {}
+      },
+      {
+        "route": "writetest",
+        "menu": {
+          "exclude": true
+        },
+        "flowLayout": false,
+        "params": {},
+        "title": "with Auth"
+      }
+    ]
+  }
+]

@@ -85,7 +85,7 @@ public class AudioConverter {
     private static String getFFmpegPath() {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
-            return "C:\\software\\ffmpeg-7.1-full_build\\bin\\ffmpeg.exe"; // Windows 路径
+            return "ffmpeg-7.1.1-essentials_build/bin/ffmpeg.exe";// Windows 路径
         } else if (os.contains("linux") || os.contains("mac")) {
             return "/usr/bin/ffmpeg"; // Linux/macOS 路径
         } else {

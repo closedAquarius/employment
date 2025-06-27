@@ -27,6 +27,7 @@
     "axios": "^1.7.9",
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
+    "file-saver": "^2.0.5",
     "framer-motion": "^12.4.3",
     "lit": "3.2.1",
     "lottie-react": "^2.4.1",
@@ -35,8 +36,10 @@
     "react-dom": "18.3.1",
     "react-icons": "^5.4.0",
     "react-markdown": "^9.0.1",
+    "react-pdf": "^10.0.1",
     "react-router-dom": "6.29.0",
-    "react-spinners": "^0.15.0"
+    "react-spinners": "^0.15.0",
+    "react-webcam": "^7.2.0"
   },
   "devDependencies": {
     "@babel/preset-react": "7.26.3",
@@ -128,7 +131,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "922726a19c632c8b8c054ed9da7b0ad4f3e20f92ceeefe1723f630bd3447edfb"
+    "hash": "0f6eb6f4826e95218654415196a976045c41f3f8f5641df59d8c7ecd821729a5"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -164,6 +167,9 @@
     "lottie-react": "$lottie-react",
     "axios": "$axios",
     "react-icons": "$react-icons",
-    "@monaco-editor/react": "$@monaco-editor/react"
+    "@monaco-editor/react": "$@monaco-editor/react",
+    "react-pdf": "$react-pdf",
+    "react-webcam": "$react-webcam",
+    "file-saver": "$file-saver"
   }
 }

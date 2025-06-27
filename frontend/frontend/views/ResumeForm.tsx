@@ -57,7 +57,6 @@ const ResumeForm = ({ onGenerate }) => {
     },
     jdTextArea: {
       width: '90%',
-      minHeight: '150px',
       padding: '10px',
       fontFamily: 'inherit',
       fontSize: 'var(--lumo-font-size-m)',
