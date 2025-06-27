@@ -42,7 +42,7 @@ public class CollegeServiceImpl implements CollegeService {
             PersonInfo personInfo = new PersonInfo();
             personInfo.setPersonId(college.getAdminId());
             personInfo.setCollegeId(college.getCollegeId());
-            Integer integer = personInfoRepository.updatePerseonofCollege(personInfo);
+            Integer integer = personInfoRepository.updatePersonofCollege(personInfo);
             OrganizationNum organizationNum = new OrganizationNum();
             organizationNum.setCollegeId(college.getCollegeId());
             organizationNum.setSum(0);
@@ -76,12 +76,12 @@ public class CollegeServiceImpl implements CollegeService {
                 PersonInfo personInfo = new PersonInfo();
                 personInfo.setPersonId(college1.getAdminId());
                 personInfo.setCollegeId(null);
-                personInfoRepository.updatePerseonofCollege(personInfo);
+                personInfoRepository.updatePersonofCollege(personInfo);
                 collegeRepository.updateCollege(college);
                 PersonInfo personInfo1 = new PersonInfo();
                 personInfo1.setPersonId(college.getAdminId());
                 personInfo1.setCollegeId(college.getCollegeId());
-                personInfoRepository.updatePerseonofCollege(personInfo1);
+                personInfoRepository.updatePersonofCollege(personInfo1);
                 return true;
             } catch (Exception e) {
                 throw new RuntimeException("修改时出错");
@@ -101,7 +101,7 @@ public class CollegeServiceImpl implements CollegeService {
             PersonInfo personInfo = new PersonInfo();
             personInfo.setCollegeId(null);
             personInfo.setPersonId(college.getAdminId());
-            personInfoRepository.updatePerseonofCollege(personInfo);
+            personInfoRepository.updatePersonofCollege(personInfo);
             List<Specialty> specialty = specialtyService.getSpecialty(collegeId);
             for (int i = 0; i < specialty.size(); i++) {
                 specialtyService.delSpecialty(specialty.get(i).getSpecialtyId());

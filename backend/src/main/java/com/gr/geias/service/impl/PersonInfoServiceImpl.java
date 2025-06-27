@@ -26,6 +26,31 @@ public class PersonInfoServiceImpl implements PersonInfoService {
     }
 
     @Override
+    public Boolean registerPerson(PersonInfo personInfo) {
+        // 输入验证
+        if (personInfo.getUsername() == null || personInfo.getUsername().isEmpty()) {
+            throw new IllegalArgumentException("用户名不能为空");
+        }
+        if (personInfo.getPassword() == null || personInfo.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("密码不能为空");
+        }
+        if (personInfo.getPersonName() == null || personInfo.getPersonName().isEmpty()) {
+            throw new IllegalArgumentException("姓名不能为空");
+        }
+        if (personInfo.getEnableStatus() == null) {
+            throw new IllegalArgumentException("用户权限不能为空");
+        }
+        // 检查用户名唯一性
+        if (personInfoRepository.checkUsernameExists(personInfo.getUsername())) {
+            throw new IllegalArgumentException("用户名已存在");
+        }
+        // 设置创建时间
+        personInfo.setCreateTime(new java.util.Date());
+        Integer result = personInfoRepository.insertPerson(personInfo);
+        return result > 0;
+    }
+
+    @Override
     public PersonInfo getPersonById(Integer personId) {
         return personInfoRepository.queryPersonById(personId);
     }

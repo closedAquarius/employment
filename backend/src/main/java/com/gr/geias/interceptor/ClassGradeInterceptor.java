@@ -18,7 +18,7 @@ public class ClassGradeInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
-        if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
+        if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             return true;
         } else {
             String specialtyStr = request.getParameter("specialtyId");

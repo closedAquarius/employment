@@ -35,7 +35,7 @@ public class WelcomeController {
     public Map<String, Object> getCountByArea(HttpServletRequest request) {
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
-        if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
+        if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             Integer integer = organizationNumService.geiAllCollegeSum();
             Integer count = employmentInformationService.getCount(null, person, null);
             ruslt.put("success", true);
@@ -89,7 +89,7 @@ public class WelcomeController {
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
         List<String> nameList = new ArrayList<String>();
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
+        if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             List<College> collegeList = collegeService.getCollege(null);
             for (int i = 0; i < collegeList.size(); i++) {
                 College college = collegeList.get(i);
@@ -144,7 +144,7 @@ public class WelcomeController {
         List<String> nameList = new ArrayList<String>();
         List<Float> list = new ArrayList<Float>();
 
-        if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
+        if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             List<College> collegeList = collegeService.getCollege(null);
             for (int i = 0; i < collegeList.size(); i++) {
                 College college = collegeList.get(i);

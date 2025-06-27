@@ -3,7 +3,6 @@ package com.gr.geias.controller;
 
 import com.gr.geias.model.*;
 import com.gr.geias.enums.EnableStatusEnums;
-import com.gr.geias.repository.AreaRepository;
 import com.gr.geias.service.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.management.monitor.StringMonitor;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +63,7 @@ public class InitController {
         Map<String,Object> map = new HashMap<String,Object>(3);
         PersonInfo person = (PersonInfo)request.getSession().getAttribute("person");
         if (levelId!=null && levelId==0){
-            if (person.getEnableStatus()==EnableStatusEnums.schoolmaster.getState()){
+            if (person.getEnableStatus()==EnableStatusEnums.ADMINISTRATOR.getState()){
                 List<College> college = collegeService.getCollege(null);
                 map.put("success",true);
                 map.put("list",college);

@@ -3,7 +3,7 @@
 <mapper namespace="com.gr.geias.repository.PersonInfoRepository">
 
     <!-- 更新用户所属学院 -->
-    <update id="updatePerseonofCollege">
+    <update id="updatePersonofCollege">
         update tb_person_info
         set college_id = #{personInfo.collegeId}
         where person_id = #{personInfo.personId}

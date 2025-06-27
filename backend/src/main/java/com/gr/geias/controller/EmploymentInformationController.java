@@ -1,7 +1,6 @@
 package com.gr.geias.controller;
 
 
-import com.alibaba.druid.sql.visitor.functions.If;
 import com.gr.geias.dto.AreaCount;
 import com.gr.geias.dto.EmploymentInformationMsg;
 import com.gr.geias.model.*;
@@ -90,7 +89,7 @@ public class EmploymentInformationController {
                 specialty.setSpecialtyId(levelId);
                 employmentInformation.setSpecialty(specialty);
             }
-            if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
+            if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
                 College college = new College();
                 college.setCollegeId(levelId);
                 employmentInformation.setCollege(college);

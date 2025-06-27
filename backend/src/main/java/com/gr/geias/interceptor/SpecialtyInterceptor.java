@@ -1,6 +1,5 @@
 package com.gr.geias.interceptor;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gr.geias.model.PersonInfo;
 import com.gr.geias.model.Specialty;
 import com.gr.geias.enums.EnableStatusEnums;
@@ -21,7 +20,7 @@ public class SpecialtyInterceptor implements HandlerInterceptor {
         boolean collegeIsOK = false;
         boolean specialtyIsOK = false;
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
-        if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
+        if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             return true;
         }
         if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {

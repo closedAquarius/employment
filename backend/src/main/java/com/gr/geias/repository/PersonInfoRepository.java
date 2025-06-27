@@ -20,6 +20,14 @@ public interface PersonInfoRepository {
     PersonInfo queryPerson(@Param("username") String username, @Param("password") String password);
 
     /**
+     * 检查用户名是否存在
+     * @param username
+     * @return 是否存在
+     */
+    @Select("SELECT COUNT(*) > 0 FROM tb_person_info WHERE username = #{username}")
+    boolean checkUsernameExists(@Param("username") String username);
+
+    /**
      * 根据id查询人员
      *
      * @param personId 用户ID
@@ -33,7 +41,7 @@ public interface PersonInfoRepository {
      *
      * @return 学院管理员列表
      */
-    @Select("select person_id,person_name from tb_person_info where enable_Status=1 and college_id is NULL")
+    @Select("select person_id,person_name from tb_person_info where enable_Status=4 and college_id is NULL")
     List<PersonInfo> queryCollegePerson();
 
     /**
@@ -42,7 +50,7 @@ public interface PersonInfoRepository {
      * @param personInfo 用户信息
      * @return 影响行数
      */
-    Integer updatePerseonofCollege(@Param("personInfo") PersonInfo personInfo);
+    Integer updatePersonofCollege(@Param("personInfo") PersonInfo personInfo);
 
     /**
      * 查询一个学院里所有的老师
@@ -50,7 +58,7 @@ public interface PersonInfoRepository {
      * @param collegeId 学院ID
      * @return 教师列表
      */
-    @Select("select * from tb_person_info where enable_Status=0 and college_id=#{collegeId}")
+    @Select("select * from tb_person_info where enable_Status=1 and college_id=#{collegeId}")
     List<PersonInfo> queryPersonByCollegeId(@Param("collegeId") Integer collegeId);
 
     /**
@@ -91,11 +99,11 @@ public interface PersonInfoRepository {
     Integer delPersonById(@Param("personId") Integer personId);
 
     /**
-     * 获取权限为1的用户
+     * 获取权限为4的用户
      * 
      * @return 管理员列表
      */
-    @Select("select * from tb_person_info where enable_Status=1")
+    @Select("select * from tb_person_info where enable_Status=4")
     List<PersonInfo> queryPerson1();
 
     /**

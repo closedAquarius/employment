@@ -5,17 +5,25 @@ package com.gr.geias.enums;
  */
 public enum EnableStatusEnums {
     /**
+     * 学生
+     */
+    STUDENT(0, "学生"),
+    /**
      * 普通老师
      */
-    TEACHER(0, "普通老师"),
+    TEACHER(1, "老师"),
+    /**
+     * 企业HR
+     */
+    ENTERPRISE_HR(2, "企业人员"),
     /**
      * 院长
      */
-    PREXY(1, "院长"),
+    PREXY(3, "院长"),
     /**
-     * 学校管理员
+     * 管理员
      */
-    schoolmaster(2, "学校管理员");
+    ADMINISTRATOR(4, "管理员");
 
     private Integer state;
     private String stateInfo;
@@ -41,7 +49,7 @@ public enum EnableStatusEnums {
      */
     public static EnableStatusEnums stateOf(int state) {
         for (EnableStatusEnums stateEnum : values()) {
-            if (stateEnum.getState() == state) {
+            if (stateEnum.getState().equals(state)) {
                 return stateEnum;
             }
         }

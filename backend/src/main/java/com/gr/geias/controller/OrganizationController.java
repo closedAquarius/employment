@@ -176,7 +176,7 @@ public class OrganizationController {
         Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
         List<College> college = null;
-        if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
+        if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             college = collegeService.getCollege(null);
         }
         if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
@@ -212,7 +212,7 @@ public class OrganizationController {
             specialtyList = specialtyService.getSpecialty(college.getCollegeId());
             request.getSession().setAttribute("specialtyList", specialtyList);
         }
-        if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
+        if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             if (collegeId == null) {
                 List<College> college1 = collegeService.getCollege(null);
                 if (college1 == null) {
@@ -263,7 +263,7 @@ public class OrganizationController {
         if (person.getEnableStatus()==EnableStatusEnums.PREXY.getState()){
             specialty.setCollegeId(person.getCollegeId());
         }
-        if (person.getEnableStatus()==EnableStatusEnums.schoolmaster.getState()){
+        if (person.getEnableStatus()==EnableStatusEnums.ADMINISTRATOR.getState()){
             specialty.setCollegeId(collegeId);
         }
         specialty.setSpecialtyName(specialtyName);
@@ -399,7 +399,7 @@ public class OrganizationController {
         Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo penson = (PersonInfo) request.getSession().getAttribute("person");
         List<PersonInfo> personByCollegeId = null;
-        if (penson.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
+        if (penson.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             personByCollegeId = personInfoService.getPersonByCollegeId(collegeId);
         }
         if (penson.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
@@ -569,7 +569,7 @@ public class OrganizationController {
             }
             college = college1.get(0);
         }
-        if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
+        if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             if (collegeId == null) {
                 List<College> college1 = collegeService.getCollege(null);
                 if (college1 == null) {

@@ -61,6 +61,39 @@ public class PersonInfoController {
     }
 
     /**
+     * 注册
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @param personName 姓名
+     * @param enableStatus 角色状态
+     * @return 注册结果
+     */
+    @PostMapping("/register")
+    public Map<String, Object> register(@RequestParam("username") String username,
+                                        @RequestParam("password") String password,
+                                        @RequestParam("personName") String personName,
+                                        @RequestParam("enableStatus") Integer enableStatus) {
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            PersonInfo personInfo = new PersonInfo();
+            personInfo.setUsername(username);
+            personInfo.setPassword(password);
+            personInfo.setPersonName(personName);
+            personInfo.setEnableStatus(enableStatus);
+            Boolean success = personInfoService.registerPerson(personInfo);
+            map.put("success", success);
+            if (!success) {
+                map.put("errMsg", "注册失败");
+            }
+        } catch (IllegalArgumentException e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
+
+    /**
      * 获取当前用户信息
      *
      * @param request HTTP请求

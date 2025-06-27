@@ -16,7 +16,7 @@ public class SuperAdminInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         PersonInfo person = (PersonInfo)request.getSession().getAttribute("person");
-        if (person.getEnableStatus() == EnableStatusEnums.schoolmaster.getState()) {
+        if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             return true;
         }
         response.sendRedirect("/page/error");

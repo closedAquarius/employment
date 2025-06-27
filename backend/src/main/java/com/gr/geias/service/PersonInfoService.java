@@ -17,6 +17,13 @@ public interface PersonInfoService {
     PersonInfo login(String username, String password);
 
     /**
+     * 注册新用户
+     * @param personInfo 用户信息
+     * @return 是否成功
+     */
+    Boolean registerPerson(PersonInfo personInfo);
+
+    /**
      * 根据id查询用户
      * @param personId 用户ID
      * @return 用户信息
