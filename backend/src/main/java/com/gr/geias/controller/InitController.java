@@ -4,8 +4,11 @@ package com.gr.geias.controller;
 import com.gr.geias.model.*;
 import com.gr.geias.enums.EnableStatusEnums;
 import com.gr.geias.service.*;
+import com.gr.geias.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,17 +33,17 @@ public class InitController {
     @Autowired
     EmploymentWayService employmentWayService;
     @Autowired
+    PersonInfoService personInfoService;
+    @Autowired
     UnitKindService unitKindService;
 
     /**
      * 获取普通分类信息 如：地区 就业途径 职业分类 权限 0，1，2
      * @param areaId
-     * @param request
      * @return
      */
     @RequestMapping("/getinit")
-    public Map<String, Object> getinit(@RequestParam(value = "areaId", required = false) Integer areaId,
-                                       HttpServletRequest request) {
+    public Map<String, Object> getinit(@RequestParam(value = "areaId", required = false) Integer areaId) {
         Map<String, Object> ruslt = getArea(areaId);
         if ((Boolean) ruslt.get("success")) {
             List<EmploymentWay> employmentWay = employmentWayService.getEmploymentWay();
@@ -54,14 +57,15 @@ public class InitController {
     /**
      * 获取高级分类信息 如：班级 专业 学院 权限 0，1，2
      * @param levelId
-     * @param request
      * @return
      */
     @RequestMapping("/getleve")
-    public Map<String,Object> getLeve(@Param("levelId")Integer levelId,HttpServletRequest request){
+    public Map<String,Object> getLeve(@Param("levelId")Integer levelId,@RequestHeader("Authorization") String token){
 
         Map<String,Object> map = new HashMap<String,Object>(3);
-        PersonInfo person = (PersonInfo)request.getSession().getAttribute("person");
+        Claims claims = JwtUtil.parseToken(token);
+        Integer userId = (Integer) claims.get("userId");
+        PersonInfo person = personInfoService.getPersonById(userId);
         if (levelId!=null && levelId==0){
             if (person.getEnableStatus()==EnableStatusEnums.ADMINISTRATOR.getState()){
                 List<College> college = collegeService.getCollege(null);

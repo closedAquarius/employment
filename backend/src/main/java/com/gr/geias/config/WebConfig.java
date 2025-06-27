@@ -32,6 +32,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private Person0Interceptor person0Interceptor;
 
+    @Autowired
+    private TokenInterceptor tokenInterceptor;
+
     /**
      * 配置拦截器
      */
@@ -73,6 +76,10 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(specialtyInterceptor).addPathPatterns("/organizationcontroller/updatespecialty", "/organizationcontroller/delspecialty");
         registry.addInterceptor(classGradeInterceptor).addPathPatterns("/organizationcontroller/getclassgrade", "/organizationcontroller/addclassgrade", "/organizationcontroller/updateclassgrade", "/organizationcontroller/delclassgrade");
         registry.addInterceptor(person0Interceptor).addPathPatterns("/organizationcontroller/getpersonById", "/organizationcontroller/updateperson_0", "/organizationcontroller/delperson_0");
+
+        registry.addInterceptor(tokenInterceptor)
+                .addPathPatterns("/api/**") // 拦截所有接口
+                .excludePathPatterns("/api/personinfo/login", "/api/personinfo/register"); // 排除登录注册
     }
 
     /**
