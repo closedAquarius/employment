@@ -14,11 +14,12 @@ public class JwtUtil {
     // refreshToken 有效时间：7天
     private static final long REFRESH_EXPIRE_TIME = 1000L * 60 * 60 * 24 * 7;
 
-    // ===== Access Token =====
-    public static String generateAccessToken(Integer userId, String username) {
+    //Access Token
+    public static String generateAccessToken(Integer userId, String username,Integer roles) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("userId", userId)
+                .claim("roles",roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRE_TIME))
                 .signWith(SignatureAlgorithm.HS256, ACCESS_SECRET_KEY)
@@ -33,10 +34,11 @@ public class JwtUtil {
     }
 
     //Refresh Token
-    public static String generateRefreshToken(Integer userId, String username) {
+    public static String generateRefreshToken(Integer userId, String username,Integer roles) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("userId", userId)
+                .claim("roles",roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRE_TIME))
                 .signWith(SignatureAlgorithm.HS256, REFRESH_SECRET_KEY)

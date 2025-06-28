@@ -47,8 +47,8 @@ public class PersonInfoController {
         } else {
             PersonInfo login = personInfoService.login(username, password);
             if (login != null) {
-                String accessToken = JwtUtil.generateAccessToken(login.getPersonId(), login.getUsername());
-                String refreshToken = JwtUtil.generateRefreshToken(login.getPersonId(), login.getUsername());
+                String accessToken = JwtUtil.generateAccessToken(login.getPersonId(), login.getUsername(),login.getEnableStatus());
+                String refreshToken = JwtUtil.generateRefreshToken(login.getPersonId(), login.getUsername(),login.getEnableStatus());
                 Date expires = new Date(System.currentTimeMillis() + 1000 * 60 * 30); // 30分钟
                 Map<String, Object> data = new HashMap<>();
                 data.put("avatar", ""); // 可根据你的字段改
@@ -115,9 +115,10 @@ public class PersonInfoController {
             Claims claims = JwtUtil.parseRefreshToken(refreshToken);
             Integer userId = (Integer) claims.get("userId");
             String username = claims.getSubject();
+            Integer roles = (Integer) claims.get("roles");
 
-            String newAccessToken = JwtUtil.generateAccessToken(userId, username);
-            String newRefreshToken = JwtUtil.generateRefreshToken(userId, username);
+            String newAccessToken = JwtUtil.generateAccessToken(userId, username,roles);
+            String newRefreshToken = JwtUtil.generateRefreshToken(userId, username,roles);
 
             Map<String, Object> data = new HashMap<>();
             data.put("accessToken", newAccessToken);
@@ -243,7 +244,7 @@ public class PersonInfoController {
             map.put("success", false);
             map.put("errMsg", "没有该用户");
         } else if (personInfo.getPersonId() != null) {
-            String token = JwtUtil.generateAccessToken(personInfo.getPersonId(), personInfo.getUsername());
+            String token = JwtUtil.generateAccessToken(personInfo.getPersonId(), personInfo.getUsername(),personInfo.getEnableStatus());
             map.put("success", true);
             map.put("token", token);
         } else {
