@@ -3,12 +3,13 @@ package com.gr.geias.controller;
 import com.gr.geias.model.*;
 import com.gr.geias.enums.EnableStatusEnums;
 import com.gr.geias.service.*;
+import com.gr.geias.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,13 +28,17 @@ public class WelcomeController {
     CollegeService collegeService;
     @Autowired
     SpecialtyService specialtyService;
+    @Autowired
+    PersonInfoService personInfoService;
 
 
     private static final Integer[][] SALARY = {{0, 3000}, {3000, 4000}, {4000, 5000}, {5000, 6000}, {6000, 7000}, {7000, 8000}, {8000, 9000}, {9000, 10000}, {10000, 11000}, {11000, 12000}, {12000, 13000}, {13000, 14000}, {14000, 100000000}};
 
     @RequestMapping(value = "/getcountbyarea", method = RequestMethod.GET)
-    public Map<String, Object> getCountByArea(HttpServletRequest request) {
-        PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
+    public Map<String, Object> getCountByArea(@RequestHeader("Authorization") String token) {
+        Claims claims = JwtUtil.parseAccessToken(token);
+        Integer userId = (Integer) claims.get("userId");
+        PersonInfo person = personInfoService.getPersonById(userId);
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
         if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             Integer integer = organizationNumService.geiAllCollegeSum();
@@ -70,8 +75,10 @@ public class WelcomeController {
     }
 
     @RequestMapping(value = "/getcountbysalary", method = RequestMethod.GET)
-    public Map<String, Object> getCountBySalary(HttpServletRequest request) {
-        PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
+    public Map<String, Object> getCountBySalary(@RequestHeader("Authorization") String token) {
+        Claims claims = JwtUtil.parseAccessToken(token);
+        Integer userId = (Integer) claims.get("userId");
+        PersonInfo person = personInfoService.getPersonById(userId);
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
         List<Integer> list = new ArrayList<Integer>();
         for (int i = 0; i < SALARY.length; i++) {
@@ -84,8 +91,10 @@ public class WelcomeController {
     }
 
     @RequestMapping(value = "/getcountorg", method = RequestMethod.GET)
-    public Map<String, Object> getCountOrg(HttpServletRequest request) {
-        PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
+    public Map<String, Object> getCountOrg(@RequestHeader("Authorization") String token) {
+        Claims claims = JwtUtil.parseAccessToken(token);
+        Integer userId = (Integer) claims.get("userId");
+        PersonInfo person = personInfoService.getPersonById(userId);
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
         List<String> nameList = new ArrayList<String>();
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -138,8 +147,10 @@ public class WelcomeController {
     }
 
     @RequestMapping(value = "/getcountorgratio", method = RequestMethod.GET)
-    public Map<String, Object> getCountOrgRatio(HttpServletRequest request) {
-        PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
+    public Map<String, Object> getCountOrgRatio(@RequestHeader("Authorization") String token) {
+        Claims claims = JwtUtil.parseAccessToken(token);
+        Integer userId = (Integer) claims.get("userId");
+        PersonInfo person = personInfoService.getPersonById(userId);
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
         List<String> nameList = new ArrayList<String>();
         List<Float> list = new ArrayList<Float>();

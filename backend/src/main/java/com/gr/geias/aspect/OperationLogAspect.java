@@ -64,6 +64,12 @@ public class OperationLogAspect {
             return;
         }
 
+        //不统计welcome信息
+        String uri = request.getRequestURI();
+        if (uri.startsWith("/welcome")) {
+            return;
+        }
+
         OperationLog log = buildLog(request, person);
         log.setSuccess(false);
         log.setErrorMsg(ex.getMessage());
@@ -87,6 +93,23 @@ public class OperationLogAspect {
         return (PersonInfo) request.getSession().getAttribute("person");
     }
 
+    //target字段的描述 URI -> 中文操作描述映射
+    private static final Map<String, String> TARGET_DESCRIPTIONS = new HashMap<>();
+    static {
+        TARGET_DESCRIPTIONS.put("/page/login", "访问登录页面");
+        TARGET_DESCRIPTIONS.put("/personinfo/login", "用户登录");
+        TARGET_DESCRIPTIONS.put("/personinfo/register", "用户注册");
+        TARGET_DESCRIPTIONS.put("/personinfo/getuser", "获取当前用户信息");
+        TARGET_DESCRIPTIONS.put("/personinfo/updateuser", "更新用户信息");
+        TARGET_DESCRIPTIONS.put("/personinfo/faceLogin", "人脸登录");
+        TARGET_DESCRIPTIONS.put("/personinfo/addFace", "添加人脸信息");
+        TARGET_DESCRIPTIONS.put("/welcome/getcountbyarea", "按地区统计就业情况");
+        TARGET_DESCRIPTIONS.put("/welcome/getcountbysalary", "按薪资统计就业情况");
+        TARGET_DESCRIPTIONS.put("/welcome/getcountorgratio", "统计各学院就业占比");
+        TARGET_DESCRIPTIONS.put("/welcome/getcountorg", "获取各学院就业人数");
+    }
+
+
     /**
      * 构建 Log 对象
      */
@@ -106,8 +129,10 @@ public class OperationLogAspect {
      * 提取操作目标
      */
     private String extractTarget(HttpServletRequest request) {
-        return request.getRequestURI();
+        String uri = request.getRequestURI();
+        return TARGET_DESCRIPTIONS.getOrDefault(uri, "未知操作：" + uri);
     }
+
 
     /**
      * 提取操作详情

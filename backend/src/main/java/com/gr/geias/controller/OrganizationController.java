@@ -9,14 +9,11 @@ import com.gr.geias.model.PersonInfo;
 import com.gr.geias.model.Specialty;
 import com.gr.geias.enums.EnableStatusEnums;
 import com.gr.geias.service.*;
+import com.gr.geias.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
@@ -167,14 +164,14 @@ public class OrganizationController {
 
     /**
      * 根据用户权限获取学院列表(简化信息) 权限 1，2
-     *
-     * @param request
      * @return
      */
     @RequestMapping(value = "/getcollegeinit", method = RequestMethod.GET)
-    public Map<String, Object> getCollegeinit(HttpServletRequest request) {
+    public Map<String, Object> getCollegeinit(@RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<String, Object>(3);
-        PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
+        Claims claims = JwtUtil.parseAccessToken(token);
+        Integer userId = (Integer) claims.get("userId");
+        PersonInfo person = personInfoService.getPersonById(userId);
         List<College> college = null;
         if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             college = collegeService.getCollege(null);
@@ -196,52 +193,76 @@ public class OrganizationController {
      * 获取专业详细列表 权限 1，2
      *
      * @param collegeId
-     * @param request
      * @return
      */
     @RequestMapping(value = "/getspecialty", method = RequestMethod.GET)
     public Map<String, Object> getSpecialty(@RequestParam(value = "collegeId", required = false) Integer collegeId,
-                                            HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<String, Object>(3);
-        PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
-        List<Specialty> specialtyList = null;
-        College college = null;
-        if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
-            List<College> college1 = collegeService.getCollege(person.getPersonId());
-            college = college1.get(0);
-            specialtyList = specialtyService.getSpecialty(college.getCollegeId());
-            request.getSession().setAttribute("specialtyList", specialtyList);
-        }
-        if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
-            if (collegeId == null) {
-                List<College> college1 = collegeService.getCollege(null);
-                if (college1 == null) {
-                    map.put("success", true);
-                    map.put("errMsg", "没有数据");
+                                            @RequestHeader("Authorization") String token) {
+        Map<String, Object> map = new HashMap<>(3);
+
+        try {
+            Claims claims = JwtUtil.parseAccessToken(token);
+            Integer userId = (Integer) claims.get("userId");
+            PersonInfo person = personInfoService.getPersonById(userId);
+
+            List<Specialty> specialtyList = null;
+            College college = null;
+
+            EnableStatusEnums role = EnableStatusEnums.stateOf(person.getEnableStatus());
+
+            if (role == EnableStatusEnums.PREXY) {
+                // 院长只看自己学院
+                List<College> collegeList = collegeService.getCollege(person.getPersonId());
+                if (collegeList == null || collegeList.isEmpty()) {
+                    map.put("success", false);
+                    map.put("errMsg", "未找到所属学院");
                     return map;
                 }
-                college = college1.get(0);
+                college = collegeList.get(0);
+                specialtyList = specialtyService.getSpecialty(college.getCollegeId());
+            } else if (role == EnableStatusEnums.ADMINISTRATOR) {
+                // 管理员可以查所有学院
+                if (collegeId == null) {
+                    List<College> collegeList = collegeService.getCollege(null);
+                    if (collegeList == null || collegeList.isEmpty()) {
+                        map.put("success", false);
+                        map.put("errMsg", "没有学院数据");
+                        return map;
+                    }
+                    college = collegeList.get(0);
+                } else {
+                    college = collegeService.getCollegeById(collegeId);
+                }
                 specialtyList = specialtyService.getSpecialty(college.getCollegeId());
             } else {
-                college = collegeService.getCollegeById(collegeId);
-                specialtyList = specialtyService.getSpecialty(college.getCollegeId());
+                // 其它角色无权访问
+                map.put("success", false);
+                map.put("errMsg", "无权限访问该接口");
+                return map;
             }
+
+            // 拼装结果
+            List<SpecialtyAndCollege> list = new ArrayList<>();
+            for (Specialty specialty : specialtyList) {
+                SpecialtyAndCollege sac = new SpecialtyAndCollege();
+                sac.setSpecialty(specialty);
+                sac.setCollege(college);
+                Integer count = organizationNumService.getspecialtyCount(specialty.getSpecialtyId());
+                sac.setSum(count);
+                list.add(sac);
+            }
+
+            map.put("success", true);
+            map.put("List", list);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", "Token无效或查询出错");
         }
-        List<SpecialtyAndCollege> list = new ArrayList<SpecialtyAndCollege>();
-        for (int i = 0; i < specialtyList.size(); i++) {
-            Specialty specialty = specialtyList.get(i);
-            SpecialtyAndCollege specialtyAndCollege = new SpecialtyAndCollege();
-            specialtyAndCollege.setSpecialty(specialty);
-            specialtyAndCollege.setCollege(college);
-            Integer integer = organizationNumService.getspecialtyCount(specialty.getSpecialtyId());
-            specialtyAndCollege.setSum(integer);
-            list.add(specialtyAndCollege);
-        }
-        map.put("success", true);
-        map.put("List", list);
+
         return map;
     }
-     /**
+
+    /**
      * 添加专业 权限 1(特定权限，学院内部专业才行)，2
      *
      * @param specialtyName
@@ -251,14 +272,16 @@ public class OrganizationController {
     @RequestMapping(value = "/addspecialty", method = RequestMethod.GET)
     public Map<String, Object> addSpecialty(@RequestParam("specialtyName") String specialtyName,
                                             @RequestParam("collegeId") Integer collegeId,
-                                            HttpServletRequest request) {
+                                            @RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<String, Object>(3);
         if (specialtyName == null || specialtyName.equals("") || collegeId == null || collegeId == 0) {
             map.put("success", false);
             map.put("errMsg", "输入信息错误！");
             return map;
         }
-        PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
+        Claims claims = JwtUtil.parseAccessToken(token);
+        Integer userId = (Integer) claims.get("userId");
+        PersonInfo person = personInfoService.getPersonById(userId);
         Specialty specialty = new Specialty();
         if (person.getEnableStatus()==EnableStatusEnums.PREXY.getState()){
             specialty.setCollegeId(person.getCollegeId());
@@ -395,15 +418,17 @@ public class OrganizationController {
      * @return
      */
     @RequestMapping(value = "/getpersoninit", method = RequestMethod.GET)
-    public Map<String, Object> getpersoninit(@RequestParam("collegeId") Integer collegeId, HttpServletRequest request) {
+    public Map<String, Object> getpersoninit(@RequestParam("collegeId") Integer collegeId, @RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<String, Object>(3);
-        PersonInfo penson = (PersonInfo) request.getSession().getAttribute("person");
+        Claims claims = JwtUtil.parseAccessToken(token);
+        Integer userId = (Integer) claims.get("userId");
+        PersonInfo person = personInfoService.getPersonById(userId);
         List<PersonInfo> personByCollegeId = null;
-        if (penson.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
+        if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             personByCollegeId = personInfoService.getPersonByCollegeId(collegeId);
         }
-        if (penson.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
-            personByCollegeId = personInfoService.getPersonByCollegeId(penson.getCollegeId());
+        if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
+            personByCollegeId = personInfoService.getPersonByCollegeId(person.getCollegeId());
         }
         if (personByCollegeId.size() > 0) {
             map.put("success", true);
@@ -547,53 +572,64 @@ public class OrganizationController {
      * 获取辅导员 权限 1（特定），2
      *
      * @param collegeId
-     * @param request
      * @return
      */
     @RequestMapping(value = "/getperson_0", method = RequestMethod.GET)
     public Map<String, Object> getperson_0(@RequestParam(value = "collegeId", required = false) Integer collegeId,
-                                           HttpServletRequest request) {
+                                           @RequestHeader("Authorization") String token) {
 
-        Map<String, Object> map = new HashMap<String, Object>(3);
-        PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
-        List<PersonInfo> personInfoList = null;
-        College college = null;
-        if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
-            personInfoList = personInfoService.getPersonByCollegeId(person.getCollegeId());
-            request.getSession().setAttribute("person0List", personInfoList);
-            List<College> college1 = collegeService.getCollege(person.getPersonId());
-            if (college1 == null) {
-                map.put("success", true);
-                map.put("errMsg", "没有数据");
-                return map;
-            }
-            college = college1.get(0);
-        }
-        if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
-            if (collegeId == null) {
-                List<College> college1 = collegeService.getCollege(null);
-                if (college1 == null) {
-                    map.put("success", true);
+        Map<String, Object> map = new HashMap<>(3);
+        try {
+            Claims claims = JwtUtil.parseAccessToken(token);
+            Integer userId = (Integer) claims.get("userId");
+            PersonInfo person = personInfoService.getPersonById(userId);
+
+            List<PersonInfo> personInfoList = null;
+            College college = null;
+
+            if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
+                // 院长只能查看自己学院的人
+                personInfoList = personInfoService.getPersonByCollegeId(person.getCollegeId());
+                List<College> collegeList = collegeService.getCollege(person.getPersonId());
+                if (collegeList == null || collegeList.isEmpty()) {
+                    map.put("success", false);
                     map.put("errMsg", "没有数据");
                     return map;
                 }
-                if (college1 == null) {
-                    map.put("success", false);
-                    map.put("errMsg", "没有数据");
+                college = collegeList.get(0);
+            } else if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
+                // 管理员可以查看任意学院
+                if (collegeId == null) {
+                    List<College> collegeList = collegeService.getCollege(null);
+                    if (collegeList == null || collegeList.isEmpty()) {
+                        map.put("success", false);
+                        map.put("errMsg", "没有数据");
+                        return map;
+                    }
+                    college = collegeList.get(0);
+                    personInfoList = personInfoService.getPersonByCollegeId(college.getCollegeId());
+                } else {
+                    college = collegeService.getCollegeById(collegeId);
+                    personInfoList = personInfoService.getPersonByCollegeId(collegeId);
                 }
-                college = college1.get(0);
-
-                personInfoList = personInfoService.getPersonByCollegeId(college.getCollegeId());
             } else {
-                college = collegeService.getCollegeById(collegeId);
-                personInfoList = personInfoService.getPersonByCollegeId(collegeId);
+                map.put("success", false);
+                map.put("errMsg", "无权限访问");
+                return map;
             }
+
+            map.put("success", true);
+            map.put("personInfoList", personInfoList);
+            map.put("college", college);
+            return map;
+
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", "Token无效或已过期");
+            return map;
         }
-        map.put("success", true);
-        map.put("personInfoList", personInfoList);
-        map.put("college", college);
-        return map;
     }
+
 
     /**
      * 添加辅导员 权限1（特定），2
@@ -640,7 +676,7 @@ public class OrganizationController {
      * @return
      */
     @RequestMapping("/getpersonById")
-    public Map<String, Object> getPersonInit(@RequestParam("personId") Integer personId, HttpServletRequest request) {
+    public Map<String, Object> getPersonInit(@RequestParam("personId") Integer personId, @RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo person = personInfoService.getPersonById(personId);
         map.put("success", true);
@@ -701,12 +737,11 @@ public class OrganizationController {
      * 删除辅导员 1（特定），2
      *
      * @param personId
-     * @param request
      * @return
      */
     @RequestMapping("/delperson_0")
     public Map<String, Object> delPerson(@RequestParam("personId") Integer personId,
-                                         HttpServletRequest request) {
+                                         @RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<String, Object>(3);
         try {
             Boolean aBoolean = personInfoService.delPerson(personId);
@@ -827,12 +862,11 @@ public class OrganizationController {
      * 删除学院管理 权限2
      *
      * @param personId
-     * @param request
      * @return
      */
     @RequestMapping("/delperson_1")
     public Map<String, Object> delPerson_1(@RequestParam("personId") Integer personId,
-                                           HttpServletRequest request) {
+                                           @RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<String, Object>(3);
         try {
             Boolean aBoolean = personInfoService.delPerson(personId);

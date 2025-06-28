@@ -3,13 +3,13 @@ package com.gr.geias.controller;
 import com.gr.geias.model.OperationLog;
 import com.gr.geias.model.PersonInfo;
 import com.gr.geias.service.OperationLogService;
+import com.gr.geias.service.PersonInfoService;
+import com.gr.geias.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -26,6 +26,8 @@ public class OperationLogController {
 
     @Autowired
     private OperationLogService logService;
+    @Autowired
+    private PersonInfoService personInfoService;
 
     /**
      * 查询日志列表
@@ -35,7 +37,6 @@ public class OperationLogController {
      * @param operationType 操作类型（如 GET /employmentinformation/getemploymentinfo）
      * @param pageNum 页码，默认 1
      * @param pageSize 每页记录数，默认 10
-     * @param request HTTP 请求，用于获取用户信息
      * @return 日志列表和总数
      */
     @GetMapping("/searchlogs")
@@ -46,11 +47,13 @@ public class OperationLogController {
             @RequestParam(value = "operationType", required = false) String operationType,
             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-            HttpServletRequest request) {
+            @RequestHeader("Authorization") String token){
         Map<String, Object> result = new HashMap<>();
         try {
             // 获取当前用户信息
-            PersonInfo person = (PersonInfo) request.getSession().getAttribute("person");
+            Claims claims = JwtUtil.parseAccessToken(token);
+            Integer userId = (Integer) claims.get("userId");
+            PersonInfo person = personInfoService.getPersonById(userId);
             if (person == null) {
                 result.put("success", false);
                 result.put("errMsg", "用户未登录");
