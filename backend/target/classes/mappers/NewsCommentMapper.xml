@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gr.geias.repository.NewsCommentRepository">
+    <insert id="insertComment" parameterType="com.gr.geias.model.NewsComment">
+        INSERT INTO tb_news_comment(news_id, user_id, content, create_time, is_deleted)
+        VALUES (#{newsId}, #{userId}, #{content}, #{createTime}, #{isDeleted})
+    </insert>
+
+    <select id="selectCommentsByNewsId" resultType="com.gr.geias.model.NewsComment">
+        SELECT *
+        FROM tb_news_comment
+        WHERE news_id = #{newsId} AND is_deleted = 0
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectCommentsWithUserName" resultType="com.gr.geias.dto.NewsCommentDTO">
+        SELECT
+            c.comment_id AS commentId,
+            c.news_id AS newsId,
+            c.user_id AS userId,
+            u.person_name AS userName,
+            c.content,
+            c.create_time AS createTime,
+            c.is_deleted
+        FROM tb_news_comment c
+                 LEFT JOIN tb_person_info u ON c.user_id = u.person_id
+        WHERE c.news_id = #{newsId} AND c.is_deleted = 0
+        ORDER BY c.create_time DESC
+            LIMIT #{offset}, #{size}
+    </select>
+
+    <update id="logicDeleteComment">
+        UPDATE tb_news_comment
+        SET is_deleted = 1
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <select id="selectAllComments" resultType="com.gr.geias.dto.NewsCommentDTO">
+        SELECT
+        c.comment_id AS commentId,
+        c.news_id AS newsId,
+        c.user_id AS userId,
+        u.person_name AS userName,
+        c.content,
+        c.create_time AS createTime,
+        c.is_deleted AS isDeleted
+        FROM tb_news_comment c
+        LEFT JOIN tb_person_info u ON c.user_id = u.person_id
+        <where>
+            <if test="includeDeleted == false">
+                c.is_deleted = 0
+            </if>
+        </where>
+        ORDER BY c.create_time DESC
+        LIMIT #{offset}, #{size}
+    </select>
+</mapper>
