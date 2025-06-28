@@ -223,8 +223,6 @@ public class EmploymentInformationController {
             ruslt.put("errMsg", e.getMessage());
             return ruslt;
         }
-
-
     }
 
     /**
