@@ -51,6 +51,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
+
+        // ✅ 新增：映射本地图片上传目录
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
     }
 
     /**
