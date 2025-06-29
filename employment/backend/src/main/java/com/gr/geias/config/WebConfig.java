@@ -23,10 +23,13 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        // 暂时注释掉 TokenInterceptor，以便测试
+        /*
         registry.addInterceptor(tokenInterceptor)
                 .addPathPatterns("/api/**") // 拦截所有接口
                 .excludePathPatterns("/api/personinfo/login",
                                      "/api/personinfo/register"); // 排除登录注册
+        */
 
 //        registry.addInterceptor(companyUserInterceptor)
 //                .addPathPatterns("/employmentinformation/**"); // 你希望限制的路径
