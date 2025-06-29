@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS interview_user (
   real_name VARCHAR(50),
   status SMALLINT DEFAULT 1,
   avatar VARCHAR(255),
-  user_type SMALLINT,
+  user_type SMALLINT, -- 用户类型：0-学生，1-教师，2-管理员，3-企业HR
   create_time TIMESTAMP,
   update_time TIMESTAMP,
   source_system VARCHAR(20),

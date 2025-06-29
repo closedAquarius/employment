@@ -1,7 +1,10 @@
 package com.employment.auth.controller;
 
+import com.employment.auth.controller.dto.UserDTO;
 import com.employment.auth.model.User;
 import com.employment.auth.service.UserService;
+import com.employment.auth.util.AuthConstant;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -121,5 +124,42 @@ public class AuthController {
         response.put("message", "用户同步成功");
         response.put("userId", userId);
         return ResponseEntity.ok(response);
+    }
+    
+    /**
+     * 用户注册
+     */
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, Object>> register(@RequestBody UserDTO userDTO) {
+        // 检查用户名是否已存在
+        User existingUser = userService.getUserByUsername(userDTO.getUsername());
+        if (existingUser != null) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 400);
+            response.put("message", "用户名已存在");
+            return ResponseEntity.badRequest().body(response);
+        }
+        
+        // DTO转换为实体
+        User user = new User();
+        BeanUtils.copyProperties(userDTO, user);
+        
+        // 设置默认值
+        user.setStatus(AuthConstant.UserStatus.ENABLED);
+        // 默认注册为学生用户
+        user.setUserType(AuthConstant.UserType.STUDENT);
+        
+        Long userId = userService.createUser(user);
+        
+        // 自动登录
+        String token = userService.login(user.getUsername(), userDTO.getPassword());
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", 200);
+        response.put("message", "注册成功");
+        response.put("userId", userId);
+        response.put("token", token);
+        
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 } 

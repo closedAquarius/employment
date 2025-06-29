@@ -2,17 +2,24 @@ package com.employment.auth.service.impl;
 
 import com.employment.auth.model.User;
 import com.employment.auth.service.UserService;
+import com.employment.auth.util.AuthConstant;
 import com.employment.auth.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -118,7 +125,7 @@ public class UserServiceImpl implements UserService {
     public Long syncUser(User user, String sourceSystem) {
         // 先查询用户是否已存在
         String sql;
-        if ("employment".equals(sourceSystem)) {
+        if (AuthConstant.SourceSystem.EMPLOYMENT.equals(sourceSystem)) {
             sql = "SELECT id FROM employment_user WHERE username = ? AND source_system = ?";
             List<Long> ids = mysqlJdbcTemplate.query(sql, new Object[]{user.getUsername(), sourceSystem}, 
                     (rs, rowNum) -> rs.getLong("id"));
@@ -174,6 +181,222 @@ public class UserServiceImpl implements UserService {
                 return postgresqlJdbcTemplate.queryForObject(sql, Long.class);
             }
         }
+    }
+    
+    @Override
+    public Long createUser(User user) {
+        // 加密密码
+        String encodedPassword = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
+        user.setPassword(encodedPassword);
+        
+        // 默认存储在MySQL中
+        String sql = "INSERT INTO employment_user (username, password, email, phone, real_name, status, " +
+                    "avatar, user_type, create_time, update_time, source_system, source_id) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), 'auth-service', NULL)";
+        
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        
+        mysqlJdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getPhone());
+            ps.setString(5, user.getRealName());
+            ps.setInt(6, user.getStatus() != null ? user.getStatus() : AuthConstant.UserStatus.ENABLED);
+            ps.setString(7, user.getAvatar());
+            ps.setInt(8, user.getUserType() != null ? user.getUserType() : AuthConstant.UserType.STUDENT);
+            return ps;
+        }, keyHolder);
+        
+        return keyHolder.getKey().longValue();
+    }
+    
+    @Override
+    public boolean updateUser(User user) {
+        if (user.getId() == null) {
+            return false;
+        }
+        
+        // 查询用户来源系统
+        User existingUser = getUserById(user.getId());
+        if (existingUser == null) {
+            return false;
+        }
+        
+        String sourceSystem = existingUser.getSourceSystem();
+        
+        // 根据来源系统选择数据库
+        JdbcTemplate jdbcTemplate;
+        String tableName;
+        
+        if (AuthConstant.SourceSystem.AI_INTERVIEW.equals(sourceSystem)) {
+            jdbcTemplate = postgresqlJdbcTemplate;
+            tableName = "interview_user";
+        } else {
+            jdbcTemplate = mysqlJdbcTemplate;
+            tableName = "employment_user";
+        }
+        
+        StringBuilder sqlBuilder = new StringBuilder("UPDATE " + tableName + " SET ");
+        List<Object> params = new ArrayList<>();
+        
+        if (user.getUsername() != null) {
+            sqlBuilder.append("username = ?, ");
+            params.add(user.getUsername());
+        }
+        
+        if (user.getPassword() != null) {
+            sqlBuilder.append("password = ?, ");
+            // 加密密码
+            params.add(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        }
+        
+        if (user.getEmail() != null) {
+            sqlBuilder.append("email = ?, ");
+            params.add(user.getEmail());
+        }
+        
+        if (user.getPhone() != null) {
+            sqlBuilder.append("phone = ?, ");
+            params.add(user.getPhone());
+        }
+        
+        if (user.getRealName() != null) {
+            sqlBuilder.append("real_name = ?, ");
+            params.add(user.getRealName());
+        }
+        
+        if (user.getStatus() != null) {
+            sqlBuilder.append("status = ?, ");
+            params.add(user.getStatus());
+        }
+        
+        if (user.getAvatar() != null) {
+            sqlBuilder.append("avatar = ?, ");
+            params.add(user.getAvatar());
+        }
+        
+        if (user.getUserType() != null) {
+            sqlBuilder.append("user_type = ?, ");
+            params.add(user.getUserType());
+        }
+        
+        // 添加更新时间
+        sqlBuilder.append("update_time = NOW() ");
+        
+        // 添加WHERE条件
+        sqlBuilder.append("WHERE id = ?");
+        params.add(user.getId());
+        
+        int rowsAffected = jdbcTemplate.update(sqlBuilder.toString(), params.toArray());
+        
+        // 如果更新成功且用户在Redis中有缓存，更新缓存
+        if (rowsAffected > 0 && redisTemplate.hasKey(USER_PREFIX + user.getId())) {
+            User updatedUser = getUserById(user.getId());
+            redisTemplate.opsForValue().set(USER_PREFIX + user.getId(), updatedUser, TOKEN_EXPIRATION, TimeUnit.SECONDS);
+        }
+        
+        return rowsAffected > 0;
+    }
+    
+    @Override
+    public User getUserById(Long userId) {
+        if (userId == null) {
+            return null;
+        }
+        
+        // 先从Redis缓存中查询
+        User cachedUser = (User) redisTemplate.opsForValue().get(USER_PREFIX + userId);
+        if (cachedUser != null) {
+            return cachedUser;
+        }
+        
+        // 从MySQL中查询
+        try {
+            String sql = "SELECT * FROM employment_user WHERE id = ?";
+            User user = mysqlJdbcTemplate.queryForObject(sql, new Object[]{userId}, new UserRowMapper());
+            return user;
+        } catch (EmptyResultDataAccessException e) {
+            // 如果MySQL中没有，尝试从PostgreSQL查询
+            try {
+                String sql = "SELECT * FROM interview_user WHERE id = ?";
+                User user = postgresqlJdbcTemplate.queryForObject(sql, new Object[]{userId}, new UserRowMapper());
+                return user;
+            } catch (EmptyResultDataAccessException ex) {
+                return null;
+            }
+        }
+    }
+    
+    @Override
+    public User getUserByUsername(String username) {
+        if (username == null) {
+            return null;
+        }
+        
+        // 先从MySQL数据库查询
+        User user = findUserFromMysql(username);
+        
+        // 如果MySQL中没找到，再从PostgreSQL查询
+        if (user == null) {
+            user = findUserFromPostgresql(username);
+        }
+        
+        return user;
+    }
+    
+    @Override
+    public boolean updateUserStatus(Long userId, Integer status) {
+        User user = new User();
+        user.setId(userId);
+        user.setStatus(status);
+        return updateUser(user);
+    }
+    
+    @Override
+    public boolean updateUserType(Long userId, Integer userType) {
+        User user = new User();
+        user.setId(userId);
+        user.setUserType(userType);
+        return updateUser(user);
+    }
+    
+    @Override
+    public List<User> getUsersByType(Integer userType) {
+        List<User> users = new ArrayList<>();
+        
+        // 从MySQL查询
+        String mysqlSql = "SELECT * FROM employment_user WHERE user_type = ?";
+        List<User> mysqlUsers = mysqlJdbcTemplate.query(mysqlSql, new Object[]{userType}, new UserRowMapper());
+        if (mysqlUsers != null) {
+            users.addAll(mysqlUsers);
+        }
+        
+        // 从PostgreSQL查询
+        String postgreSql = "SELECT * FROM interview_user WHERE user_type = ?";
+        List<User> pgUsers = postgresqlJdbcTemplate.query(postgreSql, new Object[]{userType}, new UserRowMapper());
+        if (pgUsers != null) {
+            users.addAll(pgUsers);
+        }
+        
+        return users;
+    }
+    
+    @Override
+    public boolean checkUserPermission(Long userId, Integer requiredUserType) {
+        User user = getUserById(userId);
+        if (user == null || user.getUserType() == null) {
+            return false;
+        }
+        
+        // 管理员拥有所有权限
+        if (user.getUserType() == AuthConstant.UserType.ADMIN) {
+            return true;
+        }
+        
+        // 检查用户类型是否匹配所需权限
+        return user.getUserType().equals(requiredUserType);
     }
 
     /**

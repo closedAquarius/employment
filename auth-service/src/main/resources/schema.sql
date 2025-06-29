@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `employment_user` (
   `real_name` varchar(50) DEFAULT NULL COMMENT '真实姓名',
   `status` tinyint(1) DEFAULT '1' COMMENT '状态：0-禁用，1-启用',
   `avatar` varchar(255) DEFAULT NULL COMMENT '头像',
-  `user_type` tinyint(1) DEFAULT NULL COMMENT '用户类型：1-学生，2-企业HR，3-就业指导老师，4-系统管理员',
+  `user_type` tinyint(1) DEFAULT NULL COMMENT '用户类型：0-学生，1-教师，2-管理员，3-企业HR',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `source_system` varchar(20) DEFAULT NULL COMMENT '用户来源系统',
