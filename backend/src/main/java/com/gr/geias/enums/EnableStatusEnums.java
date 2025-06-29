@@ -15,11 +15,11 @@ public enum EnableStatusEnums {
     /**
      * 管理员
      */
-    ENTERPRISE_HR(2, "管理员"),
+    ADMINISTRATOR(2, "管理员"),
     /**
      * 企业人员
      */
-    ADMINISTRATOR(3, "企业人员");
+    ENTERPRISE_HR(3, "企业人员");
 
     private Integer state;
     private String stateInfo;
