@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gr.geias.repository.PrivateMessageRepository">
+    <insert id="insertMessage" parameterType="com.gr.geias.model.PrivateMessage">
+        INSERT INTO tb_private_message
+        (sender_id, receiver_id, content, send_time, is_read, is_deleted_sender, is_deleted_receiver, message_type, file_url)
+        VALUES
+            (#{senderId}, #{receiverId}, #{content}, #{sendTime}, #{isRead}, #{isDeletedSender}, #{isDeletedReceiver}, #{messageType}, #{fileUrl})
+    </insert>
+
+
+    <select id="selectChatContacts" parameterType="int" resultType="int">
+        SELECT DISTINCT
+            CASE
+                WHEN sender_id = #{userId} THEN receiver_id
+                ELSE sender_id
+                END AS contact_id
+        FROM tb_private_message
+        WHERE (sender_id = #{userId} AND is_deleted_sender = 0)
+           OR (receiver_id = #{userId} AND is_deleted_receiver = 0)
+    </select>
+
+    <select id="selectChatContactsDetails" parameterType="int" resultType="com.gr.geias.model.PersonInfo">
+        SELECT p.person_id,
+               p.username,
+               p.person_name
+        FROM tb_person_info p
+        WHERE p.person_id IN (
+            SELECT DISTINCT
+                CASE
+                    WHEN sender_id = #{userId} THEN receiver_id
+                    ELSE sender_id
+                    END AS contact_id
+            FROM tb_private_message
+            WHERE (sender_id = #{userId} AND is_deleted_sender = 0)
+               OR (receiver_id = #{userId} AND is_deleted_receiver = 0)
+        )
+    </select>
+
+    <select id="selectChatMessagesBetweenUsers" resultType="com.gr.geias.model.PrivateMessage" parameterType="map">
+        SELECT *
+        FROM tb_private_message
+        WHERE
+            (
+                (sender_id = #{userId} AND receiver_id = #{otherId} AND is_deleted_sender = 0)
+                    OR
+                (sender_id = #{otherId} AND receiver_id = #{userId} AND is_deleted_receiver = 0)
+                )
+        ORDER BY send_time ASC
+    </select>
+
+    <update id="updateMessagesRead">
+        UPDATE tb_private_message
+        SET is_read = 1
+        WHERE sender_id = #{otherId}
+          AND receiver_id = #{userId}
+          AND is_read = 0
+    </update>
+
+    <select id="selectById" parameterType="long" resultType="PrivateMessage">
+        SELECT * FROM tb_private_message WHERE message_id = #{messageId}
+    </select>
+
+    <update id="updateDeletedSender">
+        UPDATE tb_private_message
+        SET is_deleted_sender = #{deleted}
+        WHERE message_id = #{messageId}
+    </update>
+
+    <update id="updateDeletedReceiver">
+        UPDATE tb_private_message
+        SET is_deleted_receiver = #{deleted}
+        WHERE message_id = #{messageId}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM tb_private_message WHERE message_id = #{messageId}
+    </delete>
+</mapper>
