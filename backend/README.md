@@ -101,7 +101,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/school_spring?useUnicode=true&characterEncoding=utf8
+      url: jdbc:mysql://localhost:3306/graduateemploymentinfo?useUnicode=true&characterEncoding=utf8
       username: root
       password: your_password
 ```

@@ -4,7 +4,96 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a70dcefc-1e2e-4256-a8b4-7b45b68b3e4e" name="更改" comment="" />
+    <list default="true" id="0aa37671-f8bd-4663-b2ec-23aeb6958c65" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/gr/geias/service/RouterService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/gr/geias/service/impl/RouterServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/backend/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/gr/geias/controller/PersonInfoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/gr/geias/controller/PersonInfoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/GeiasApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/GeiasApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/aspect/PersonFase.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/aspect/PersonFase.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/controller/EmploymentInformationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/controller/EmploymentInformationController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/controller/FairController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/controller/FairController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/controller/InfoController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/controller/InfoController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/controller/NewsController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/controller/NewsController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/controller/PersonInfoController.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/controller/PersonInfoController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/AreaCount.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/AreaCount.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/ClassGradeAndSpecialty.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/ClassGradeAndSpecialty.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/CollegeAndPerson.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/CollegeAndPerson.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/CompanySimpleDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/CompanySimpleDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/EmploymentInformationExcal.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/EmploymentInformationExcal.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/EmploymentInformationMsg.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/EmploymentInformationMsg.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/JobFairAppliedDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/JobFairAppliedDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/JobFairAvailableDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/JobFairAvailableDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/JobFairWithCompaniesDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/JobFairWithCompaniesDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/NewsCommentDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/NewsCommentDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/SpecialtyAndCollege.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/dto/SpecialtyAndCollege.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/enums/EnableStatusEnums.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/enums/EnableStatusEnums.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/Area.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/Area.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/ClassGrade.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/ClassGrade.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/College.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/College.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/CompanyInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/CompanyInfo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/EmploymentInformation.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/EmploymentInformation.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/EmploymentWay.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/EmploymentWay.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/JobFair.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/JobFair.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/JobFairCompany.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/JobFairCompany.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/News.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/News.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/NewsComment.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/NewsComment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/OperationLog.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/OperationLog.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/OrganizationNum.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/OrganizationNum.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/PersonInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/PersonInfo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/Specialty.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/Specialty.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/UnitKind.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/model/UnitKind.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/AreaRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/AreaRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/ClassGradeRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/ClassGradeRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/CollegeRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/CollegeRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/CompanyInfoRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/CompanyInfoRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/EmploymentInformationRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/EmploymentInformationRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/EmploymentWayRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/EmploymentWayRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/JobFairCompanyRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/JobFairCompanyRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/JobFairRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/JobFairRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/NewsCommentRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/NewsCommentRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/NewsRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/NewsRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/OperationLogRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/OperationLogRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/OrganizationNumRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/OrganizationNumRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/PersonInfoRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/PersonInfoRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/SpecialtyRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/SpecialtyRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/UnitKindRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/repository/UnitKindRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/AreaService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/AreaService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/ClassGradeService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/ClassGradeService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/CollegeService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/CollegeService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/EmploymentInformationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/EmploymentInformationService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/EmploymentWayService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/EmploymentWayService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/JobFairCompanyService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/JobFairCompanyService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/JobFairService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/JobFairService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/NewsCommentService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/NewsCommentService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/NewsService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/NewsService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/OperationLogService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/OperationLogService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/OrganizationNumService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/OrganizationNumService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/PersonInfoService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/PersonInfoService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/SpecialtyService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/SpecialtyService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/UnitKindService.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/UnitKindService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/AreaServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/AreaServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/ClassGradeServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/ClassGradeServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/CollegeServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/CollegeServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/EmploymentInformationServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/EmploymentInformationServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/EmploymentWayServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/EmploymentWayServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/JobFairCompanyServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/JobFairCompanyServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/JobFairServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/JobFairServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/NewsCommentServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/NewsCommentServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/NewsServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/NewsServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/OperationLogServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/OperationLogServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/OrganizationNumServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/OrganizationNumServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/PersonInfoServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/PersonInfoServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/SpecialtyServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/SpecialtyServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/UnitKindServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/service/impl/UnitKindServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/util/ExcelUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/util/ExcelUtil.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/util/FaceUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/util/FaceUtil.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/util/PageMath.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/util/PageMath.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/util/SampleFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/util/SampleFactory.class" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,6 +102,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -20,18 +110,6 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;z522188&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/closedAquarius/employment.git&quot;,
-    &quot;accountId&quot;: &quot;43f91da4-a1e2-4588-9aa1-7bf5eccf00db&quot;
-  }
-}</component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -39,43 +117,56 @@
       </MavenGeneralSettings>
     </option>
   </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+  <component name="PerforceDirect.Settings">
+    <option name="CHARSET" value="无" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 1
-}</component>
-  <component name="ProjectId" id="2z4ItbFv7p2QADliafDcEtQqBeJ" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="2z7HyiWyvm6tTsz0YByW1BZWz68" />
   <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Spring Boot.GeiasApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;back&quot;,
-    &quot;last_opened_file_path&quot;: &quot;G:/ClassCode/employment&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;工件&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.GeiasApplication.executor": "Run",
+    "git-widget-placeholder": "back",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Learning/2024-2025(2)/Web/Smart-Employment-Backend/employment",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "模块",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="employment" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="employment" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="GeiasApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
       <module name="geias-backend" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.gr.geias.GeiasApplication" />
@@ -87,24 +178,20 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.23774.435" />
-        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-IU-251.23774.435" />
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.19416.15" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.19416.15" />
       </set>
     </attachedChunks>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="项目级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="默认任务">
-      <changelist id="a70dcefc-1e2e-4256-a8b4-7b45b68b3e4e" name="更改" comment="" />
-      <created>1750984133922</created>
+      <changelist id="0aa37671-f8bd-4663-b2ec-23aeb6958c65" name="更改" comment="" />
+      <created>1751075447825</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1750984133922</updated>
-      <workItem from="1750984135097" duration="2022000" />
-      <workItem from="1750986411906" duration="12677000" />
-      <workItem from="1751005829736" duration="715000" />
-      <workItem from="1751007045851" duration="10322000" />
-      <workItem from="1751022848479" duration="1817000" />
-      <workItem from="1751068675224" duration="7881000" />
+      <updated>1751075447825</updated>
+      <workItem from="1751075448996" duration="12556000" />
     </task>
     <servers />
   </component>
