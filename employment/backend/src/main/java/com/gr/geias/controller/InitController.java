@@ -73,14 +73,14 @@ public class InitController {
                 map.put("list",college);
                 map.put("level", 2);
             }
-            if (person.getEnableStatus()==EnableStatusEnums.PREXY.getState()){
-                List<College> college = collegeService.getCollege(person.getPersonId());
-                College college1 = college.get(0);
-                List<Specialty> specialty = specialtyService.getSpecialty(college1.getCollegeId());
-                map.put("success",true);
-                map.put("list",specialty);
-                map.put("level", 1);
-            }
+//            if (person.getEnableStatus()==EnableStatusEnums.PREXY.getState()){
+//                List<College> college = collegeService.getCollege(person.getPersonId());
+//                College college1 = college.get(0);
+//                List<Specialty> specialty = specialtyService.getSpecialty(college1.getCollegeId());
+//                map.put("success",true);
+//                map.put("list",specialty);
+//                map.put("level", 1);
+//            }
             if (person.getEnableStatus()==EnableStatusEnums.TEACHER.getState()){
                 List<ClassGrade> classGrade = classGradeService.getClassGrade(null, person.getPersonId());
                 map.put("success",true);

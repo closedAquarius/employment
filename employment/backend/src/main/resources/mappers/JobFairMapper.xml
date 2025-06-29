@@ -3,7 +3,7 @@
 <mapper namespace="com.gr.geias.repository.JobFairRepository">
 
     <!-- 查询所有招聘会基本信息 -->
-    <select id="selectAllJobFairsWithCompanies" resultMap="JobFairWithCompaniesMap">
+    <select id="getAllJobFairsWithCompanies" resultMap="JobFairWithCompaniesMap">
         SELECT
             jf.job_fair_id,
             jf.title,

@@ -16,7 +16,7 @@ const withAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
         }
         
         // 调用统一认证服务验证令牌
-        fetch('/auth/verify-token', {
+        fetch('/login/verify-token', {
                 method: 'POST',
                 headers: {
                     'token': token

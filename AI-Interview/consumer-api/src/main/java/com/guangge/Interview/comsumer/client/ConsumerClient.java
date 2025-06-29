@@ -16,11 +16,11 @@ import java.util.List;
 
 @FeignClient(name = ConsumerConstant.SERVICE_NAME, url = "${consumer-service-endpoint}", configuration = FeignConfig.class)
 public interface ConsumerClient {
-    @PostMapping(value = "/login")
+    @PostMapping(value = "/login/direct")
     CommonResult<UserResponse> login(@RequestParam("name") String name,
                                      @RequestParam("code") String code);
 
-    @PostMapping(value = "/auth/verify-token")
+    @PostMapping(value = "/login/verify-token")
     CommonResult<String> verifyToken(@RequestHeader("token") String token);
 
     @GetMapping(value = "/frontend/interView")

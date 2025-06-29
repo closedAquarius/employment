@@ -2,6 +2,9 @@ package com.gr.geias.aspect;
 import com.gr.geias.model.OperationLog;
 import com.gr.geias.model.PersonInfo;
 import com.gr.geias.service.OperationLogService;
+import com.gr.geias.service.PersonInfoService;
+import com.gr.geias.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
@@ -27,6 +30,8 @@ public class OperationLogAspect {
 
     @Autowired
     private OperationLogService operationLogService;
+    @Autowired
+    private PersonInfoService personInfoService;
 
     // 定义切点，拦截 com.gr.geias.controller 包下所有类的所有方法
     private static final String POINT_CUT = "execution(* com.gr.geias.controller..*(..))";
@@ -87,21 +92,47 @@ public class OperationLogAspect {
     }
 
     /**
-     * 获取会话中的 PersonInfo
+     * 从请求头 Authorization 里解析 JWT token，获得用户信息
      */
     private PersonInfo getPersonInfo(HttpServletRequest request) {
-        return (PersonInfo) request.getSession().getAttribute("person");
+        if (request == null) return null;
+        try {
+            String token = request.getHeader("Authorization");
+            if (token == null || token.isEmpty()) {
+                return null;
+            }
+            // 如果 token 是 Bearer 开头，去除 Bearer 前缀
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+
+            Claims claims = JwtUtil.parseAccessToken(token);
+            Integer userId = (Integer) claims.get("userId");
+            if (userId == null) {
+                return null;
+            }
+
+            // 调用 service 查数据库获取用户详情
+            return personInfoService.getPersonById(userId);
+        } catch (Exception e) {
+            logger.warn("解析token失败，无法获取用户信息", e);
+            return null;
+        }
     }
 
     //target字段的描述 URI -> 中文操作描述映射
     private static final Map<String, String> TARGET_DESCRIPTIONS = new HashMap<>();
     static {
         TARGET_DESCRIPTIONS.put("/personinfo/login", "用户登录");
+        TARGET_DESCRIPTIONS.put("/personinfo/get-async-routes", "获取动态路由");
         TARGET_DESCRIPTIONS.put("/personinfo/register", "用户注册");
         TARGET_DESCRIPTIONS.put("/personinfo/getuser", "获取当前用户信息");
         TARGET_DESCRIPTIONS.put("/personinfo/updateuser", "更新用户信息");
         TARGET_DESCRIPTIONS.put("/personinfo/faceLogin", "人脸识别登录");
         TARGET_DESCRIPTIONS.put("/personinfo/addFace", "添加人脸信息");
+        TARGET_DESCRIPTIONS.put("/companyinfo/company-info", "获取企业信息");
+        TARGET_DESCRIPTIONS.put("/companyinfo/update-company", "修改企业信息");
+        TARGET_DESCRIPTIONS.put("/companyinfo/confirm-company", "管理员确认企业信息");
     }
 
 

@@ -4,7 +4,6 @@ import com.gr.geias.interceptor.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -16,6 +15,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private TokenInterceptor tokenInterceptor;
+    @Autowired
+    private CompanyUserInterceptor companyUserInterceptor;
 
     /**
      * 配置拦截器
@@ -23,8 +24,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/login", "/register", "/error", "/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
+                .addPathPatterns("/api/**") // 拦截所有接口
+                .excludePathPatterns("/api/personinfo/login",
+                                     "/api/personinfo/register"); // 排除登录注册
+
+//        registry.addInterceptor(companyUserInterceptor)
+//                .addPathPatterns("/employmentinformation/**"); // 你希望限制的路径
+
     }
 
     /**
@@ -45,6 +51,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
+
+        // ✅ 新增：映射本地图片上传目录
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
     }
 
     /**
@@ -54,10 +64,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*")
-                .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
                 .allowCredentials(true)
-                .maxAge(3600)
-                .allowedHeaders("*");
+                .maxAge(3600);
     }
 
     /**
@@ -67,13 +77,5 @@ public class WebConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("redirect:/page/login");
         registry.addViewController("/error").setViewName("error");
-    }
-
-    /**
-     * 创建RestTemplate Bean，用于调用统一认证服务
-     */
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
     }
 } 

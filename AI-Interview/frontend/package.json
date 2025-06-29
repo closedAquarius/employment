@@ -3,7 +3,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 8080",
+    "dev": "vite --port 8082",
     "build": "vite build",
     "preview": "vite preview"
   },

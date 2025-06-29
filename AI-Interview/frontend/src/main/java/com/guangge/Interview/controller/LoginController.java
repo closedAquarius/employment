@@ -17,13 +17,13 @@ public class LoginController {
         this.consumerClient = consumerClient;
     }
 
-    @PostMapping(value = "/login")
+    @PostMapping(value = "/login/direct")
     public CommonResult<UserResponse> login(@RequestParam("name") String name,
                                             @RequestParam("code") String code) {
         return consumerClient.login(name,code);
     }
 
-    @PostMapping(value = "/auth/verify-token")
+    @PostMapping(value = "/login/verify-token")
     public CommonResult<String> verifyToken(@RequestHeader("token") String token) {
         return consumerClient.verifyToken(token);
     }

@@ -29,7 +29,7 @@ export default function LoginView() {
       const formData = new FormData();
       formData.append('name', username);
       formData.append('code', password);
-      fetch(`/login`, {
+      fetch(`/login/direct`, {
         method: 'POST',
         body: formData,
       })
@@ -54,7 +54,7 @@ export default function LoginView() {
     console.info('token2:' + token);
     if (name != '') {
       try {
-          const response = fetch(`/auth/verify-token`, {
+          const response = fetch(`/login/verify-token`, {
                   method: 'POST',
                   headers: {
                     'token': token

@@ -49,14 +49,14 @@ public class WelcomeController {
             ruslt.put("weijiuye", integer - count);
             return ruslt;
         }
-        if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
-            Integer integer = organizationNumService.getcollegeCount(person.getCollegeId());
-            Integer count = employmentInformationService.getCount(null, person, null);
-            ruslt.put("success", true);
-            ruslt.put("yijiuye", count);
-            ruslt.put("weijiuye", integer - count);
-            return ruslt;
-        }
+//        if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
+//            Integer integer = organizationNumService.getcollegeCount(person.getCollegeId());
+//            Integer count = employmentInformationService.getCount(null, person, null);
+//            ruslt.put("success", true);
+//            ruslt.put("yijiuye", count);
+//            ruslt.put("weijiuye", integer - count);
+//            return ruslt;
+//        }
         if (person.getEnableStatus() == EnableStatusEnums.TEACHER.getState()) {
             Integer count = employmentInformationService.getCount(null, person, null);
             List<ClassGrade> classGradeList = classGradeService.getClassGrade(null, person.getPersonId());
@@ -112,20 +112,20 @@ public class WelcomeController {
                 list.add(map);
             }
         }
-        if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
-            List<Specialty> specialtyList = specialtyService.getSpecialty(person.getCollegeId());
-            for (int i = 0; i < specialtyList.size(); i++) {
-                Specialty specialty = specialtyList.get(i);
-                Map<String, Object> map = new HashMap<String, Object>(2);
-                EmploymentInformation employmentInformation = new EmploymentInformation();
-                employmentInformation.setSpecialty(specialty);
-                Integer count = employmentInformationService.getCount(employmentInformation, null, null);
-                nameList.add(specialty.getSpecialtyName());
-                map.put("name", specialty.getSpecialtyName());
-                map.put("value", count);
-                list.add(map);
-            }
-        }
+//        if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
+//            List<Specialty> specialtyList = specialtyService.getSpecialty(person.getCollegeId());
+//            for (int i = 0; i < specialtyList.size(); i++) {
+//                Specialty specialty = specialtyList.get(i);
+//                Map<String, Object> map = new HashMap<String, Object>(2);
+//                EmploymentInformation employmentInformation = new EmploymentInformation();
+//                employmentInformation.setSpecialty(specialty);
+//                Integer count = employmentInformationService.getCount(employmentInformation, null, null);
+//                nameList.add(specialty.getSpecialtyName());
+//                map.put("name", specialty.getSpecialtyName());
+//                map.put("value", count);
+//                list.add(map);
+//            }
+//        }
         if (person.getEnableStatus() == EnableStatusEnums.TEACHER.getState()) {
             List<ClassGrade> classGradeList = classGradeService.getClassGrade(null, person.getPersonId());
             for (int i = 0; i < classGradeList.size(); i++) {
@@ -172,23 +172,23 @@ public class WelcomeController {
                 list.add(ratio*100);
             }
         }
-        if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
-            List<Specialty> specialtyList = specialtyService.getSpecialty(person.getCollegeId());
-            for (int i = 0; i < specialtyList.size(); i++) {
-                Specialty specialty = specialtyList.get(i);
-                EmploymentInformation employmentInformation = new EmploymentInformation();
-                employmentInformation.setSpecialty(specialty);
-                Integer count = employmentInformationService.getCount(employmentInformation,
-                        null, null);
-                Integer integer = organizationNumService.getspecialtyCount(specialty.getSpecialtyId());
-                float ratio =0f;
-                if (integer!=0){
-                    ratio = (float)count / (float)integer;
-                }
-                nameList.add(specialty.getSpecialtyName());
-                list.add(ratio*100);
-            }
-        }
+//        if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
+//            List<Specialty> specialtyList = specialtyService.getSpecialty(person.getCollegeId());
+//            for (int i = 0; i < specialtyList.size(); i++) {
+//                Specialty specialty = specialtyList.get(i);
+//                EmploymentInformation employmentInformation = new EmploymentInformation();
+//                employmentInformation.setSpecialty(specialty);
+//                Integer count = employmentInformationService.getCount(employmentInformation,
+//                        null, null);
+//                Integer integer = organizationNumService.getspecialtyCount(specialty.getSpecialtyId());
+//                float ratio =0f;
+//                if (integer!=0){
+//                    ratio = (float)count / (float)integer;
+//                }
+//                nameList.add(specialty.getSpecialtyName());
+//                list.add(ratio*100);
+//            }
+//        }
         if (person.getEnableStatus() == EnableStatusEnums.TEACHER.getState()) {
             List<ClassGrade> classGradeList = classGradeService.getClassGrade(null,
                     person.getPersonId());

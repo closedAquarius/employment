@@ -35,7 +35,7 @@ public class LoginController {
      * @return 登录信息
      * @throws Exception
      */
-    @PostMapping(value = "/login")
+    @PostMapping(value = "/login/direct")
     public CommonResult<UserResponse> login(@RequestParam("name") String name,
                                             @RequestParam("code") String code) throws Exception {
         Candidates candidates = this.candidatesService.longin(name,code);
@@ -54,7 +54,7 @@ public class LoginController {
      * @param token token
      * @return 认证信息
      */
-    @PostMapping(value = "/auth/verify-token")
+    @PostMapping(value = "/login/verify-token")
     public CommonResult<String> verifyToken(@RequestHeader("token") String token) {
         DecodedJWT decodedJWT = null;
         try {

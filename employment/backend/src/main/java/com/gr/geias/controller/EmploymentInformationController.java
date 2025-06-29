@@ -12,6 +12,7 @@ import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
@@ -82,11 +83,11 @@ public class EmploymentInformationController {
                 classGrade.setClassId(levelId);
                 employmentInformation.setClassGrade(classGrade);
             }
-            if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
-                Specialty specialty = new Specialty();
-                specialty.setSpecialtyId(levelId);
-                employmentInformation.setSpecialty(specialty);
-            }
+//            if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
+//                Specialty specialty = new Specialty();
+//                specialty.setSpecialtyId(levelId);
+//                employmentInformation.setSpecialty(specialty);
+//            }
             if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
                 College college = new College();
                 college.setCollegeId(levelId);

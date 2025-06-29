@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gr.geias.repository.CompanyInfoRepository">
+
+    <resultMap id="companyInfoMap" type="com.gr.geias.model.CompanyInfo">
+        <id property="companyId" column="company_id"/>
+        <result property="companyName" column="company_name"/>
+        <result property="companyIntro" column="company_intro"/>
+        <result property="address" column="address"/>
+        <result property="areaId" column="area_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="areaName" column="area_name"/>
+        <result property="confirmed" column="confirmed"/>
+    </resultMap>
+
+    <!-- 插入企业 -->
+    <insert id="insertCompany" parameterType="CompanyInfo">
+        INSERT INTO tb_company_info (company_name, company_intro, address, area_id, create_time, confirmed)
+        VALUES (#{companyName}, #{companyIntro}, #{address}, #{areaId}, NOW(), FALSE)
+    </insert>
+
+    <!-- 管理员确认企业 -->
+    <update id="confirmCompany" parameterType="int">
+        UPDATE tb_company_info SET confirmed = TRUE WHERE company_id = #{companyId}
+    </update>
+
+    <!-- 修改企业信息时自动将 confirmed 重置为 false -->
+    <update id="updateCompany" parameterType="CompanyInfo">
+        UPDATE tb_company_info
+        SET company_name = #{companyName},
+            company_intro = #{companyIntro},
+            address = #{address},
+            area_id = #{areaId},
+            confirmed = FALSE
+        WHERE company_id = #{companyId}
+    </update>
+
+    <!-- 查询企业人员所属企业 -->
+    <select id="getCompanyByPersonId" resultMap="companyInfoMap">
+        SELECT * FROM tb_company_info
+        WHERE company_id = (
+            SELECT college_id FROM tb_person_info  WHERE person_id = #{personId} AND enable_Status = 3
+        )
+    </select>
+</mapper>

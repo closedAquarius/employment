@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -36,7 +37,7 @@ public class FairController {
      */
     @PostMapping("/jobfair")
     public ResponseEntity<String> addJobFair(@RequestBody JobFair jobFair) {
-        jobFair.setCreateTime(LocalDateTime.now());
+        jobFair.setCreateTime(new Date());
         jobFairService.insertJobFair(jobFair);
         return ResponseEntity.ok("招聘会创建成功");
     }

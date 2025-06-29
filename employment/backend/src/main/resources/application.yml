@@ -34,15 +34,3 @@ logging:
           repository: debug
 server:
   port: 8080 
-
-  # 文件上传配置
-file:
-  upload:
-    path: /uploads
-    max-size: 10MB
-    allowed-types: application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document
-
-# AI-Interview系统API配置
-ai-interview:
-  api:
-    url: http://localhost:8081/api 

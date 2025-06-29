@@ -13,17 +13,13 @@ public enum EnableStatusEnums {
      */
     TEACHER(1, "老师"),
     /**
-     * 企业HR
-     */
-    ENTERPRISE_HR(2, "企业人员"),
-    /**
-     * 院长
-     */
-    PREXY(3, "院长"),
-    /**
      * 管理员
      */
-    ADMINISTRATOR(4, "管理员");
+    ENTERPRISE_HR(2, "管理员"),
+    /**
+     * 企业人员
+     */
+    ADMINISTRATOR(3, "企业人员");
 
     private Integer state;
     private String stateInfo;
