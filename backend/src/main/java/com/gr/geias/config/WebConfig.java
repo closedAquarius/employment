@@ -15,6 +15,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private TokenInterceptor tokenInterceptor;
+    @Autowired
+    private CompanyUserInterceptor companyUserInterceptor;
 
     /**
      * 配置拦截器
@@ -25,6 +27,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**") // 拦截所有接口
                 .excludePathPatterns("/api/personinfo/login",
                                      "/api/personinfo/register"); // 排除登录注册
+
+//        registry.addInterceptor(companyUserInterceptor)
+//                .addPathPatterns("/employmentinformation/**"); // 你希望限制的路径
+
     }
 
     /**
@@ -45,6 +51,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
+
+        // ✅ 新增：映射本地图片上传目录
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
     }
 
     /**

@@ -1,5 +1,9 @@
 package com.gr.geias.dto;
 
+
+import lombok.Data;
+
+@Data
 public class JobFairAppliedDTO {
     private Integer jobFairId;
     private String title;

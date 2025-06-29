@@ -1,7 +1,10 @@
 package com.gr.geias.dto;
 
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
 public class NewsCommentDTO {
     private Integer commentId;
     private Integer newsId;
