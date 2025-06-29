@@ -83,11 +83,11 @@ public class EmploymentInformationController {
                 classGrade.setClassId(levelId);
                 employmentInformation.setClassGrade(classGrade);
             }
-            if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
-                Specialty specialty = new Specialty();
-                specialty.setSpecialtyId(levelId);
-                employmentInformation.setSpecialty(specialty);
-            }
+//            if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
+//                Specialty specialty = new Specialty();
+//                specialty.setSpecialtyId(levelId);
+//                employmentInformation.setSpecialty(specialty);
+//            }
             if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
                 College college = new College();
                 college.setCollegeId(levelId);

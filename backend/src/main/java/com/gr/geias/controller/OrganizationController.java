@@ -176,9 +176,6 @@ public class OrganizationController {
         if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             college = collegeService.getCollege(null);
         }
-        if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
-            college = collegeService.getCollege(person.getPersonId());
-        }
         if (college != null) {
             map.put("success", true);
             map.put("collegeList", college);
@@ -210,17 +207,7 @@ public class OrganizationController {
 
             EnableStatusEnums role = EnableStatusEnums.stateOf(person.getEnableStatus());
 
-            if (role == EnableStatusEnums.PREXY) {
-                // 院长只看自己学院
-                List<College> collegeList = collegeService.getCollege(person.getPersonId());
-                if (collegeList == null || collegeList.isEmpty()) {
-                    map.put("success", false);
-                    map.put("errMsg", "未找到所属学院");
-                    return map;
-                }
-                college = collegeList.get(0);
-                specialtyList = specialtyService.getSpecialty(college.getCollegeId());
-            } else if (role == EnableStatusEnums.ADMINISTRATOR) {
+            if (role == EnableStatusEnums.ADMINISTRATOR) {
                 // 管理员可以查所有学院
                 if (collegeId == null) {
                     List<College> collegeList = collegeService.getCollege(null);
@@ -283,9 +270,6 @@ public class OrganizationController {
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         Specialty specialty = new Specialty();
-        if (person.getEnableStatus()==EnableStatusEnums.PREXY.getState()){
-            specialty.setCollegeId(person.getCollegeId());
-        }
         if (person.getEnableStatus()==EnableStatusEnums.ADMINISTRATOR.getState()){
             specialty.setCollegeId(collegeId);
         }
@@ -426,9 +410,6 @@ public class OrganizationController {
         List<PersonInfo> personByCollegeId = null;
         if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
             personByCollegeId = personInfoService.getPersonByCollegeId(collegeId);
-        }
-        if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
-            personByCollegeId = personInfoService.getPersonByCollegeId(person.getCollegeId());
         }
         if (personByCollegeId.size() > 0) {
             map.put("success", true);
@@ -587,17 +568,18 @@ public class OrganizationController {
             List<PersonInfo> personInfoList = null;
             College college = null;
 
-            if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
-                // 院长只能查看自己学院的人
-                personInfoList = personInfoService.getPersonByCollegeId(person.getCollegeId());
-                List<College> collegeList = collegeService.getCollege(person.getPersonId());
-                if (collegeList == null || collegeList.isEmpty()) {
-                    map.put("success", false);
-                    map.put("errMsg", "没有数据");
-                    return map;
-                }
-                college = collegeList.get(0);
-            } else if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
+//            if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
+//                // 院长只能查看自己学院的人
+//                personInfoList = personInfoService.getPersonByCollegeId(person.getCollegeId());
+//                List<College> collegeList = collegeService.getCollege(person.getPersonId());
+//                if (collegeList == null || collegeList.isEmpty()) {
+//                    map.put("success", false);
+//                    map.put("errMsg", "没有数据");
+//                    return map;
+//                }
+//                college = collegeList.get(0);
+//            } else
+                if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
                 // 管理员可以查看任意学院
                 if (collegeId == null) {
                     List<College> collegeList = collegeService.getCollege(null);

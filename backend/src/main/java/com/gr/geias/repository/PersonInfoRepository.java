@@ -103,7 +103,7 @@ public interface PersonInfoRepository {
      * 
      * @return 管理员列表
      */
-    @Select("select * from tb_person_info where enable_Status=4")
+    @Select("select * from tb_person_info where enable_Status=2")
     List<PersonInfo> queryPerson1();
 
     /**

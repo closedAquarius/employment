@@ -65,7 +65,7 @@ public class CompanyInfoController {
             Integer roles = (Integer) claims.get("roles");
             Integer userId = (Integer) claims.get("userId");
 
-            if (roles != 2) {
+            if (roles != 3) {
                 map.put("success", false);
                 map.put("errMsg", "只有企业人员可以修改所属企业信息");
                 return map;
@@ -101,7 +101,7 @@ public class CompanyInfoController {
             Claims claims = JwtUtil.parseAccessToken(token);
             Integer roles = (Integer) claims.get("roles");
 
-            if (roles != 4) {
+            if (roles != 2) {
                 map.put("success", false);
                 map.put("errMsg", "无权限确认企业信息");
                 return map;

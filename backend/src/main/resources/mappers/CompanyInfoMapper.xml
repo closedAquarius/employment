@@ -39,7 +39,7 @@
     <select id="getCompanyByPersonId" resultMap="companyInfoMap">
         SELECT * FROM tb_company_info
         WHERE company_id = (
-            SELECT college_id FROM tb_person_info  WHERE person_id = #{personId} AND enable_Status = 2
+            SELECT college_id FROM tb_person_info  WHERE person_id = #{personId} AND enable_Status = 3
         )
     </select>
 </mapper>
