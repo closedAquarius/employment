@@ -15,17 +15,13 @@ import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-<<<<<<< HEAD
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-=======
 import java.util.*;
->>>>>>> fd6d64a879298e68ff3b403959a6cffb0bab9d46
+
 
 /**
  * 人员信息控制器
