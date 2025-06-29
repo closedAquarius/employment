@@ -33,7 +33,7 @@ public class CompanyInfoController {
             Integer userId = (Integer) claims.get("userId");
 
             PersonInfo person = personInfoService.getPersonById(userId);
-            CompanyInfo company = companyInfoService.getCompanyByPersonId(person.getCollegeId());
+            CompanyInfo company = companyInfoService.getCompanyByPersonId(person.getPersonId());
 
             if (company == null || Boolean.FALSE.equals(company.getConfirmed())) {
                 map.put("success", false);
@@ -42,6 +42,10 @@ public class CompanyInfoController {
                 map.put("success", true);
                 map.put("company", company);
             }
+//
+//            map.put("success", true);
+//            map.put("company", company);
+//            测试成功
 
         } catch (Exception e) {
             map.put("success", false);

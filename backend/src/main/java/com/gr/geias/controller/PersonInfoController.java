@@ -1,8 +1,10 @@
 package com.gr.geias.controller;
 
+import com.gr.geias.model.OperationLog;
 import com.gr.geias.model.PersonInfo;
 import com.gr.geias.model.Specialty;
 import com.gr.geias.enums.EnableStatusEnums;
+import com.gr.geias.service.OperationLogService;
 import com.gr.geias.service.PersonInfoService;
 import com.gr.geias.service.SpecialtyService;
 import com.gr.geias.util.JwtUtil;
@@ -13,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +32,7 @@ public class PersonInfoController {
     private PersonInfoService personInfoService;
     
     @Autowired
-    private SpecialtyService specialtyService;
+    private OperationLogService operationLogService;
 
     /**
      * 登录
@@ -59,6 +63,17 @@ public class PersonInfoController {
                 data.put("accessToken", accessToken);
                 data.put("refreshToken", refreshToken);
                 data.put("expires", expires);
+
+                //登录操作的日志
+                OperationLog log = new OperationLog();
+                log.setPersonId(login.getPersonId());
+                log.setUsername(login.getUsername());
+                log.setEnableStatus(login.getEnableStatus());
+                log.setOperationType("POST /api/personinfo/login");
+                log.setTarget("用户登录");
+                log.setSuccess(true);
+                log.setOperationTime(LocalDateTime.now());
+                operationLogService.saveLog(log);
 
                 map.put("success", true);
                 map.put("data", data); //返回 token

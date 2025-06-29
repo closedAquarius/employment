@@ -37,9 +37,9 @@
 
     <!-- 查询企业人员所属企业 -->
     <select id="getCompanyByPersonId" resultMap="companyInfoMap">
-        SELECT * FROM company_info
+        SELECT * FROM tb_company_info
         WHERE company_id = (
-            SELECT college_id FROM person_info WHERE person_id = #{personId} AND enable_status = 2
+            SELECT college_id FROM tb_person_info  WHERE person_id = #{personId} AND enable_Status = 2
         )
     </select>
 </mapper>
