@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gr.geias.repository.PresentationSignupRepository">
+
+    <!-- 查询宣讲会信息 -->
+    <select id="selectPresentationById" resultType="com.gr.geias.model.Presentation">
+        SELECT * FROM tb_presentation WHERE presentation_id = #{presentationId}
+    </select>
+
+    <!-- 检查是否已报名 -->
+    <select id="checkAlreadySigned" resultType="int">
+        SELECT COUNT(*) FROM tb_presentation_signup
+        WHERE presentation_id = #{presentationId} AND student_id = #{studentId}
+    </select>
+
+    <!-- 插入报名记录 -->
+    <insert id="insertSignup">
+        INSERT INTO tb_presentation_signup (presentation_id, student_id)
+        VALUES (#{presentationId}, #{studentId})
+    </insert>
+
+    <!-- 更新报名人数 -->
+    <update id="incrementSignupCount">
+        UPDATE tb_presentation
+        SET signup_count = signup_count + 1
+        WHERE presentation_id = #{presentationId}
+    </update>
+
+    <!-- 已报名宣讲会 -->
+    <select id="getSignedPresentationsByStudent" resultType="com.gr.geias.dto.PresentationWithCompanyDTO">
+        SELECT
+            p.presentation_id,
+            p.title,
+            p.location,
+            p.capacity,
+            p.start_time,
+            p.end_time,
+            p.description,
+            p.status,
+            p.remark,
+            p.signup_count,
+            p.create_time,
+            p.update_time,
+
+            c.company_id,
+            c.company_name,
+            cp.username AS company_username,
+            u.unit_name AS company_type
+
+        FROM tb_presentation_signup s
+                 JOIN tb_presentation p ON s.presentation_id = p.presentation_id
+                 JOIN tb_company_info c ON p.company_id = c.company_id
+                 JOIN tb_person_info cp ON c.company_id = cp.person_id
+                 LEFT JOIN tb_unit_kind u ON c.unit_id = u.unit_id
+        WHERE s.student_id = #{studentId}
+    </select>
+
+    <!-- 未报名宣讲会 -->
+    <select id="getUnSignedPresentationsByStudent" resultType="com.gr.geias.dto.PresentationWithCompanyDTO">
+        SELECT
+            p.presentation_id,
+            p.title,
+            p.location,
+            p.capacity,
+            p.start_time,
+            p.end_time,
+            p.description,
+            p.status,
+            p.remark,
+            p.signup_count,
+            p.create_time,
+            p.update_time,
+
+            c.company_id,
+            c.company_name,
+            cp.username AS company_username,
+            u.unit_name AS company_type
+
+        FROM tb_presentation p
+                 JOIN tb_company_info c ON p.company_id = c.company_id
+                 JOIN tb_person_info cp ON c.company_id = cp.person_id
+                 LEFT JOIN tb_unit_kind u ON c.unit_id = u.unit_id
+        WHERE p.status = 1
+          AND p.presentation_id NOT IN (
+            SELECT presentation_id FROM tb_presentation_signup WHERE student_id = #{studentId}
+        )
+    </select>
+
+    <!-- 删除学生某宣讲会的报名记录 -->
+    <delete id="deleteByStudentAndPresentation" parameterType="map">
+        DELETE FROM tb_presentation_signup
+        WHERE student_id = #{studentId} AND presentation_id = #{presentationId}
+    </delete>
+
+    <!-- 宣讲会报名人数减1 -->
+    <update id="decrementSignupCount" parameterType="int">
+        UPDATE tb_presentation
+        SET signup_count = signup_count - 1
+        WHERE presentation_id = #{presentationId} AND signup_count > 0
+    </update>
+
+    <!-- 查询某宣讲会报名学生的专业分布（返回 Map） -->
+    <select id="countBySpecialty" resultType="map">
+        SELECT sp.specialty_name AS specialtyName, COUNT(*) AS count
+        FROM tb_presentation_signup ps
+            JOIN tb_person_info p ON ps.student_id = p.person_id
+            JOIN tb_class_grade c ON p.class_id = c.class_id
+            JOIN tb_specialty sp ON c.specialty_id = sp.specialty_id
+        WHERE ps.presentation_id = #{presentationId}
+        GROUP BY sp.specialty_name
+    </select>
+
+    <!-- 查询某宣讲会报名学生的班级分布（返回 Map） -->
+    <select id="countByClass" resultType="map">
+        SELECT c.class_name AS className, COUNT(*) AS count
+        FROM tb_presentation_signup ps
+            JOIN tb_person_info p ON ps.student_id = p.person_id
+            JOIN tb_class_grade c ON p.class_id = c.class_id
+        WHERE ps.presentation_id = #{presentationId}
+        GROUP BY c.class_name
+    </select>
+</mapper>

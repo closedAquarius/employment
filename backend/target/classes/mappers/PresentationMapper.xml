@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gr.geias.repository.PresentationRepository">
+    <insert id="insertPresentation" parameterType="com.yourpackage.entity.Presentation">
+        INSERT INTO tb_presentation (
+            company_id, title, location, capacity,
+            start_time, end_time, description, status, create_time, update_time
+        ) VALUES (
+                     #{companyId}, #{title}, #{location}, #{capacity},
+                     #{startTime}, #{endTime}, #{description}, #{status}, #{createTime}, #{updateTime}
+                 )
+    </insert>
+
+    <!-- 检查是否存在冲突的宣讲会（时间段重叠 && 同一地点） -->
+    <select id="checkConflict" resultType="int">
+        SELECT COUNT(*) FROM tb_presentation
+        WHERE location = #{location}
+        AND status IN (0, 1) -- 排除被拒绝的
+        AND (
+        (start_time < #{endTime} AND end_time > #{startTime})
+        )
+    </select>
+
+    <select id="selectByCompanyId" resultType="com.yourpackage.entity.Presentation">
+        SELECT *
+        FROM tb_presentation
+        WHERE company_id = #{companyId}
+        ORDER BY create_time DESC
+    </select>
+</mapper>
