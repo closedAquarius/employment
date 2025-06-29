@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI面试客户端</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+        }
+        .chat-container {
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        #messageInput {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #d1e7ff;
+            align-self: flex-end;
+            text-align: right;
+        }
+        .bot-message {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI面试系统</h1>
+    <div class="container">
+        <div id="chatContainer" class="chat-container"></div>
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="输入您的回答...">
+            <button id="sendButton">发送</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            const chatId = 'chat-' + Date.now();
+            
+            let isFirstMessage = true;
+
+            // 添加消息到聊天容器
+            function addMessage(content, isUser) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+                messageDiv.textContent = content;
+                chatContainer.appendChild(messageDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+            // 发送消息到API
+            function sendMessage() {
+                const message = messageInput.value.trim();
+                if (!message) return;
+
+                addMessage(message, true);
+                messageInput.value = '';
+                
+                const data = {
+                    chatId: chatId,
+                    userMessage: message
+                };
+
+                fetch('http://localhost:8088/interview/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let botMessage = '';
+                    
+                    function read() {
+                        return reader.read().then(({value, done}) => {
+                            if (done) {
+                                return;
+                            }
+                            
+                            const chunk = decoder.decode(value);
+                            const lines = chunk.split('\n');
+                            
+                            for (let line of lines) {
+                                if (line.trim() && line.startsWith('data:')) {
+                                    botMessage += line.substring(5).trim();
+                                }
+                            }
+                            
+                            return read();
+                        });
+                    }
+                    
+                    return read().then(() => {
+                        if (botMessage) {
+                            addMessage(botMessage, false);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    addMessage('发生错误，请重试', false);
+                });
+            }
+
+            // 发送按钮点击事件
+            sendButton.addEventListener('click', sendMessage);
+
+            // 回车键发送消息
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // 启动页面时首条消息
+            if (isFirstMessage) {
+                setTimeout(() => {
+                    addMessage('请输入你的姓名，开始面试', false);
+                    isFirstMessage = false;
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html> 

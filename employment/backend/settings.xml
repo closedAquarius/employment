@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <mirrors>
+        <!-- 阿里云仓库 -->
+        <mirror>
+            <id>alimaven</id>
+            <mirrorOf>central</mirrorOf>
+            <name>aliyun maven</name>
+            <url>https://maven.aliyun.com/repository/central</url>
+        </mirror>
+        <!-- Maven中央仓库 -->
+        <mirror>
+            <id>central</id>
+            <mirrorOf>central</mirrorOf>
+            <name>Maven Central</name>
+            <url>https://repo1.maven.org/maven2</url>
+        </mirror>
+        <!-- 华为云仓库 -->
+        <mirror>
+            <id>huaweicloud</id>
+            <mirrorOf>central</mirrorOf>
+            <name>huawei maven</name>
+            <url>https://repo.huaweicloud.com/repository/maven/</url>
+        </mirror>
+    </mirrors>
+</settings> 
