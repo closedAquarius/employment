@@ -1,0 +1,9 @@
+requests
+beautifulsoup4
+pandas
+matplotlib
+seaborn
+wordcloud
+selenium
+webdriver_manager
+jieba
