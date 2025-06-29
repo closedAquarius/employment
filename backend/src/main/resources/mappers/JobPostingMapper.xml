@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gr.geias.repository.JobPostingRepository">
+
+    <resultMap id="JobPostingResult" type="com.gr.geias.model.JobPosting">
+        <id property="jobId" column="job_id" />
+        <id property="positionId" column="position_id" />
+        <result property="positionName" column="position_name" />
+        <result property="city" column="city" />
+        <result property="salary" column="salary" />
+        <result property="companyName" column="company_name" />
+        <result property="companyTags" column="company_tags" />
+        <result property="educationRequirement" column="education_requirement" />
+        <result property="experienceRequired" column="experience_required" />
+        <result property="recruitNumber" column="recruit_number" />
+        <result property="preferredMajors" column="preferred_majors" />
+        <result property="date" column="update_date" />
+        <result property="description" column="job_description" />
+        <result property="place" column="job_place" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.gr.geias.model.JobPosting">
+        for (JobPosting job : list) {
+    System.out.println(">>> id = " + job.getPositionId());
+        }
+        INSERT INTO tb_job_posting
+        (position_id, position_name, city, salary, company_name,
+         company_tags, education_requirement,
+         experience_required, job_id, recruit_number, preferred_majors,
+         update_date, job_description, job_place)
+        VALUES
+            (#{positionId}, #{positionName}, #{city}, #{salary}, #{companyName},
+             #{companyTags}, #{educationRequirement},
+             #{experienceRequired}, #{jobId}, #{recruitNumber}, #{preferredMajors},
+             #{date}, #{description}, #{place})
+    </insert>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO tb_job_posting
+        (position_id, position_name, city, salary, company_name,
+        company_tags, education_requirement,
+        experience_required, job_id, recruit_number, preferred_majors,
+        update_date, job_description, job_place)
+        VALUES
+        <foreach collection="list" item="job" separator=",">
+            (#{job.positionId}, #{job.positionName}, #{job.city}, #{job.salary}, #{job.companyName},
+            #{job.companyTags}, #{job.educationRequirement},
+            #{job.experienceRequired}, #{job.jobId}, #{job.recruitNumber}, #{job.preferredMajors},
+            #{job.date}, #{job.description}, #{job.place})
+        </foreach>
+    </insert>
+
+    <select id="findById" resultMap="JobPostingResult">
+        SELECT * FROM tb_job_posting WHERE position_id = #{id} and job_id=#{jobId}
+    </select>
+
+</mapper>
