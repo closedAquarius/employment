@@ -13,12 +13,14 @@
 
     <!-- 检查是否存在冲突的宣讲会（时间段重叠 && 同一地点） -->
     <select id="checkConflict" resultType="int">
+        <![CDATA[
         SELECT COUNT(*) FROM tb_presentation
         WHERE location = #{location}
-        AND status IN (0, 1) -- 排除被拒绝的
-        AND (
-        (start_time < #{endTime} AND end_time > #{startTime})
-        )
+          AND status IN (0, 1)
+          AND (
+            start_time < #{endTime} AND end_time > #{startTime}
+            )
+        ]]>
     </select>
 
     <select id="selectByCompanyId" resultType="com.gr.geias.model.Presentation">
@@ -44,11 +46,13 @@
     </select>
 
     <select id="checkConflictExcludeSelf" resultType="int">
+        <![CDATA[
         SELECT COUNT(*) FROM tb_presentation
         WHERE location = #{location}
-        AND status IN (0,1)
-        AND presentation_id != #{excludeId}
-        AND (start_time < #{endTime} AND end_time > #{startTime})
+          AND status IN (0,1)
+          AND presentation_id != #{excludeId}
+          AND (start_time < #{endTime} AND end_time > #{startTime})
+        ]]>
     </select>
 
     <update id="updateStatusRemarkLocation">
