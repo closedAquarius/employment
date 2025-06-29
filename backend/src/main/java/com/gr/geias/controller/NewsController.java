@@ -8,9 +8,11 @@ import com.gr.geias.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 @RestController
 @RequestMapping("/news")
@@ -21,6 +23,65 @@ public class NewsController {
     @Autowired
     private NewsCommentService newsCommentService;
 
+    @PostMapping("/uploadImages")
+    public ResponseEntity<List<String>> uploadNewsImages(@RequestParam("files") MultipartFile[] files) {
+        if (files == null || files.length == 0) {
+            return ResponseEntity.badRequest().body(Collections.singletonList("未上传文件"));
+        }
+
+        List<String> uploadedUrls = new ArrayList<>();
+
+        // 获取项目启动目录
+        String basePath = System.getProperty("user.dir");
+        // 定义保存图片的文件夹
+        String uploadDirPath = basePath + File.separator + "uploads" + File.separator + "news";
+
+        File uploadDir = new File(uploadDirPath);
+        if (!uploadDir.exists()) {
+            boolean mkdirsResult = uploadDir.mkdirs();
+            if (!mkdirsResult) {
+                return ResponseEntity.status(500).body(Collections.singletonList("创建上传目录失败"));
+            }
+        }
+
+        for (MultipartFile file : files) {
+            if (file.isEmpty()) {
+                continue;
+            }
+
+            // 获取文件原始名
+            String originalFilename = file.getOriginalFilename();
+            // 取扩展名
+            String extension = "";
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+
+            // 使用UUID生成新的文件名，防止冲突
+            String newFileName = UUID.randomUUID().toString() + extension;
+
+            // 文件最终保存路径
+            File destFile = new File(uploadDir, newFileName);
+
+            try {
+                // 保存文件到磁盘
+                file.transferTo(destFile);
+
+                // 这里拼接成前端访问的相对路径，比如 /uploads/news/xxx.jpg
+                String urlPath = "/uploads/news/" + newFileName;
+                uploadedUrls.add(urlPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+                // 上传失败，记录错误并跳过该文件
+            }
+        }
+
+        if (uploadedUrls.isEmpty()) {
+            return ResponseEntity.status(500).body(Collections.singletonList("上传失败"));
+        } else {
+            return ResponseEntity.ok(uploadedUrls);
+        }
+    }
     /**
      * 管理员可访问：发布一篇新闻
      */
