@@ -124,6 +124,7 @@ public class OperationLogAspect {
     private static final Map<String, String> TARGET_DESCRIPTIONS = new HashMap<>();
     static {
         TARGET_DESCRIPTIONS.put("/personinfo/login", "用户登录");
+        TARGET_DESCRIPTIONS.put("/personinfo/get-async-routes", "获取动态路由");
         TARGET_DESCRIPTIONS.put("/personinfo/register", "用户注册");
         TARGET_DESCRIPTIONS.put("/personinfo/getuser", "获取当前用户信息");
         TARGET_DESCRIPTIONS.put("/personinfo/updateuser", "更新用户信息");

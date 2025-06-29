@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a70dcefc-1e2e-4256-a8b4-7b45b68b3e4e" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/aspect/OperationLogAspect.class" beforeDir="false" afterPath="$PROJECT_DIR$/backend/target/classes/com/gr/geias/aspect/OperationLogAspect.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,7 +15,6 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -64,7 +62,6 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.GeiasApplication.executor": "Run",
-    "git-widget-placeholder": "back",
     "last_opened_file_path": "G:/ClassCode/employment",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
