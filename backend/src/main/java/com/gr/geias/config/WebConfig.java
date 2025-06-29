@@ -15,6 +15,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private TokenInterceptor tokenInterceptor;
+    @Autowired
+    private CompanyUserInterceptor companyUserInterceptor;
 
     /**
      * 配置拦截器
@@ -25,6 +27,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**") // 拦截所有接口
                 .excludePathPatterns("/api/personinfo/login",
                                      "/api/personinfo/register"); // 排除登录注册
+
+//        registry.addInterceptor(companyUserInterceptor)
+//                .addPathPatterns("/employmentinformation/**"); // 你希望限制的路径
+
     }
 
     /**
