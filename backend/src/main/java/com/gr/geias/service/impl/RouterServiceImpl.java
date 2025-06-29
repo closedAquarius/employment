@@ -50,14 +50,15 @@ public class RouterServiceImpl implements RouterService {
     private Map<String, Object> createHomeRouter() {
         Map<String, Object> homeRouter = new HashMap<>();
         homeRouter.put("path", "/adminWelcome");
+        /*
         if (role.equals("2")) {
             homeRouter.put("name", "AdminWelcomePage");
-        }
-        homeRouter.put("redirect", "/welcome");
+        }*/
+        homeRouter.put("redirect", "/adminWelcome/index");
 
         Map<String, Object> meta = new HashMap<>();
-        meta.put("icon", "ep/home-filled");
-        meta.put("title", "首页");
+        meta.put("icon", "custom/home");
+        meta.put("title", "我的桌面");
         meta.put("rank", 1);
         homeRouter.put("meta", meta);
 
@@ -70,7 +71,7 @@ public class RouterServiceImpl implements RouterService {
         }
 
         Map<String, Object> welcomeMeta = new HashMap<>();
-        welcomeMeta.put("title", "首页");
+        welcomeMeta.put("title", "我的桌面");
         welcomeChild.put("meta", welcomeMeta);
 
         children.add(welcomeChild);
