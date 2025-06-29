@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gr.geias.repository.PresentationRepository">
+    <insert id="insertPresentation" parameterType="com.gr.geias.model.Presentation">
+        INSERT INTO tb_presentation (
+            company_id, title, capacity,
+            start_time, end_time, description, status, create_time, update_time
+        ) VALUES (
+                     #{companyId}, #{title}, #{capacity},
+                     #{startTime}, #{endTime}, #{description}, #{status}, #{createTime}, #{updateTime}
+                 )
+    </insert>
+
+    <!-- 检查是否存在冲突的宣讲会（时间段重叠 && 同一地点） -->
+    <select id="checkConflict" resultType="int">
+        <![CDATA[
+        SELECT COUNT(*) FROM tb_presentation
+        WHERE location = #{location}
+          AND status IN (0, 1)
+          AND (
+            start_time < #{endTime} AND end_time > #{startTime}
+            )
+        ]]>
+    </select>
+
+    <select id="selectByCompanyId" resultType="com.gr.geias.model.Presentation">
+        SELECT *
+        FROM tb_presentation
+        WHERE company_id = #{companyId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectAllPresentations" resultType="com.gr.geias.model.Presentation">
+        SELECT *
+        FROM tb_presentation
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectById" resultType="com.gr.geias.model.Presentation">
+        SELECT * FROM tb_presentation WHERE presentation_id = #{presentationId}
+    </select>
+
+    <select id="checkConflictExcludeSelf" resultType="int">
+        <![CDATA[
+        SELECT COUNT(*) FROM tb_presentation
+        WHERE location = #{location}
+          AND status IN (0,1)
+          AND presentation_id != #{excludeId}
+          AND (start_time < #{endTime} AND end_time > #{startTime})
+        ]]>
+    </select>
+
+    <update id="updateStatusRemarkLocation">
+        UPDATE tb_presentation
+        SET status = #{status},
+            remark = #{remark},
+            location = #{location},
+            update_time = NOW()
+        WHERE presentation_id = #{presentationId}
+    </update>
+
+    <update id="updateStatusRemark">
+        UPDATE tb_presentation
+        SET status = #{status},
+            remark = #{remark},
+            update_time = NOW()
+        WHERE presentation_id = #{presentationId}
+    </update>
+
+    <select id="selectAllWithCompany" resultType="com.gr.geias.dto.PresentationWithCompanyDTO">
+        SELECT
+        p.presentation_id,
+        p.title,
+        p.location,
+        p.capacity,
+        p.start_time,
+        p.end_time,
+        p.description,
+        p.status,
+        p.remark,
+        p.signup_count,
+        p.create_time,
+        p.update_time,
+        c.person_id AS companyId,
+        c.person_name AS companyName,
+        c.username AS companyUsername
+        FROM tb_presentation p
+        JOIN tb_person_info c ON p.company_id = c.person_id
+        <where>
+            <if test="status != null">
+                p.status = #{status}
+            </if>
+        </where>
+        ORDER BY p.create_time DESC
+    </select>
+</mapper>
