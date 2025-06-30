@@ -61,3 +61,20 @@ public class FrontendController {
     @GetMapping(value = "/candidates")
     public List<CandidateRecord> getCandidates() {return this.candidatesService.getCandidates();}
 }
+
+/**
+ * 直接路径访问候选人信息（用于测试）
+ */
+@RestController
+class CandidatesTestController {
+    private final CandidatesService candidatesService;
+    
+    public CandidatesTestController(CandidatesService candidatesService) {
+        this.candidatesService = candidatesService;
+    }
+    
+    @GetMapping(value = "/candidates")
+    public List<CandidateRecord> getCandidates() {
+        return this.candidatesService.getCandidates();
+    }
+}

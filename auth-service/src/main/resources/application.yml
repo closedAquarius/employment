@@ -12,20 +12,16 @@ spring:
     # 自定义数据源配置由DataSourceConfig类处理
     mysql:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/graduateemploymentinfo?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://localhost:3306/graduateemploymentinfo?useUnicode=true&characterEncoding=utf8
       username: root
       password: Liu050804
+      jdbc-url: jdbc:mysql://localhost:3306/graduateemploymentinfo?useUnicode=true&characterEncoding=utf8
     postgresql:
       driver-class-name: org.postgresql.Driver
       url: jdbc:postgresql://localhost:5432/interview
-      username: postgres
+      username: lqy0584
       password: 
-  
-  # 禁用数据源自动配置
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+      jdbc-url: jdbc:postgresql://localhost:5432/interview
   
   # Redis配置
   redis:

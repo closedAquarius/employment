@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class AuthConfig {
 
-    @Value("${auth.service.url:http://localhost:8081}")
+    @Value("${auth.service.url:http://localhost:8095}")
     private String authServiceUrl;
 
     /**

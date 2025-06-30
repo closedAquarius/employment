@@ -69,14 +69,14 @@
     <select id="findById" resultMap="ExtendedResultMap">
         SELECT 
             i.*,
-            r.name AS resume_name,
+            r.resume_name AS resume_name,
             p.title AS position_name,
             c.company_name
         FROM 
             tb_interview i
-            LEFT JOIN tb_resume r ON i.resume_id = r.id
+            LEFT JOIN tb_resume r ON i.resume_id = r.resume_id
             LEFT JOIN tb_job_position p ON i.position_id = p.job_id
-            LEFT JOIN tb_company c ON p.company_id = c.id
+            LEFT JOIN tb_company_info c ON p.company_id = c.company_id
         WHERE 
             i.id = #{id}
     </select>
@@ -84,14 +84,14 @@
     <select id="findByResumeId" resultMap="ExtendedResultMap">
         SELECT 
             i.*,
-            r.name AS resume_name,
+            r.resume_name AS resume_name,
             p.title AS position_name,
             c.company_name
         FROM 
             tb_interview i
-            LEFT JOIN tb_resume r ON i.resume_id = r.id
+            LEFT JOIN tb_resume r ON i.resume_id = r.resume_id
             LEFT JOIN tb_job_position p ON i.position_id = p.job_id
-            LEFT JOIN tb_company c ON p.company_id = c.id
+            LEFT JOIN tb_company_info c ON p.company_id = c.company_id
         WHERE 
             i.resume_id = #{resumeId}
         ORDER BY 
@@ -101,14 +101,14 @@
     <select id="findByPositionId" resultMap="ExtendedResultMap">
         SELECT 
             i.*,
-            r.name AS resume_name,
+            r.resume_name AS resume_name,
             p.title AS position_name,
             c.company_name
         FROM 
             tb_interview i
-            LEFT JOIN tb_resume r ON i.resume_id = r.id
+            LEFT JOIN tb_resume r ON i.resume_id = r.resume_id
             LEFT JOIN tb_job_position p ON i.position_id = p.job_id
-            LEFT JOIN tb_company c ON p.company_id = c.id
+            LEFT JOIN tb_company_info c ON p.company_id = c.company_id
         WHERE 
             i.position_id = #{positionId}
         ORDER BY 
@@ -122,10 +122,10 @@
             i.position_id AS positionId,
             i.status,
             i.remarks,
-            r.candidate_id AS candidateId
+            r.user_id AS candidateId
         FROM 
             tb_interview i
-            JOIN tb_resume r ON i.resume_id = r.id
+            JOIN tb_resume r ON i.resume_id = r.resume_id
         WHERE 
             i.is_synced = 0
         ORDER BY 
