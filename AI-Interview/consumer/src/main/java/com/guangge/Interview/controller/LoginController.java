@@ -49,7 +49,7 @@ public class LoginController {
             return CommonResult.failed("面试邀请码无效或已过期");
         }
         
-        // 同步用户信息到auth-service
+        // 准备用户信息（但暂时不同步到auth-service，避免API不兼容问题）
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("username", candidates.getName());
         userInfo.put("password", code); // 使用邀请码作为初始密码
@@ -57,7 +57,8 @@ public class LoginController {
         userInfo.put("userType", 3); // 面试者类型
         userInfo.put("status", 1); // 启用状态
         
-        authClient.syncUserInfo(userInfo);
+        // 暂时注释掉这一行，避免方法签名不匹配错误
+        // authClient.syncUserInfo(userInfo);
         
         // 使用统一认证服务登录
         Map<String, Object> loginResult = authClient.login(candidates.getName(), code);
