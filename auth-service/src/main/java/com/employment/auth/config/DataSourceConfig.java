@@ -14,8 +14,8 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfig {
 
+    @Bean
     @Primary
-    @Bean(name = "mysqlDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.mysql")
     public DataSource mysqlDataSource() {
         return DataSourceBuilder.create()
@@ -23,7 +23,7 @@ public class DataSourceConfig {
                 .build();
     }
 
-    @Bean(name = "postgresqlDataSource")
+    @Bean
     @ConfigurationProperties(prefix = "spring.datasource.postgresql")
     public DataSource postgresqlDataSource() {
         return DataSourceBuilder.create()
@@ -31,13 +31,13 @@ public class DataSourceConfig {
                 .build();
     }
 
+    @Bean
     @Primary
-    @Bean(name = "mysqlJdbcTemplate")
     public JdbcTemplate mysqlJdbcTemplate(@Qualifier("mysqlDataSource") DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 
-    @Bean(name = "postgresqlJdbcTemplate")
+    @Bean
     public JdbcTemplate postgresqlJdbcTemplate(@Qualifier("postgresqlDataSource") DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }

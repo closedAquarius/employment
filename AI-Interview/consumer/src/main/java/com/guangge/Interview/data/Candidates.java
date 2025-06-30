@@ -38,6 +38,10 @@ public class Candidates {
 
     @Column(name = "picture_url", nullable = true)
     private String pictureUrl;
+    
+    // 面试备注/反馈
+    @Column(name = "remarks", nullable = true, length = 1000)
+    private String remarks;
 
     public Long getId() {
         return id;
@@ -101,5 +105,13 @@ public class Candidates {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
+    }
+    
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

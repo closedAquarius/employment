@@ -26,3 +26,10 @@ spring:
         tableName: vector_store
         batching-strategy: TOKEN_COUNT # Optional: Controls how documents are batched for embedding
         max-document-batch-size: 10000 # Optional: Maximum number of documents per batch
+
+# 添加auth-service配置
+auth:
+  service:
+    url: http://localhost:8095  # auth-service服务地址
+  token:
+    secret: ${AUTH_TOKEN_SECRET:your-secret-key}  # JWT密钥，建议通过环境变量配置

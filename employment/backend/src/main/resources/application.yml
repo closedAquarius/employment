@@ -33,4 +33,9 @@ logging:
         geias:
           repository: debug
 server:
-  port: 8080 
+  port: 8080
+
+# 添加面试API配置
+employment:
+  api:
+    key: ${EMPLOYMENT_API_KEY:ai-interview-secret-key}  # API密钥，建议通过环境变量配置 
