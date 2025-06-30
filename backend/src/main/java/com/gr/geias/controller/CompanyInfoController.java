@@ -5,6 +5,7 @@ import com.gr.geias.model.PersonInfo;
 import com.gr.geias.service.CompanyInfoService;
 import com.gr.geias.service.PersonInfoService;
 import com.gr.geias.util.JwtUtil;
+import com.gr.geias.util.TokenUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,7 @@ public class CompanyInfoController {
         Map<String, Object> map = new HashMap<>();
 
         try {
-            String token = request.getHeader("Authorization");
-            Claims claims = JwtUtil.parseAccessToken(token);
+            Claims claims = TokenUtil.extractClaims(request.getHeader("Authorization"));
             Integer userId = (Integer) claims.get("userId");
 
             PersonInfo person = personInfoService.getPersonById(userId);
@@ -61,7 +61,7 @@ public class CompanyInfoController {
                                              @RequestBody CompanyInfo companyInfo) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Claims claims = JwtUtil.parseAccessToken(token);
+            Claims claims = TokenUtil.extractClaims(token);
             Integer roles = (Integer) claims.get("roles");
             Integer userId = (Integer) claims.get("userId");
 
@@ -98,7 +98,7 @@ public class CompanyInfoController {
                                               @RequestParam("companyId") Integer companyId) {
         Map<String, Object> map = new HashMap<>();
         try {
-            Claims claims = JwtUtil.parseAccessToken(token);
+            Claims claims = TokenUtil.extractClaims(token);
             Integer roles = (Integer) claims.get("roles");
 
             if (roles != 2) {

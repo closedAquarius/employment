@@ -9,7 +9,7 @@ import com.gr.geias.model.PersonInfo;
 import com.gr.geias.model.Specialty;
 import com.gr.geias.enums.EnableStatusEnums;
 import com.gr.geias.service.*;
-import com.gr.geias.util.JwtUtil;
+import com.gr.geias.util.TokenUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -169,7 +169,7 @@ public class OrganizationController {
     @RequestMapping(value = "/getcollegeinit", method = RequestMethod.GET)
     public Map<String, Object> getCollegeinit(@RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<String, Object>(3);
-        Claims claims = JwtUtil.parseAccessToken(token);
+        Claims claims = TokenUtil.extractClaims(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         List<College> college = null;
@@ -198,7 +198,7 @@ public class OrganizationController {
         Map<String, Object> map = new HashMap<>(3);
 
         try {
-            Claims claims = JwtUtil.parseAccessToken(token);
+            Claims claims = TokenUtil.extractClaims(token);
             Integer userId = (Integer) claims.get("userId");
             PersonInfo person = personInfoService.getPersonById(userId);
 
@@ -266,7 +266,7 @@ public class OrganizationController {
             map.put("errMsg", "输入信息错误！");
             return map;
         }
-        Claims claims = JwtUtil.parseAccessToken(token);
+        Claims claims = TokenUtil.extractClaims(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         Specialty specialty = new Specialty();
@@ -404,7 +404,7 @@ public class OrganizationController {
     @RequestMapping(value = "/getpersoninit", method = RequestMethod.GET)
     public Map<String, Object> getpersoninit(@RequestParam("collegeId") Integer collegeId, @RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<String, Object>(3);
-        Claims claims = JwtUtil.parseAccessToken(token);
+        Claims claims = TokenUtil.extractClaims(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         List<PersonInfo> personByCollegeId = null;
@@ -561,7 +561,7 @@ public class OrganizationController {
 
         Map<String, Object> map = new HashMap<>(3);
         try {
-            Claims claims = JwtUtil.parseAccessToken(token);
+            Claims claims = TokenUtil.extractClaims(token);
             Integer userId = (Integer) claims.get("userId");
             PersonInfo person = personInfoService.getPersonById(userId);
 

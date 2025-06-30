@@ -5,6 +5,7 @@ import com.gr.geias.model.*;
 import com.gr.geias.enums.EnableStatusEnums;
 import com.gr.geias.service.*;
 import com.gr.geias.util.JwtUtil;
+import com.gr.geias.util.TokenUtil;
 import io.jsonwebtoken.Claims;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,8 @@ public class InitController {
     public Map<String,Object> getLeve(@Param("levelId")Integer levelId,@RequestHeader("Authorization") String token){
 
         Map<String,Object> map = new HashMap<String,Object>(3);
-        Claims claims = JwtUtil.parseAccessToken(token);
+        Claims claims = TokenUtil.extractClaims(token);
+
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         if (levelId!=null && levelId==0){
