@@ -46,7 +46,7 @@ public class OrganizationController {
         try {
             int rowIndex = PageMath.pageNumtoRowIndex(pageNum, pageSize);
             // 获取全部学院
-            List<College> collegePageList = collegeService.getCollegePage(name, rowIndex, 8);
+            List<College> collegePageList = collegeService.getCollegePage(name, rowIndex, pageSize);
             int total = collegeService.getCollegeCount(name); // 总数
 
             List<CollegeAndPerson> list = new ArrayList<>();
@@ -216,45 +216,35 @@ public class OrganizationController {
 
         Map<String, Object> map = new HashMap<>(4);
         int offset = (pageNum - 1) * pageSize;
+
         try {
             Claims claims = TokenUtil.extractClaims(token);
             Integer userId = (Integer) claims.get("userId");
             PersonInfo person = personInfoService.getPersonById(userId);
 
-            List<Specialty> specialtyList = null;
-            College college = null;
-
             EnableStatusEnums role = EnableStatusEnums.stateOf(person.getEnableStatus());
-
-            if (role == EnableStatusEnums.ADMINISTRATOR) {
-                // 管理员可以查所有学院
-                if (collegeId == null) {
-                    List<College> collegeList = collegeService.getCollege(null);
-                    if (collegeList == null || collegeList.isEmpty()) {
-                        map.put("success", false);
-                        map.put("errMsg", "没有学院数据");
-                        return map;
-                    }
-                    college = collegeList.get(0);
-                } else {
-                    college = collegeService.getCollegeById(collegeId);
-                }
-                specialtyList = specialtyService.getSpecialtyPage(college.getCollegeId(),name,offset,pageSize);
-            } else {
-                // 其它角色无权访问
+            if (role != EnableStatusEnums.ADMINISTRATOR) {
                 map.put("success", false);
                 map.put("errMsg", "无权限访问该接口");
                 return map;
             }
+
+            // 查专业分页
+            List<Specialty> specialtyList = specialtyService.getSpecialtyPage(collegeId, name, offset, pageSize);
 
             // 拼装结果
             List<SpecialtyAndCollege> list = new ArrayList<>();
             for (Specialty specialty : specialtyList) {
                 SpecialtyAndCollege sac = new SpecialtyAndCollege();
                 sac.setSpecialty(specialty);
+
+                // 根据专业的 collegeId 重新获取学院信息
+                College college = collegeService.getCollegeById(specialty.getCollegeId());
                 sac.setCollege(college);
+
                 Integer count = organizationNumService.getspecialtyCount(specialty.getSpecialtyId());
                 sac.setSum(count);
+
                 list.add(sac);
             }
 
@@ -262,7 +252,7 @@ public class OrganizationController {
             map.put("List", list);
         } catch (Exception e) {
             map.put("success", false);
-            map.put("errMsg", "Token无效或查询出错");
+            map.put("errMsg", "Token无效或查询出错: " + e.getMessage());
         }
 
         return map;
