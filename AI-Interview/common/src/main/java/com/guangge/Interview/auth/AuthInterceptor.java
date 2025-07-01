@@ -8,6 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 认证拦截器，用于验证请求的JWT令牌
@@ -37,8 +38,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         // 验证token
-        boolean isValid = authClient.verifyToken(token);
-        if (!isValid) {
+        Map<String, Object> userInfo = authClient.validateToken(token);
+        if (userInfo == null) {
             throw new RestException("401", "认证令牌无效或已过期");
         }
 

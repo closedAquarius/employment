@@ -1,24 +1,113 @@
 package com.guangge.Interview.controller;
 
+import com.guangge.Interview.auth.AuthClient;
+import com.guangge.Interview.auth.AuthConstant;
 import com.guangge.Interview.vo.RegisterFaceRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.HttpStatusCodeException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/face")
 public class FaceVerificationController {
     private static final Logger logger = LoggerFactory.getLogger(FaceVerificationController.class);
 
     @Value("${flaskBaseUrl}")
     private String flaskBaseUrl;
+    
+    @Autowired
+    private RestTemplate restTemplate;
+    
+    @Autowired
+    private AuthClient authClient;
+
+    @PostMapping("/verify")
+    public Map<String, Object> verifyFace(@RequestBody Map<String, Object> request, 
+                                         @RequestHeader(value = AuthConstant.HEADER_AUTH, required = false) String authHeader) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // 验证令牌并获取用户信息
+            Map<String, Object> userInfo = null;
+            if (authHeader != null && authHeader.startsWith(AuthConstant.TOKEN_PREFIX)) {
+                String token = authHeader.substring(AuthConstant.TOKEN_PREFIX.length()).trim();
+                userInfo = authClient.validateToken(token);
+            }
+            
+            // 如果没有有效的用户信息，使用请求中的用户ID
+            String userId = request.containsKey("userId") ? request.get("userId").toString() : 
+                           (userInfo != null ? userInfo.get("id").toString() : "unknown");
+            
+            // 准备请求数据
+            Map<String, Object> requestData = new HashMap<>();
+            requestData.put("image", request.get("image"));
+            requestData.put("userId", userId);
+            
+            // 调用Flask服务进行人脸验证
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestData, headers);
+            
+            ResponseEntity<Map> result = restTemplate.postForEntity(
+                    flaskBaseUrl + "/face/verify", 
+                    entity, 
+                    Map.class
+            );
+            
+            // 如果是新用户且验证成功，同步用户信息到认证服务
+            if (result.getBody() != null && 
+                Boolean.TRUE.equals(result.getBody().get("success")) && 
+                Boolean.TRUE.equals(result.getBody().get("isNewUser")) &&
+                userInfo == null) {
+                
+                // 创建基本用户信息
+                Map<String, Object> newUser = new HashMap<>();
+                newUser.put("username", "face_" + userId);
+                newUser.put("password", "face_" + userId); // 初始密码，应当要求用户修改
+                newUser.put("userType", AuthConstant.UserType.INTERVIEWEE);
+                newUser.put("status", AuthConstant.UserStatus.ENABLED);
+                
+                // 同步到认证服务
+                authClient.syncUser(newUser);
+            }
+            
+            return result.getBody();
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "人脸验证服务异常: " + e.getMessage());
+            return response;
+        }
+    }
+    
+    @GetMapping("/health")
+    public Map<String, String> checkHealth() {
+        Map<String, String> response = new HashMap<>();
+        try {
+            ResponseEntity<Map> result = restTemplate.getForEntity(flaskBaseUrl + "/health", Map.class);
+            if (result.getStatusCode().is2xxSuccessful()) {
+                response.put("status", "UP");
+                response.put("message", "Face verification service is running");
+            } else {
+                response.put("status", "DOWN");
+                response.put("message", "Face verification service returned non-200 status");
+            }
+        } catch (Exception e) {
+            response.put("status", "DOWN");
+            response.put("message", "Cannot connect to face verification service: " + e.getMessage());
+        }
+        return response;
+    }
 
     @PostMapping("/verify-face")
     public String verifyFace(@RequestBody RegisterFaceRequest request) {

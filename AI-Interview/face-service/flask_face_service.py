@@ -91,5 +91,9 @@ def verify_face_endpoint():
     result = verify_face(image_base64, known_faces)
     return jsonify(result)
 
+@app.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "0", "message": "Face service is running"})
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5001)

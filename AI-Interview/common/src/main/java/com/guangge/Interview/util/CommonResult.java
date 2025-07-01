@@ -31,7 +31,7 @@ public class CommonResult<T> {
      * 成功返回结果
      *
      * @param data 获取的数据
-     * @param  message 提示信息
+     * @param message 提示信息
      */
     public static <T> CommonResult<T> success(T data, String message) {
         return new CommonResult<T>(ResultCode.SUCCESS.getCode(), message, data);
@@ -43,6 +43,15 @@ public class CommonResult<T> {
      */
     public static <T> CommonResult<T> failed(IErrorCode errorCode) {
         return new CommonResult<T>(errorCode.getCode(), errorCode.getMessage(), null);
+    }
+
+    /**
+     * 失败返回结果
+     * @param errorCode 错误码
+     * @param message 错误信息
+     */
+    public static <T> CommonResult<T> failed(IErrorCode errorCode, String message) {
+        return new CommonResult<T>(errorCode.getCode(), message, null);
     }
 
     /**
@@ -83,10 +92,34 @@ public class CommonResult<T> {
     }
 
     /**
+     * 未登录返回结果
+     * @param message 提示信息
+     */
+    public static <T> CommonResult<T> unauthorized(T data, String message) {
+        return new CommonResult<T>(ResultCode.UNAUTHORIZED.getCode(), message, data);
+    }
+    
+    /**
+     * 未登录返回结果（无数据）
+     * @param message 提示信息
+     */
+    public static <T> CommonResult<T> unauthorized(String message) {
+        return new CommonResult<T>(ResultCode.UNAUTHORIZED.getCode(), message, null);
+    }
+
+    /**
      * 未授权返回结果
      */
     public static <T> CommonResult<T> forbidden(T data) {
         return new CommonResult<T>(ResultCode.FORBIDDEN.getCode(), ResultCode.FORBIDDEN.getMessage(), data);
+    }
+
+    /**
+     * 未授权返回结果
+     * @param message 提示信息
+     */
+    public static <T> CommonResult<T> forbidden(T data, String message) {
+        return new CommonResult<T>(ResultCode.FORBIDDEN.getCode(), message, data);
     }
 
     public long getCode() {

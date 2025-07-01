@@ -30,6 +30,6 @@ public class AuthConfig {
      */
     @Bean
     public AuthClient authClient(RestTemplate authServiceRestTemplate) {
-        return new AuthClient(authServiceRestTemplate);
+        return new AuthClient(authServiceRestTemplate, authServiceUrl);
     }
 } 

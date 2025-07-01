@@ -15,105 +15,140 @@ import java.util.Map;
 public class AuthClient {
 
     private final RestTemplate restTemplate;
+    private final String authServiceUrl;
 
-    public AuthClient(RestTemplate restTemplate) {
+    public AuthClient(RestTemplate restTemplate, String authServiceUrl) {
         this.restTemplate = restTemplate;
+        this.authServiceUrl = authServiceUrl;
     }
 
     /**
-     * 验证令牌
+     * 验证令牌有效性
      * @param token JWT令牌
-     * @return 是否有效
+     * @return 验证结果，包含用户信息
      */
-    public boolean verifyToken(String token) {
-        try {
+    public Map<String, Object> validateToken(String token) {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + token);
+        
             HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
             
+        try {
             ResponseEntity<Map> response = restTemplate.exchange(
-                "/auth/validate", 
+                    authServiceUrl + "/auth/validate",
                 HttpMethod.GET, 
                 requestEntity, 
                 Map.class
             );
             
-            return response.getStatusCode().is2xxSuccessful();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-    
-    /**
-     * 获取用户信息
-     * @param token JWT令牌
-     * @return 用户信息
-     */
-    public Map<String, Object> getUserInfo(String token) {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + token);
-            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-            
-            ResponseEntity<Map> response = restTemplate.exchange(
-                "/auth/validate", 
-                HttpMethod.GET, 
-                requestEntity, 
-                Map.class
-            );
-            
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
             }
         } catch (Exception e) {
-            // 记录异常但不抛出
+            // 验证失败，记录日志
+            System.err.println("Token validation failed: " + e.getMessage());
         }
-        return new HashMap<>();
-    }
-    
-    /**
-     * 登录
-     * @param username 用户名
-     * @param password 密码
-     * @return 登录成功返回token和用户信息，失败返回null
-     */
-    public Map<String, Object> login(String username, String password) {
-        try {
-            Map<String, String> loginRequest = new HashMap<>();
-            loginRequest.put("username", username);
-            loginRequest.put("password", password);
-            
-            ResponseEntity<Map> response = restTemplate.postForEntity(
-                "/auth/login", 
-                loginRequest, 
-                Map.class
-            );
-            
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                return response.getBody();
-            }
-        } catch (Exception e) {
-            // 记录异常但不抛出
-        }
+        
         return null;
     }
     
     /**
-     * 同步用户信息到auth-service
-     * @param userInfo 用户信息
-     * @return 同步结果
+     * 用户登录
+     * @param username 用户名
+     * @param password 密码
+     * @return 登录结果，包含token和用户信息
      */
-    public boolean syncUserInfo(Map<String, Object> userInfo) {
+    public Map<String, Object> login(String username, String password) {
+            Map<String, String> loginRequest = new HashMap<>();
+            loginRequest.put("username", username);
+            loginRequest.put("password", password);
+            
         try {
             ResponseEntity<Map> response = restTemplate.postForEntity(
-                "/auth/sync-user?sourceSystem=ai-interview", 
-                userInfo, 
+                    authServiceUrl + "/auth/login",
+                loginRequest, 
                 Map.class
             );
             
-            return response.getStatusCode().is2xxSuccessful();
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
         } catch (Exception e) {
-            return false;
+            // 登录失败，记录日志
+            System.err.println("Login failed: " + e.getMessage());
         }
+        
+        return null;
+    }
+    
+    /**
+     * 刷新令牌
+     * @param token 原令牌
+     * @return 新令牌
+     */
+    public String refreshToken(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+        
+        try {
+            ResponseEntity<Map> response = restTemplate.exchange(
+                    authServiceUrl + "/auth/refresh",
+                    HttpMethod.GET,
+                    requestEntity,
+                    Map.class
+            );
+            
+            if (response.getStatusCode().is2xxSuccessful()) {
+                Map<String, String> responseBody = response.getBody();
+                return responseBody != null ? responseBody.get("token") : null;
+            }
+        } catch (Exception e) {
+            // 刷新失败，记录日志
+            System.err.println("Token refresh failed: " + e.getMessage());
+        }
+        
+        return null;
+    }
+    
+    /**
+     * 同步用户信息到认证服务
+     * @param user 用户信息
+     * @return 同步结果
+     */
+    public Map<String, Object> syncUser(Map<String, Object> user) {
+        try {
+            ResponseEntity<Map> response = restTemplate.postForEntity(
+                    authServiceUrl + "/auth/sync-user?sourceSystem=ai-interview",
+                    user,
+                Map.class
+            );
+            
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+        } catch (Exception e) {
+            // 同步失败，记录日志
+            System.err.println("User sync failed: " + e.getMessage());
+        }
+        
+        return null;
+        }
+    
+    /**
+     * 同步用户信息到认证服务
+     * @param userId 用户ID
+     * @param username 用户名
+     * @param realName 真实姓名
+     * @return 同步结果
+     */
+    public Map<String, Object> syncUser(Long userId, String username, String realName) {
+        Map<String, Object> user = new HashMap<>();
+        user.put("id", userId);
+        user.put("username", username);
+        user.put("realName", realName);
+        
+        return syncUser(user);
     }
 } 

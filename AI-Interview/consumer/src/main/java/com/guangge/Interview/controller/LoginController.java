@@ -1,122 +1,83 @@
 package com.guangge.Interview.controller;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.guangge.Interview.auth.AuthClient;
-import com.guangge.Interview.auth.Sessions;
-import com.guangge.Interview.auth.Sign;
-import com.guangge.Interview.data.Candidates;
-import com.guangge.Interview.services.CandidatesService;
+import com.guangge.Interview.auth.AuthConstant;
 import com.guangge.Interview.util.CommonResult;
-import com.guangge.Interview.vo.UserResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 
 @RestController
+@RequestMapping("/interview")
 public class LoginController {
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
-
-    private final CandidatesService candidatesService;
-    private final AuthClient authClient;
-
-    @Value("${auth.token.secret}")
-    private String secret;
 
     @Autowired
-    public LoginController(CandidatesService candidatesService, AuthClient authClient) {
-        this.candidatesService = candidatesService;
-        this.authClient = authClient;
+    private AuthClient authClient;
+
+    /**
+     * 健康检查
+     */
+    @GetMapping("/health")
+    public CommonResult<String> health() {
+        return CommonResult.success("AI Interview Service is running");
     }
 
     /**
-     * 登录
-     * @param name 登录名
-     * @param code 邀请code
-     * @return 登录信息
-     * @throws Exception
+     * 用户登录
      */
-    @PostMapping(value = "/login/direct")
-    public CommonResult<UserResponse> login(@RequestParam("name") String name,
-                                            @RequestParam("code") String code) throws Exception {
-        // 先验证面试候选人信息
-        Candidates candidates = this.candidatesService.longin(name, code);
-        if (candidates == null) {
-            return CommonResult.failed("面试邀请码无效或已过期");
-        }
+    @PostMapping("/login")
+    public CommonResult<Map<String, Object>> login(@RequestBody Map<String, String> loginInfo) {
+        String username = loginInfo.get("username");
+        String password = loginInfo.get("password");
         
-        // 准备用户信息（但暂时不同步到auth-service，避免API不兼容问题）
-        Map<String, Object> userInfo = new HashMap<>();
-        userInfo.put("username", candidates.getName());
-        userInfo.put("password", code); // 使用邀请码作为初始密码
-        userInfo.put("realName", candidates.getName());
-        userInfo.put("userType", 3); // 面试者类型
-        userInfo.put("status", 1); // 启用状态
+        Map<String, Object> result = authClient.login(username, password);
         
-        // 暂时注释掉这一行，避免方法签名不匹配错误
-        // authClient.syncUserInfo(userInfo);
-        
-        // 使用统一认证服务登录
-        Map<String, Object> loginResult = authClient.login(candidates.getName(), code);
-        
-        if (loginResult != null && loginResult.containsKey("token")) {
-            UserResponse userResponse = new UserResponse();
-            userResponse.setUserId(candidates.getId());
-            userResponse.setUserName(candidates.getName());
-            userResponse.setToken((String) loginResult.get("token"));
-            return CommonResult.success(userResponse);
+        if (result != null && result.containsKey("token")) {
+            return CommonResult.success(result);
         } else {
-            // 如果统一认证失败，回退到原有方式
-            String token = Sessions.loginUser(candidates.getName(), true, secret);
-            UserResponse userResponse = new UserResponse();
-            userResponse.setUserId(candidates.getId());
-            userResponse.setUserName(candidates.getName());
-            userResponse.setToken(token);
-            return CommonResult.success(userResponse);
+            return CommonResult.validateFailed("用户名或密码错误");
         }
     }
     
     /**
-     * 标准登录接口（用户名密码）
+     * 验证令牌
      */
-    @PostMapping("/login/standard")
-    public CommonResult<UserResponse> standardLogin(@RequestBody Map<String, String> loginRequest) {
-        String username = loginRequest.get("username");
-        String password = loginRequest.get("password");
+    @GetMapping("/validate-token")
+    public CommonResult<Map<String, Object>> validateToken(@RequestHeader(AuthConstant.HEADER_AUTH) String authHeader) {
+        if (authHeader == null || !authHeader.startsWith(AuthConstant.TOKEN_PREFIX)) {
+            return CommonResult.unauthorized("未提供有效的认证信息");
+        }
         
-        // 调用统一认证服务
-        Map<String, Object> loginResult = authClient.login(username, password);
+        String token = authHeader.substring(AuthConstant.TOKEN_PREFIX.length()).trim();
+        Map<String, Object> userInfo = authClient.validateToken(token);
         
-        if (loginResult != null && loginResult.containsKey("token")) {
-            UserResponse userResponse = new UserResponse();
-            userResponse.setUserId(Long.valueOf(loginResult.get("userId").toString()));
-            userResponse.setUserName((String) loginResult.get("username"));
-            userResponse.setToken((String) loginResult.get("token"));
-            return CommonResult.success(userResponse);
+        if (userInfo != null) {
+            return CommonResult.success(userInfo);
         } else {
-            return CommonResult.failed("用户名或密码错误");
+            return CommonResult.unauthorized("令牌无效或已过期");
         }
     }
 
     /**
-     * JWT认证
-     * @param token token
-     * @return 认证信息
+     * 刷新令牌
      */
-    @PostMapping(value = "/login/verify-token")
-    public CommonResult<String> verifyToken(@RequestHeader("token") String token) {
-        DecodedJWT decodedJWT = null;
-        try {
-            decodedJWT = Sign.verifyToken(token, secret);
-        } catch (Exception ex) {
-            logger.error(ex.getMessage());
-            return CommonResult.unauthorized("Token验证失败");
+    @GetMapping("/refresh-token")
+    public CommonResult<Map<String, Object>> refreshToken(@RequestHeader(AuthConstant.HEADER_AUTH) String authHeader) {
+        if (authHeader == null || !authHeader.startsWith(AuthConstant.TOKEN_PREFIX)) {
+            return CommonResult.unauthorized("未提供有效的认证信息");
         }
-        String username = decodedJWT.getClaim("userName").asString();
-        return CommonResult.success(username);
+        
+        String token = authHeader.substring(AuthConstant.TOKEN_PREFIX.length()).trim();
+        String newToken = authClient.refreshToken(token);
+        
+        if (newToken != null) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("token", newToken);
+            return CommonResult.success(result);
+        } else {
+            return CommonResult.unauthorized("令牌刷新失败");
+        }
     }
 }

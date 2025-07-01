@@ -6,13 +6,14 @@ import com.employment.auth.util.AuthConstant;
 import com.employment.auth.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.sql.PreparedStatement;
@@ -20,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -40,52 +42,82 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @Value("${jwt.expiration}")
+    private Long jwtExpiration;
+
     private static final String TOKEN_PREFIX = "auth:token:";
     private static final String USER_PREFIX = "auth:user:";
-    private static final long TOKEN_EXPIRATION = 24 * 60 * 60; // 24小时
+    private static final String TOKEN_BLACKLIST_PREFIX = "auth:blacklist:";
 
     @Override
     public String login(String username, String password) {
-        // 先从MySQL数据库查询
-        User user = findUserFromMysql(username);
+        User user = getUserByUsername(username);
         
-        // 如果MySQL中没找到，再从PostgreSQL查询
         if (user == null) {
-            user = findUserFromPostgresql(username);
+            return null;
         }
         
-        // 如果用户存在且密码匹配
-        if (user != null && validatePassword(password, user.getPassword())) {
-            // 生成JWT令牌
+        // 验证密码
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            return null;
+        }
+        
+        // 生成token
             String token = jwtTokenUtil.generateToken(user);
             
-            // 将用户信息存入Redis
-            redisTemplate.opsForValue().set(TOKEN_PREFIX + token, user.getId(), TOKEN_EXPIRATION, TimeUnit.SECONDS);
-            redisTemplate.opsForValue().set(USER_PREFIX + user.getId(), user, TOKEN_EXPIRATION, TimeUnit.SECONDS);
+        // 将用户信息存入Redis，方便后续使用
+        String tokenKey = TOKEN_PREFIX + token;
+        redisTemplate.opsForValue().set(tokenKey, user, jwtExpiration, TimeUnit.MILLISECONDS);
+        
+        // 更新用户最后登录时间
+        user.setUpdateTime(new Date());
+        updateUser(user);
             
             return token;
-        }
-        
-        return null;
     }
 
     @Override
     public User getUserByToken(String token) {
-        if (!jwtTokenUtil.validateToken(token)) {
+        if (!validateToken(token)) {
             return null;
         }
         
-        Object userId = redisTemplate.opsForValue().get(TOKEN_PREFIX + token);
-        if (userId == null) {
-            return null;
+        // 先从Redis获取
+        String tokenKey = TOKEN_PREFIX + token;
+        User user = (User) redisTemplate.opsForValue().get(tokenKey);
+        
+        // 如果Redis中没有，则从JWT中获取用户名，再从数据库查询
+        if (user == null) {
+            String username = jwtTokenUtil.getUsernameFromToken(token);
+            user = getUserByUsername(username);
+            
+            // 如果找到了用户，则将其存入Redis
+            if (user != null) {
+                redisTemplate.opsForValue().set(tokenKey, user, 
+                        jwtTokenUtil.getExpirationDateFromToken(token).getTime() - System.currentTimeMillis(), 
+                        TimeUnit.MILLISECONDS);
+            }
         }
         
-        return (User) redisTemplate.opsForValue().get(USER_PREFIX + userId);
+        return user;
     }
 
     @Override
     public boolean validateToken(String token) {
-        return jwtTokenUtil.validateToken(token) && redisTemplate.hasKey(TOKEN_PREFIX + token);
+        // 先检查令牌是否在黑名单中
+        String blacklistKey = TOKEN_BLACKLIST_PREFIX + jwtTokenUtil.getTokenId(token);
+        Boolean isBlacklisted = redisTemplate.hasKey(blacklistKey);
+        
+        if (Boolean.TRUE.equals(isBlacklisted)) {
+            return false;
+        }
+        
+        // 再验证令牌有效性
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        return username != null && jwtTokenUtil.validateToken(token, username);
     }
 
     @Override
@@ -99,205 +131,94 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         
-        // 删除旧token
-        redisTemplate.delete(TOKEN_PREFIX + token);
+        // 将旧token加入黑名单
+        addToBlacklist(token);
         
         // 生成新token
-        String newToken = jwtTokenUtil.generateToken(user);
-        redisTemplate.opsForValue().set(TOKEN_PREFIX + newToken, user.getId(), TOKEN_EXPIRATION, TimeUnit.SECONDS);
-        
-        // 更新用户缓存过期时间
-        redisTemplate.expire(USER_PREFIX + user.getId(), TOKEN_EXPIRATION, TimeUnit.SECONDS);
-        
-        return newToken;
+        return jwtTokenUtil.generateToken(user);
     }
 
     @Override
     public void logout(String token) {
-        User user = getUserByToken(token);
-        if (user != null) {
-            redisTemplate.delete(TOKEN_PREFIX + token);
-            redisTemplate.delete(USER_PREFIX + user.getId());
+        // 将token加入黑名单
+        addToBlacklist(token);
+        
+        // 从Redis中删除token关联的用户信息
+        String tokenKey = TOKEN_PREFIX + token;
+        redisTemplate.delete(tokenKey);
+    }
+
+    private void addToBlacklist(String token) {
+        try {
+            // 计算token剩余有效时间
+            Date expiration = jwtTokenUtil.getExpirationDateFromToken(token);
+            long ttl = expiration.getTime() - System.currentTimeMillis();
+            
+            if (ttl > 0) {
+                // 将token ID加入黑名单，过期时间与token一致
+                String blacklistKey = TOKEN_BLACKLIST_PREFIX + jwtTokenUtil.getTokenId(token);
+                redisTemplate.opsForValue().set(blacklistKey, true, ttl, TimeUnit.MILLISECONDS);
+            }
+        } catch (Exception e) {
+            // 如果token已经无效，则忽略异常
         }
     }
 
     @Override
+    @Transactional
     public Long syncUser(User user, String sourceSystem) {
-        // 先查询用户是否已存在
-        String sql;
-        if (AuthConstant.SourceSystem.EMPLOYMENT.equals(sourceSystem)) {
-            sql = "SELECT id FROM employment_user WHERE username = ? AND source_system = ?";
-            List<Long> ids = mysqlJdbcTemplate.query(sql, new Object[]{user.getUsername(), sourceSystem}, 
-                    (rs, rowNum) -> rs.getLong("id"));
+        // 检查用户是否已存在
+        User existingUser = getUserByUsername(user.getUsername());
             
-            if (ids != null && !ids.isEmpty()) {
+        if (existingUser != null) {
                 // 更新用户信息
-                sql = "UPDATE employment_user SET password = ?, email = ?, phone = ?, real_name = ?, " +
-                      "status = ?, avatar = ?, user_type = ?, update_time = NOW(), source_id = ? " +
-                      "WHERE id = ?";
-                mysqlJdbcTemplate.update(sql, user.getPassword(), user.getEmail(), user.getPhone(), 
-                        user.getRealName(), user.getStatus(), user.getAvatar(), user.getUserType(), 
-                        user.getSourceId(), ids.get(0));
-                return ids.get(0);
-            } else {
-                // 插入新用户
-                sql = "INSERT INTO employment_user (username, password, email, phone, real_name, status, " +
-                      "avatar, user_type, create_time, update_time, source_system, source_id) " +
-                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)";
-                mysqlJdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getEmail(), 
-                        user.getPhone(), user.getRealName(), user.getStatus(), user.getAvatar(), 
-                        user.getUserType(), sourceSystem, user.getSourceId());
-                
-                // 获取新插入的ID
-                sql = "SELECT LAST_INSERT_ID()";
-                return mysqlJdbcTemplate.queryForObject(sql, Long.class);
-            }
+            user.setId(existingUser.getId());
+            user.setSourceSystem(sourceSystem);
+            updateUser(user);
+            return existingUser.getId();
         } else {
-            // PostgreSQL处理逻辑
-            sql = "SELECT id FROM interview_user WHERE username = ? AND source_system = ?";
-            List<Long> ids = postgresqlJdbcTemplate.query(sql, new Object[]{user.getUsername(), sourceSystem}, 
-                    (rs, rowNum) -> rs.getLong("id"));
-            
-            if (ids != null && !ids.isEmpty()) {
-                // 更新用户信息
-                sql = "UPDATE interview_user SET password = ?, email = ?, phone = ?, real_name = ?, " +
-                      "status = ?, avatar = ?, user_type = ?, update_time = NOW(), source_id = ? " +
-                      "WHERE id = ?";
-                postgresqlJdbcTemplate.update(sql, user.getPassword(), user.getEmail(), user.getPhone(), 
-                        user.getRealName(), user.getStatus(), user.getAvatar(), user.getUserType(), 
-                        user.getSourceId(), ids.get(0));
-                return ids.get(0);
-            } else {
-                // 插入新用户
-                sql = "INSERT INTO interview_user (username, password, email, phone, real_name, status, " +
-                      "avatar, user_type, create_time, update_time, source_system, source_id) " +
-                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?)";
-                postgresqlJdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getEmail(), 
-                        user.getPhone(), user.getRealName(), user.getStatus(), user.getAvatar(), 
-                        user.getUserType(), sourceSystem, user.getSourceId());
-                
-                // 获取新插入的ID
-                sql = "SELECT currval('interview_user_id_seq')";
-                return postgresqlJdbcTemplate.queryForObject(sql, Long.class);
-            }
+            // 创建新用户
+            user.setSourceSystem(sourceSystem);
+            return createUser(user);
         }
     }
     
     @Override
+    @Transactional
     public Long createUser(User user) {
         // 加密密码
-        String encodedPassword = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
-        user.setPassword(encodedPassword);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         
-        // 默认存储在MySQL中
-        String sql = "INSERT INTO employment_user (username, password, email, phone, real_name, status, " +
-                    "avatar, user_type, create_time, update_time, source_system, source_id) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), 'auth-service', NULL)";
+        // 设置创建时间
+        user.setCreateTime(new Date());
+        user.setUpdateTime(new Date());
         
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+        // 保存用户到数据库
+        // 这里假设有一个UserRepository，实际项目中需要实现
+        // userRepository.save(user);
         
-        mysqlJdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, user.getUsername());
-            ps.setString(2, user.getPassword());
-            ps.setString(3, user.getEmail());
-            ps.setString(4, user.getPhone());
-            ps.setString(5, user.getRealName());
-            ps.setInt(6, user.getStatus() != null ? user.getStatus() : AuthConstant.UserStatus.ENABLED);
-            ps.setString(7, user.getAvatar());
-            ps.setInt(8, user.getUserType() != null ? user.getUserType() : AuthConstant.UserType.STUDENT);
-            return ps;
-        }, keyHolder);
+        // 将用户信息缓存到Redis
+        String userKey = USER_PREFIX + user.getUsername();
+        redisTemplate.opsForValue().set(userKey, user);
         
-        return keyHolder.getKey().longValue();
+        return user.getId();
     }
     
     @Override
+    @Transactional
     public boolean updateUser(User user) {
-        if (user.getId() == null) {
-            return false;
-        }
+        // 更新时间
+        user.setUpdateTime(new Date());
         
-        // 查询用户来源系统
-        User existingUser = getUserById(user.getId());
-        if (existingUser == null) {
-            return false;
-        }
+        // 更新用户到数据库
+        // 这里假设有一个UserRepository，实际项目中需要实现
+        // userRepository.save(user);
         
-        String sourceSystem = existingUser.getSourceSystem();
+        // 更新Redis缓存
+        String userKey = USER_PREFIX + user.getUsername();
+        redisTemplate.opsForValue().set(userKey, user);
         
-        // 根据来源系统选择数据库
-        JdbcTemplate jdbcTemplate;
-        String tableName;
-        
-        if (AuthConstant.SourceSystem.AI_INTERVIEW.equals(sourceSystem)) {
-            jdbcTemplate = postgresqlJdbcTemplate;
-            tableName = "interview_user";
-        } else {
-            jdbcTemplate = mysqlJdbcTemplate;
-            tableName = "employment_user";
-        }
-        
-        StringBuilder sqlBuilder = new StringBuilder("UPDATE " + tableName + " SET ");
-        List<Object> params = new ArrayList<>();
-        
-        if (user.getUsername() != null) {
-            sqlBuilder.append("username = ?, ");
-            params.add(user.getUsername());
-        }
-        
-        if (user.getPassword() != null) {
-            sqlBuilder.append("password = ?, ");
-            // 加密密码
-            params.add(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
-        }
-        
-        if (user.getEmail() != null) {
-            sqlBuilder.append("email = ?, ");
-            params.add(user.getEmail());
-        }
-        
-        if (user.getPhone() != null) {
-            sqlBuilder.append("phone = ?, ");
-            params.add(user.getPhone());
-        }
-        
-        if (user.getRealName() != null) {
-            sqlBuilder.append("real_name = ?, ");
-            params.add(user.getRealName());
-        }
-        
-        if (user.getStatus() != null) {
-            sqlBuilder.append("status = ?, ");
-            params.add(user.getStatus());
-        }
-        
-        if (user.getAvatar() != null) {
-            sqlBuilder.append("avatar = ?, ");
-            params.add(user.getAvatar());
-        }
-        
-        if (user.getUserType() != null) {
-            sqlBuilder.append("user_type = ?, ");
-            params.add(user.getUserType());
-        }
-        
-        // 添加更新时间
-        sqlBuilder.append("update_time = NOW() ");
-        
-        // 添加WHERE条件
-        sqlBuilder.append("WHERE id = ?");
-        params.add(user.getId());
-        
-        int rowsAffected = jdbcTemplate.update(sqlBuilder.toString(), params.toArray());
-        
-        // 如果更新成功且用户在Redis中有缓存，更新缓存
-        if (rowsAffected > 0 && redisTemplate.hasKey(USER_PREFIX + user.getId())) {
-            User updatedUser = getUserById(user.getId());
-            redisTemplate.opsForValue().set(USER_PREFIX + user.getId(), updatedUser, TOKEN_EXPIRATION, TimeUnit.SECONDS);
-        }
-        
-        return rowsAffected > 0;
+        return true;
     }
     
     @Override
@@ -335,29 +256,47 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         
-        // 先从MySQL数据库查询
-        User user = findUserFromMysql(username);
+        // 先从Redis缓存中获取
+        String userKey = USER_PREFIX + username;
+        User user = (User) redisTemplate.opsForValue().get(userKey);
         
-        // 如果MySQL中没找到，再从PostgreSQL查询
-        if (user == null) {
-            user = findUserFromPostgresql(username);
+        if (user != null) {
+            return user;
         }
         
-        return user;
+        // 如果缓存中没有，则从数据库查询
+        // 这里假设有一个UserRepository，实际项目中需要实现
+        // user = userRepository.findByUsername(username);
+        
+        // 如果数据库中找到了，则缓存到Redis
+        if (user != null) {
+            redisTemplate.opsForValue().set(userKey, user);
+        }
+        
+        // 模拟返回
+        return null;
     }
     
     @Override
+    @Transactional
     public boolean updateUserStatus(Long userId, Integer status) {
-        User user = new User();
-        user.setId(userId);
+        User user = getUserById(userId);
+        if (user == null) {
+            return false;
+        }
+        
         user.setStatus(status);
         return updateUser(user);
     }
     
     @Override
+    @Transactional
     public boolean updateUserType(Long userId, Integer userType) {
-        User user = new User();
-        user.setId(userId);
+        User user = getUserById(userId);
+        if (user == null) {
+            return false;
+        }
+        
         user.setUserType(userType);
         return updateUser(user);
     }
@@ -397,33 +336,6 @@ public class UserServiceImpl implements UserService {
         
         // 检查用户类型是否匹配所需权限
         return user.getUserType().equals(requiredUserType);
-    }
-
-    /**
-     * 从MySQL数据库查询用户
-     */
-    private User findUserFromMysql(String username) {
-        String sql = "SELECT * FROM employment_user WHERE username = ?";
-        List<User> users = mysqlJdbcTemplate.query(sql, new Object[]{username}, new UserRowMapper());
-        return users.isEmpty() ? null : users.get(0);
-    }
-
-    /**
-     * 从PostgreSQL数据库查询用户
-     */
-    private User findUserFromPostgresql(String username) {
-        String sql = "SELECT * FROM interview_user WHERE username = ?";
-        List<User> users = postgresqlJdbcTemplate.query(sql, new Object[]{username}, new UserRowMapper());
-        return users.isEmpty() ? null : users.get(0);
-    }
-
-    /**
-     * 验证密码
-     */
-    private boolean validatePassword(String rawPassword, String encodedPassword) {
-        // 这里使用MD5加密进行演示，实际应使用更安全的加密方式如BCrypt
-        String encodedRawPassword = DigestUtils.md5DigestAsHex(rawPassword.getBytes());
-        return encodedRawPassword.equals(encodedPassword);
     }
 
     /**

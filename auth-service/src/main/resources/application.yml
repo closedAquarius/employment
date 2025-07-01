@@ -5,6 +5,10 @@ spring:
   application:
     name: auth-service
   
+  # 允许Bean定义覆盖
+  main:
+    allow-bean-definition-overriding: true
+  
   # 配置多数据源
   datasource:
     # 禁用默认数据源自动配置
