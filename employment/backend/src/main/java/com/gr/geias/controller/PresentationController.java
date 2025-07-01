@@ -145,6 +145,7 @@ public class PresentationController {
 
     @GetMapping("/class/{presentationId}")
     public ResponseEntity<List<Map<String, Object>>> getClass(@PathVariable Integer presentationId) {
+        System.out.println(presentationSignupService.getClassDistribution(presentationId));
         return ResponseEntity.ok(presentationSignupService.getClassDistribution(presentationId));
     }
 }

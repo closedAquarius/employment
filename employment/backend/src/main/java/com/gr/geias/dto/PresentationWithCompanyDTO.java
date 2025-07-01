@@ -22,7 +22,6 @@ public class PresentationWithCompanyDTO {
     // 公司信息字段
     private Integer companyId;
     private String companyName;
-    private String companyUsername;
     private String companyType; // 来自 unit_kind 表
 
 }
