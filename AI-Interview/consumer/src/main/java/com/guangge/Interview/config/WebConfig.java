@@ -45,9 +45,11 @@ public class WebConfig implements WebMvcConfigurer {
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/interview/welcomemp3",
+                        "/interview/login",
                         "/candidates",
                         "/frontend/candidates",
-                        "/frontend/interView"
+                        "/frontend/interView",
+                        "/interview/face2faceChat"
                 );
     }
 
@@ -64,9 +66,11 @@ public class WebConfig implements WebMvcConfigurer {
                 "/swagger-ui",
                 "/v3/api-docs",
                 "/interview/welcomemp3",
+                "/interview/login",
                 "/candidates",
                 "/frontend/candidates",
-                "/frontend/interView"
+                "/frontend/interView",
+                "/interview/face2faceChat"
         );
     }
 

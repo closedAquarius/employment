@@ -34,17 +34,29 @@ public class SpeechToTextService {
                         .model("paraformer-realtime-v2")
                         .format("wav")
                         .sampleRate(16000)
-                        // “language_hints”只支持paraformer-v2和paraformer-realtime-v2模型
+                        // "language_hints"只支持paraformer-v2和paraformer-realtime-v2模型
                         .parameter("language_hints", new String[]{"zh", "en"})
                         .build();
 
         try {
             result = recognizer.call(param, audioFile);
+            System.out.println("语音识别原始结果: " + result);
+            
             Map<String, Object> stringObjectMap = JacksonMapperUtils.json2map(result);
             List<Map<String, Object>> sentences = (List<Map<String, Object>>) stringObjectMap.get("sentences");
-            result = (String) sentences.get(0).get("text");
+            
+            // 检查sentences列表是否为空或为null
+            if (sentences != null && !sentences.isEmpty()) {
+                result = (String) sentences.get(0).get("text");
+            } else {
+                // 如果没有识别到文本，返回一个默认值
+                System.out.println("未能识别到语音内容，返回空字符串");
+                return "";
+            }
         } catch (Exception e) {
+            System.err.println("语音识别出错: " + e.getMessage());
             e.printStackTrace();
+            return "";  // 发生异常时返回空字符串
         }
         return result;
     }
