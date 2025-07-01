@@ -42,7 +42,7 @@ where s.specialty_id = cg.specialty_id
             </if>
         </where>
         ORDER BY specialty_id ASC
-        LIMIT #{limit} OFFSET #{offset}
+        LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <!-- 查询专业总数 -->
