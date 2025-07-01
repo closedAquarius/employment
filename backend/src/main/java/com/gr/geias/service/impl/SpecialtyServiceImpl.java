@@ -6,6 +6,7 @@ import com.gr.geias.service.SpecialtyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Date;
 
@@ -51,4 +52,15 @@ public class SpecialtyServiceImpl implements SpecialtyService {
         // 专业对应的班级数量逻辑
         return count;
     }
+
+    @Override
+    public List<Specialty> getSpecialtyPage(Integer collegeId, String name, int offset, int limit) {
+        return specialtyRepository.querySpecialtyPage(collegeId, name, offset, limit);
+    }
+
+    @Override
+    public int getSpecialtyCount(Integer collegeId, String name) {
+        return specialtyRepository.querySpecialtyCount(collegeId, name);
+    }
+
 } 

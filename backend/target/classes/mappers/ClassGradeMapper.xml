@@ -17,4 +17,17 @@
             keyProperty="classId" keyColumn="class_id">
         insert into tb_class_grade(class_name,specialty_id,create_time,admin_id) values(#{classGrede.className},#{classGrede.specialtyId},#{classGrede.createTime},#{classGrede.adminId})
     </insert>
+
+    <select id="queryClassGradePage" resultType="ClassGrade">
+        SELECT * FROM tb_class_grade
+        WHERE specialty_id = #{specialtyId}
+        ORDER BY class_id
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="queryClassGradeCount" resultType="int">
+        SELECT COUNT(*) FROM tb_class_grade
+        WHERE specialty_id = #{specialtyId}
+    </select>
+
 </mapper> 

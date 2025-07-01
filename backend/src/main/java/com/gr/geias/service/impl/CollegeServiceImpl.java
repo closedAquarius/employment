@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -118,4 +119,15 @@ public class CollegeServiceImpl implements CollegeService {
     public College getCollegeById(Integer collegeId) {
         return collegeRepository.queryCollegeById(collegeId);
     }
+
+    @Override
+    public List<College> getCollegePage(String name, int offset, int limit) {
+        return collegeRepository.queryCollegePage(name, offset, limit);
+    }
+
+    @Override
+    public int getCollegeCount(String name) {
+        return collegeRepository.queryCollegeCount(name);
+    }
+
 }

@@ -45,4 +45,8 @@ public interface ClassGradeService {
      * @return 是否成功
      */
     Boolean delClassGrade(Integer classId);
+
+    int getClassGradeCount(Integer specialtyId);
+
+    List<ClassGrade> getClassGradePage(Integer specialtyId, int offset, int pageSize);
 } 

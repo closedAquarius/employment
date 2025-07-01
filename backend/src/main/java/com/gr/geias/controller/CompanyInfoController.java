@@ -4,7 +4,6 @@ import com.gr.geias.model.CompanyInfo;
 import com.gr.geias.model.PersonInfo;
 import com.gr.geias.service.CompanyInfoService;
 import com.gr.geias.service.PersonInfoService;
-import com.gr.geias.util.JwtUtil;
 import com.gr.geias.util.TokenUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;

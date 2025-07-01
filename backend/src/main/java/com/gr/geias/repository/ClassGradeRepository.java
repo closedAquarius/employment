@@ -46,4 +46,7 @@ public interface ClassGradeRepository {
     @Delete("delete from tb_class_grade where class_id = #{classId}")
     Integer delClassGrede(@Param("classId")Integer classId);
 
+    List<ClassGrade> queryClassGradePage(Integer specialtyId, int offset, int limit);
+
+    int queryClassGradeCount(Integer specialtyId);
 } 

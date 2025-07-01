@@ -38,7 +38,7 @@ public class EmploymentInformationController {
     ExcelUtil excelUtil;
 
     /**
-     *  获取毕业生就业信息列表 权限 0，1，2
+     *  获取毕业生就业信息列表
      * @param pageNum
      * @param areaId
      * @param employmentWayId
@@ -123,7 +123,7 @@ public class EmploymentInformationController {
     }
 
     /**
-     * 获取 地区数量 列表 权限 0，1，2
+     * 获取地区数量列表
      * @return
      */
     @RequestMapping(value = "/getcountbyarea", method = RequestMethod.GET)
@@ -157,7 +157,7 @@ public class EmploymentInformationController {
 
 
     /**
-     * 获取就业途径数量 列表 权限 0，1，2
+     * 获取就业途径数量 列表
      * @return
      */
     @RequestMapping(value = "/getcountbyemploymentway",method = RequestMethod.GET)
@@ -191,7 +191,7 @@ public class EmploymentInformationController {
     }
 
     /**
-     * 获取 职业分类 数量 列表 0，1，2
+     * 获取职业分类数量
      * @return
      */
     @RequestMapping(value = "/getcountbyunitkind",method = RequestMethod.GET)

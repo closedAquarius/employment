@@ -84,4 +84,17 @@ public interface PersonInfoService {
      * @return 用户信息
      */
     PersonInfo checkFace(String image);
+
+    // 分页获取指定学院的辅导员（权限0）
+    List<PersonInfo> getPersonByCollegeIdPage(Integer collegeId, int offset, int limit);
+
+    // 获取指定学院辅导员总数
+    int getPersonByCollegeIdCount(Integer collegeId);
+
+    // 分页获取学院管理（权限1）
+    List<PersonInfo> getPerson1Page(int offset, int limit);
+
+    // 获取学院管理总数
+    int getPerson1Count();
+
 } 

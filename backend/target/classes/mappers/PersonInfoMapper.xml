@@ -34,4 +34,29 @@
         </set>
         where person_id = #{person.personId}
     </update>
+
+    <select id="queryPersonByCollegeIdPage" resultType="com.gr.geias.model.PersonInfo">
+        SELECT * FROM tb_person_info
+        WHERE college_id = #{collegeId} AND enable_status IN (1, 2)
+        ORDER BY person_id
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="queryPersonByCollegeIdCount" resultType="int">
+        SELECT COUNT(*) FROM tb_person_info
+        WHERE college_id = #{collegeId} AND enable_status IN (1, 2)
+    </select>
+
+    <select id="queryPerson1Page" resultType="com.gr.geias.model.PersonInfo">
+        SELECT * FROM tb_person_info
+        WHERE enable_status = 2
+        ORDER BY person_id
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="queryPerson1Count" resultType="int">
+        SELECT COUNT(*) FROM tb_person_info
+        WHERE enable_status = 2
+    </select>
+
 </mapper> 

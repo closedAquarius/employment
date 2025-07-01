@@ -39,7 +39,7 @@ public class InitController {
     UnitKindService unitKindService;
 
     /**
-     * 获取普通分类信息 如：地区 就业途径 职业分类 权限 0，1，2
+     * 获取普通分类信息 如：地区 就业途径 职业分类
      * @param areaId
      * @return
      */
@@ -56,7 +56,7 @@ public class InitController {
     }
 
     /**
-     * 获取高级分类信息 如：班级 专业 学院 权限 0，1，2
+     * 获取高级分类信息 如：班级 专业 学院
      * @param levelId
      * @return
      */
