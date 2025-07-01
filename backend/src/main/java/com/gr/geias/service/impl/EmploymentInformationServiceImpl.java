@@ -22,8 +22,8 @@ public class EmploymentInformationServiceImpl implements EmploymentInformationSe
 
     @Override
     public EmploymentInformationMsg getEmploymentInfoList(EmploymentInformation information, Integer pagenum, PersonInfo personInfo, Integer[] salary) {
-        int i = PageMath.pageNumtoRowIndex(pagenum, 12);
-        List<EmploymentInformation> employmentInformations = informationRepository.queryList(information, i, 12, personInfo, salary);
+        int i = PageMath.pageNumtoRowIndex(pagenum, 8);
+        List<EmploymentInformation> employmentInformations = informationRepository.queryList(information, i, 8, personInfo, salary);
         Integer integer = informationRepository.queryListCount(information, personInfo, salary);
         EmploymentInformationMsg employmentInformationMsg = new EmploymentInformationMsg();
         if (integer >= 0) {
