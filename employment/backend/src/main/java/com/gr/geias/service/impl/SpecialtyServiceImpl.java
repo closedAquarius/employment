@@ -23,7 +23,7 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     public List<Specialty> getSpecialty(Integer collegeId) {
         return specialtyRepository.querySpecialtyByCollegeId(collegeId);
     }
-
+    
     @Override
     public Boolean addSpecialty(Specialty specialty) {
         specialty.setCreateTime(new Date());

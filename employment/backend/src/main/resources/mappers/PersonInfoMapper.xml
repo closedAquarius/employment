@@ -59,4 +59,4 @@
         WHERE enable_status = 2
     </select>
 
-</mapper>
+</mapper> 

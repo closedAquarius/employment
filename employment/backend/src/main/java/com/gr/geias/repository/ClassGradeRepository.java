@@ -49,4 +49,4 @@ public interface ClassGradeRepository {
     List<ClassGrade> queryClassGradePage(Integer specialtyId, int offset, int limit);
 
     int queryClassGradeCount(Integer specialtyId);
-}
+} 

@@ -11,15 +11,15 @@ public interface SpecialtyService {
 
     /**
      * 获取学院下的所有专业
-     *
+     * 
      * @param collegeId 学院ID
      * @return 专业列表
      */
     List<Specialty> getSpecialty(Integer collegeId);
-
+    
     /**
      * 添加专业
-     *
+     * 
      * @param specialty 专业信息
      * @return 是否成功
      */
@@ -27,7 +27,7 @@ public interface SpecialtyService {
 
     /**
      * 更新专业信息
-     *
+     * 
      * @param specialty 专业信息
      * @return 是否成功
      */
@@ -35,7 +35,7 @@ public interface SpecialtyService {
 
     /**
      * 删除专业信息
-     *
+     * 
      * @param specialtyId 专业ID
      * @return 是否成功
      */
@@ -43,7 +43,7 @@ public interface SpecialtyService {
 
     /**
      * 通过专业id获取专业信息
-     *
+     * 
      * @param specialtyId 专业ID
      * @return 专业信息
      */
@@ -51,7 +51,7 @@ public interface SpecialtyService {
 
     /**
      * 获取并持久化专业人数
-     *
+     * 
      * @param specialtyId 专业ID
      * @return 人数
      */
@@ -75,4 +75,4 @@ public interface SpecialtyService {
      */
     int getSpecialtyCount(Integer collegeId, String name);
 
-}
+} 

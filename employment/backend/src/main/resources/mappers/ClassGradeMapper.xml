@@ -30,4 +30,4 @@
         WHERE specialty_id = #{specialtyId}
     </select>
 
-</mapper>
+</mapper> 

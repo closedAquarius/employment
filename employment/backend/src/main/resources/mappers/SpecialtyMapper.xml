@@ -18,15 +18,15 @@
     </update>
 
     <select id="queryCountSpecialty" resultType="int">
-        select
-            SUM(n.sum)
-        from
-            tb_specialty s,
-            tb_organization_num n,
-            tb_class_grade cg
-        where s.specialty_id = cg.specialty_id
-          and cg.class_id = n.class_id
-          and s.specialty_id=#{specialtyId};
+select
+    SUM(n.sum)
+from
+      tb_specialty s,
+      tb_organization_num n,
+      tb_class_grade cg
+where s.specialty_id = cg.specialty_id
+  and cg.class_id = n.class_id
+  and s.specialty_id=#{specialtyId};
     </select>
 
     <!-- 分页查询专业 -->
@@ -60,4 +60,4 @@
         </where>
     </select>
 
-</mapper>
+</mapper> 

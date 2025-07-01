@@ -16,16 +16,16 @@
     </update>
 
     <select id="quereyCollegeCount" resultType="int">
-        select
-            SUM(n.sum)
-        from  tb_college c,
-              tb_specialty s,
-              tb_organization_num n,
-              tb_class_grade cg
-        where c.college_id = s.college_id
-          and s.specialty_id = cg.specialty_id
-          and cg.class_id = n.class_id
-          and c.college_id=#{collegeId};
+    select
+          SUM(n.sum)
+    from  tb_college c,
+          tb_specialty s,
+          tb_organization_num n,
+          tb_class_grade cg
+    where c.college_id = s.college_id
+      and s.specialty_id = cg.specialty_id
+      and cg.class_id = n.class_id
+      and c.college_id=#{collegeId};
     </select>
     <update id="updateCollege" parameterType="com.gr.geias.model.College">
         update tb_college
@@ -65,4 +65,4 @@
     </select>
 
 
-</mapper>
+</mapper> 

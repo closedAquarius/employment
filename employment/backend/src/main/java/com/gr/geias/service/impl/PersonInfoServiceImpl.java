@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Service
 public class PersonInfoServiceImpl implements PersonInfoService {
-
+    
     @Autowired
     private PersonInfoRepository personInfoRepository;
 
@@ -100,7 +100,7 @@ public class PersonInfoServiceImpl implements PersonInfoService {
             String errorMsg = jsonObject.getString("error_msg");
             JSONObject result = jsonObject.getJSONObject("result");
             String faceToken = result.getString("face_token");
-
+            
             if (errorMsg.equals("SUCCESS")) {
                 Integer updateResult = personInfoRepository.updatePersonById(personId, faceToken);
                 if (updateResult > 0) {
@@ -119,14 +119,14 @@ public class PersonInfoServiceImpl implements PersonInfoService {
         try {
             JSONObject search = FaceUtil.search(image);
             String errorMsg = search.getString("error_msg");
-
+            
             if (errorMsg.equals("SUCCESS")) {
                 JSONObject result = search.getJSONObject("result");
                 JSONArray userList = result.getJSONArray("user_list");
                 JSONObject jsonObject = userList.getJSONObject(0);
                 double score = jsonObject.getDouble("score");
                 String userId = jsonObject.getString("user_id");
-
+                
                 if (score > 90) {
                     return personInfoRepository.queryPersonById(Integer.parseInt(userId));
                 } else {
@@ -161,4 +161,4 @@ public class PersonInfoServiceImpl implements PersonInfoService {
         Integer count = personInfoRepository.queryPerson1Count();
         return count == null ? 0 : count;
     }
-}
+} 

@@ -97,4 +97,4 @@ public interface PersonInfoService {
     // 获取学院管理总数
     int getPerson1Count();
 
-}
+} 

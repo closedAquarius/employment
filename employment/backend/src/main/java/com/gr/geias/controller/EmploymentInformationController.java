@@ -59,62 +59,62 @@ public class EmploymentInformationController {
                           @RequestParam(value = "salary", required = false) String salary) {
         Map<String,Object> map = new HashMap<String,Object>(3);
         try {
-            Claims claims = TokenUtil.extractClaims(token);
+        Claims claims = TokenUtil.extractClaims(token);
             Integer userId = (Integer) claims.get("userId");
-            PersonInfo person = personInfoService.getPersonById(userId);
-            EmploymentInformation employmentInformation = new EmploymentInformation();
-            if (areaId != null) {
-                Area area = new Area();
-                area.setAreaId(areaId);
-                employmentInformation.setArea(area);
+        PersonInfo person = personInfoService.getPersonById(userId);
+        EmploymentInformation employmentInformation = new EmploymentInformation();
+        if (areaId != null) {
+            Area area = new Area();
+            area.setAreaId(areaId);
+            employmentInformation.setArea(area);
+        }
+        if (employmentWayId != null) {
+            EmploymentWay employmentWay = new EmploymentWay();
+            employmentWay.setEmploymentWayId(employmentWayId);
+            employmentInformation.setEmploymentWay(employmentWay);
+        }
+        if (unitId != null) {
+            UnitKind unitKind = new UnitKind();
+            unitKind.setUnitId(unitId);
+            employmentInformation.setUnitKind(unitKind);
+        }
+        if (levelId != null) {
+            if (person.getEnableStatus() == EnableStatusEnums.TEACHER.getState()) {
+                ClassGrade classGrade = new ClassGrade();
+                classGrade.setClassId(levelId);
+                employmentInformation.setClassGrade(classGrade);
             }
-            if (employmentWayId != null) {
-                EmploymentWay employmentWay = new EmploymentWay();
-                employmentWay.setEmploymentWayId(employmentWayId);
-                employmentInformation.setEmploymentWay(employmentWay);
-            }
-            if (unitId != null) {
-                UnitKind unitKind = new UnitKind();
-                unitKind.setUnitId(unitId);
-                employmentInformation.setUnitKind(unitKind);
-            }
-            if (levelId != null) {
-                if (person.getEnableStatus() == EnableStatusEnums.TEACHER.getState()) {
-                    ClassGrade classGrade = new ClassGrade();
-                    classGrade.setClassId(levelId);
-                    employmentInformation.setClassGrade(classGrade);
-                }
 //            if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
 //                Specialty specialty = new Specialty();
 //                specialty.setSpecialtyId(levelId);
 //                employmentInformation.setSpecialty(specialty);
 //            }
-                if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
-                    College college = new College();
-                    college.setCollegeId(levelId);
-                    employmentInformation.setCollege(college);
-                }
+            if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
+                College college = new College();
+                college.setCollegeId(levelId);
+                employmentInformation.setCollege(college);
             }
-            if (name != null) {
-                employmentInformation.setName(name);
-            }
-            Integer[] a = null;
-            if (salary != null) {
-                String[] split = salary.split("｜");
-                a = new Integer[2];
-                a[0] = Integer.parseInt(split[0]);
-                a[1] = Integer.parseInt(split[1]);
-            }
-            EmploymentInformationMsg employmentInfoList =
-                    informationService.getEmploymentInfoList(employmentInformation, pageNum, person, a);
-            if (employmentInfoList.getSuccess()){
-                map.put("success", true);
-                map.put("list", employmentInfoList.getList());
-                map.put("count", employmentInfoList.getCount());
-            }else {
-                map.put("success", false);
-                map.put("errMsg", "出现错误");
-            }
+        }
+        if (name != null) {
+            employmentInformation.setName(name);
+        }
+        Integer[] a = null;
+        if (salary != null) {
+            String[] split = salary.split("｜");
+            a = new Integer[2];
+            a[0] = Integer.parseInt(split[0]);
+            a[1] = Integer.parseInt(split[1]);
+        }
+        EmploymentInformationMsg employmentInfoList =
+                informationService.getEmploymentInfoList(employmentInformation, pageNum, person, a);
+        if (employmentInfoList.getSuccess()){
+            map.put("success", true);
+            map.put("list", employmentInfoList.getList());
+            map.put("count", employmentInfoList.getCount());
+        }else {
+            map.put("success", false);
+            map.put("errMsg", "出现错误");
+        }
         } catch (Exception e) {
             map.put("success", false);
             map.put("errMsg", "Token无效或已过期");

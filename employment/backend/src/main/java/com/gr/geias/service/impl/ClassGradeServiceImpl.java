@@ -21,19 +21,19 @@ import java.util.List;
  */
 @Service
 public class ClassGradeServiceImpl implements ClassGradeService {
-
+    
     @Autowired
     private ClassGradeRepository classGradeRepository;
-
+    
     @Autowired
     private OrganizationNumRepository organizationNumRepository;
-
+    
     @Autowired
     private EmploymentInformationRepository employmentInformationRepository;
-
+    
     @Autowired
     private SpecialtyService specialtyService;
-
+    
     @Autowired
     private CollegeService collegeService;
 
@@ -75,7 +75,7 @@ public class ClassGradeServiceImpl implements ClassGradeService {
             Integer numUpdateResult = organizationNumRepository.updateNumByClassGradeId(sum, classGrade.getClassId());
             collegeService.getAndSetcount(collegeId);
             specialtyService.getAndSetSpecialtyCount(classGrade.getSpecialtyId());
-
+            
             if (updateResult > 0 && numUpdateResult > 0) {
                 return true;
             } else {
@@ -91,15 +91,15 @@ public class ClassGradeServiceImpl implements ClassGradeService {
     public Boolean delClassGrade(Integer classId) {
         try {
             Integer delNumResult = organizationNumRepository.delClassGrade(classId);
-
+            
             EmploymentInformation employmentInformation = new EmploymentInformation();
             ClassGrade classGrade = new ClassGrade();
             classGrade.setClassId(classId);
             employmentInformation.setClassGrade(classGrade);
-
+            
             employmentInformationRepository.delEmploymentInformation(employmentInformation);
             Integer delClassResult = classGradeRepository.delClassGrede(classId);
-
+            
             if (delClassResult > 0 && delNumResult > 0) {
                 return true;
             } else {

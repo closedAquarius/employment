@@ -86,11 +86,11 @@
         p.signup_count,
         p.create_time,
         p.update_time,
-        c.company_id AS companyId,
-        c.company_name AS companyName,
-        c.unit_id as companyType
+        c.person_id AS companyId,
+        c.person_name AS companyName,
+        c.username AS companyUsername
         FROM tb_presentation p
-        JOIN tb_company_info c ON p.company_id = c.company_id
+        JOIN tb_person_info c ON p.company_id = c.person_id
         <where>
             <if test="status != null">
                 p.status = #{status}

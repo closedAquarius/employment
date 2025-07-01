@@ -91,7 +91,7 @@ public interface PersonInfoRepository {
 
     /**
      * 删除用户
-     *
+     * 
      * @param personId 用户ID
      * @return 影响行数
      */
@@ -100,7 +100,7 @@ public interface PersonInfoRepository {
 
     /**
      * 获取权限为4的用户
-     *
+     * 
      * @return 管理员列表
      */
     @Select("select * from tb_person_info where enable_Status=2")
@@ -108,7 +108,7 @@ public interface PersonInfoRepository {
 
     /**
      * 更新用户人脸标识
-     *
+     * 
      * @param personId 用户ID
      * @param faceToken 人脸标识
      * @return 影响行数
@@ -123,4 +123,4 @@ public interface PersonInfoRepository {
     List<PersonInfo> queryPerson1Page(int offset, int limit);
 
     Integer queryPerson1Count();
-}
+} 

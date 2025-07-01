@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/personinfo/faceLogin"
                 ).permitAll()
 
-                //CompanyInfoController
+               //CompanyInfoController
                 .antMatchers(
                         "/companyinfo/confirm-company"
                 ).hasRole("ADMINISTRATOR")

@@ -32,7 +32,7 @@ import java.util.*;
 public class PersonInfoController {
     @Autowired
     private PersonInfoService personInfoService;
-
+    
     @Autowired
     private OperationLogService operationLogService;
 

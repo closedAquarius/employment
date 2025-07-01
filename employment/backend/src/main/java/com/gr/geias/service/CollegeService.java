@@ -10,7 +10,7 @@ import java.util.List;
 public interface CollegeService {
     /**
      * 获取学院
-     *
+     * 
      * @param adminId 管理员ID
      * @return 学院列表
      */
@@ -18,7 +18,7 @@ public interface CollegeService {
 
     /**
      * 添加学院
-     *
+     * 
      * @param college 学院信息
      * @return 是否成功
      */
@@ -26,7 +26,7 @@ public interface CollegeService {
 
     /**
      * 返回学院总人数并持久化到数据库中
-     *
+     * 
      * @param collegeId 学院ID
      * @return 总人数
      */
@@ -34,7 +34,7 @@ public interface CollegeService {
 
     /**
      * 修改学院
-     *
+     * 
      * @param college 学院信息
      * @return 是否成功
      */
@@ -42,7 +42,7 @@ public interface CollegeService {
 
     /**
      * 删除学院
-     *
+     * 
      * @param collegeId 学院ID
      * @return 是否成功
      */
@@ -50,7 +50,7 @@ public interface CollegeService {
 
     /**
      * 获取学院信息
-     *
+     * 
      * @param collegeId 学院ID
      * @return 学院信息
      */

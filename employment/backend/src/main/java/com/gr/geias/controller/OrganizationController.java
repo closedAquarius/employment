@@ -653,7 +653,7 @@ public class OrganizationController {
         Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo personInfo = new PersonInfo();
         personInfo.setCollegeId(collegeId);
-        personInfo.setEnableStatus(1);
+        personInfo.setEnableStatus(0);
         personInfo.setCreateTime(new Date());
         personInfo.setPassword(password);
         personInfo.setUsername(username);
@@ -818,12 +818,11 @@ public class OrganizationController {
     @RequestMapping(value = "/addperson_1", method = RequestMethod.GET)
     public Map<String, Object> addPerson_1(@RequestParam("personName") String personName,
                                            @RequestParam("password") String password,
-                                           @RequestParam("username") String username,
-                                           @RequestParam("collegeId") Integer collegeId){
+                                           @RequestParam("username") String username) {
         Map<String, Object> map = new HashMap<String, Object>(3);
         PersonInfo personInfo = new PersonInfo();
-        personInfo.setCollegeId(collegeId);
-        personInfo.setEnableStatus(2);
+        personInfo.setCollegeId(null);
+        personInfo.setEnableStatus(1);
         personInfo.setCreateTime(new Date());
         personInfo.setPassword(password);
         personInfo.setUsername(username);
