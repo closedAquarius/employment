@@ -1,0 +1,61 @@
+spring:
+  mvc:
+    static-path-pattern: /static/**
+  aop:
+    proxy-target-class: true
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/graduateemploymentinfo?useUnicode=true&characterEncoding=utf8
+      username: root
+      password: 1234
+      filter: stat,wall,log4j
+      initial-size: 5
+      max-active: 20
+      min-idle: 5
+      max-wait: 2000
+      pool-prepared-statements: false
+      max-open-prepared-statements: -1
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 30000
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  main:
+    allow-bean-definition-overriding: true
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.gr.geias.model
+  type-handlers-package: com.gr.geias.handler
+  configuration:
+    map-underscore-to-camel-case: true
+    use-generated-keys: true
+    use-column-label: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  level:
+    com:
+      gr:
+        geias:
+          repository: debug
+server:
+  port: 8080
+
+# 添加面试API配置
+employment:
+  api:
+    key: ${EMPLOYMENT_API_KEY:ai-interview-secret-key}  # API密钥，建议通过环境变量配置
+
+# 爬虫服务配置
+crawler:
+  url: http://localhost:8000  # 爬虫服务URL
+
+pagehelper:
+  helper-dialect: postgresql
+  reasonable: true
+  support-methods-arguments: true 

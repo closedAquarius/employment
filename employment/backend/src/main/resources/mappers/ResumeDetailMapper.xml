@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gr.geias.repository.ResumeDetailRepository">
+
+    <select id="findByResumeId" resultType="com.gr.geias.model.ResumeDetail">
+        select
+            detail_id,
+            resume_id,
+            basic_info,
+            education_info,
+            work_experience,
+            project_experience,
+            skills,
+            certificates,
+            self_evaluation,
+            attachment_url,
+            create_time,
+            update_time
+        from tb_resume_detail
+        where resume_id = #{resumeId}
+    </select>
+    
+    <insert id="save" parameterType="com.gr.geias.model.ResumeDetail" useGeneratedKeys="true" keyProperty="detailId">
+        insert into tb_resume_detail (
+            resume_id,
+            basic_info,
+            education_info,
+            work_experience,
+            project_experience,
+            skills,
+            certificates,
+            self_evaluation,
+            attachment_url,
+            create_time,
+            update_time
+        ) values (
+            #{resumeId},
+            #{basicInfo},
+            #{educationInfo},
+            #{workExperience},
+            #{projectExperience},
+            #{skills},
+            #{certificates},
+            #{selfEvaluation},
+            #{attachmentUrl},
+            #{createTime},
+            #{updateTime}
+        )
+    </insert>
+    
+    <update id="update" parameterType="com.gr.geias.model.ResumeDetail">
+        update tb_resume_detail
+        <set>
+            <if test="basicInfo != null">basic_info = #{basicInfo},</if>
+            <if test="educationInfo != null">education_info = #{educationInfo},</if>
+            <if test="workExperience != null">work_experience = #{workExperience},</if>
+            <if test="projectExperience != null">project_experience = #{projectExperience},</if>
+            <if test="skills != null">skills = #{skills},</if>
+            <if test="certificates != null">certificates = #{certificates},</if>
+            <if test="selfEvaluation != null">self_evaluation = #{selfEvaluation},</if>
+            <if test="attachmentUrl != null">attachment_url = #{attachmentUrl},</if>
+            update_time = #{updateTime}
+        </set>
+        where detail_id = #{detailId}
+    </update>
+    
+    <delete id="deleteByResumeId">
+        delete from tb_resume_detail
+        where resume_id = #{resumeId}
+    </delete>
+    
+</mapper> 

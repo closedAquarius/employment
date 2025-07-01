@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gr.geias.repository.SpecialtyRepository">
+    <select id="querySpecialty" resultType="com.gr.geias.model.Specialty">
+        select * from tb_specialty
+        <where>
+            <if test="collegeId!=null">
+                college_id = #{collegeId}
+            </if>
+        </where>
+    </select>
+
+
+    <update id="insertSpecialty" parameterType="com.gr.geias.model.Specialty" useGeneratedKeys="true"
+            keyColumn="specialty_id"
+            keyProperty="specialtyId">
+        insert into tb_specialty(specialty_name,create_time,college_id) values(#{specialty.specialtyName},#{specialty.createTime},#{specialty.collegeId})
+    </update>
+
+    <select id="queryCountSpecialty" resultType="int">
+        select
+            SUM(n.sum)
+        from
+            tb_specialty s,
+            tb_organization_num n,
+            tb_class_grade cg
+        where s.specialty_id = cg.specialty_id
+          and cg.class_id = n.class_id
+          and s.specialty_id=#{specialtyId};
+    </select>
+
+    <!-- 分页查询专业 -->
+    <select id="querySpecialtyPage" resultType="com.gr.geias.model.Specialty">
+        SELECT *
+        FROM tb_specialty
+        <where>
+            <if test="collegeId != null">
+                college_id = #{collegeId}
+            </if>
+            <if test="name != null and name != ''">
+                AND specialty_name LIKE CONCAT('%', #{name}, '%')
+            </if>
+        </where>
+        ORDER BY specialty_id ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+
+    <!-- 查询专业总数 -->
+    <select id="querySpecialtyCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_specialty
+        <where>
+            <if test="collegeId != null">
+                college_id = #{collegeId}
+            </if>
+            <if test="name != null and name != ''">
+                AND specialty_name LIKE CONCAT('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

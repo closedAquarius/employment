@@ -1,0 +1,3 @@
+// This file signals to TypeScript that vite.generated.ts should be ignored
+// during type checking, as it's an auto-generated file.
+// See: https://github.com/Microsoft/vscode/issues/12066 

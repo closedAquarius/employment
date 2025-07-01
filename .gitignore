@@ -1,0 +1,52 @@
+# 编译输出
+target/
+*.class
+
+# 日志文件
+*.log
+
+# 包文件
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# IDE文件
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.classpath
+.project
+.settings/
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+
+# mac系统文件
+.DS_Store
+Thumbs.db
+
+# 临时文件
+*.swp
+*.swo
+*~
+
+# 上传目录
+/uploads/
+
+# 其他不需要的文件
+vite.generated.ts
+vite.generated.nowts AI-Interview/face-service/AI-Interview-py/
