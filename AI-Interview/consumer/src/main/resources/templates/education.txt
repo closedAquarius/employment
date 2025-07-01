@@ -1,0 +1,3 @@
+{begin} ~ {end} {university}
+专业：{major}
+学位: {degree}

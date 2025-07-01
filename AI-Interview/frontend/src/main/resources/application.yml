@@ -1,0 +1,27 @@
+feign:
+  client:
+    config:
+      default: # 适用于所有 Feign Client
+        connectTimeout: 5000  # 连接超时 5 秒
+        readTimeout: 20000    # 读取超时 10 秒
+
+server:
+  port: 8084
+
+spring:
+  application:
+    name: frontend
+
+# Consumer服务端点
+consumer-service-endpoint: http://localhost:8088
+
+# 人脸识别服务配置
+face-service:
+  url: http://localhost:5001
+  
+# Python Azure OpenAI服务配置
+python:
+  azure:
+    openai:
+      service:
+        url: http://localhost:7960
