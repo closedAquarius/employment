@@ -20,9 +20,11 @@
       </div>
     </div>
   </div>
+  <FooterLinks />
 </template>
 
 <script setup>
+import FooterLinks from './FooterLinks.vue'
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from '@/utils/axios'

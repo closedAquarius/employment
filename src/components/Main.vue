@@ -11,144 +11,161 @@
     </div>
   </div>
 
-  <!-- 最新速递 -->
-  <div>
+  <div class="main-content">
+    <HomeSwiper />
+    <!-- 搜索框 -->
+    <SearchNews />
+    <!-- 最新速递 -->
+    <div>
+      <div class="row-a1">
+        <div class="wp">
+          <div class="g-tit1">
+            <h3>最新速递</h3>
+          </div>
+          <div class="box flex-box">
+            <!-- 轮播图 -->
+            <div class="slider" v-if="sliderItems.length">
+              <a @click.prevent="goToDetail(sliderItems[currentIndex].id)" class="con" style="cursor:pointer">
+                <div class="pic">
+                  <img :src="sliderItems[currentIndex].img" :alt="sliderItems[currentIndex].title" />
+                  <div class="slider-bar">
+                    <div class="slider-title">{{ sliderItems[currentIndex].title }}</div>
+                    <div class="slider-controls">
+                      <button
+                        v-for="(item, idx) in sliderItems"
+                        :key="idx"
+                        @click.stop="resetSlider(idx)"
+                        :class="{ active: idx === currentIndex }"
+                      ></button>
+                    </div>
+                  </div>
+                </div>
+              </a>
+              <div class="slider-date">{{ sliderItems[currentIndex].date }}</div>
+            </div>
+            <!-- 新闻列表 -->
+            <ul class="p-list1 grid-list">
+              <li v-for="news in newsList" :key="news.id">
+                <a
+                  @click.prevent="goToDetail(news.id)"
+                  class="con"
+                  :title="news.title"
+                  style="cursor:pointer"
+                >
+                  <h3>{{ news.title }}</h3>
+                  <span class="date">{{ news.date }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 就业信息模块 -->
+    <div class="row-a1">
+      <div class="wp">
+        <div class="g-tit1 flex-between">
+          <h3>就业信息</h3>
+          <span class="more-link" @click="goToNewsList('就业')">更多 &gt;</span>
+        </div>
+        <div class="employment-grid">
+          <div
+            class="employment-item"
+            v-for="item in employmentList"
+            :key="item.id"
+            @click="goToDetail(item.id)"
+          >
+            <div class="employment-img">
+              <img :src="item.img" :alt="item.title" />
+            </div>
+            <div class="employment-info">
+              <div class="employment-title">{{ item.title }}</div>
+              <div class="employment-meta">
+                <span class="employment-date">{{ item.date }}</span>
+                <span class="employment-tag">{{ item.tags }}</span>
+                <span class="employment-views">👁️ {{ item.views }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 校园活动模块 -->
+    <div class="row-a1">
+      <div class="wp">
+        <div class="g-tit1 flex-between">
+          <h3>校园活动</h3>
+          <span class="more-link" @click="goToNewsList('校园')">更多 &gt;</span>
+        </div>
+        <div class="activity-grid">
+          <div
+            class="activity-item"
+            v-for="item in activityList"
+            :key="item.id"
+            @click="goToDetail(item.id)"
+          >
+            <div class="activity-img">
+              <img :src="item.img" :alt="item.title" />
+            </div>
+            <div class="activity-info">
+              <div class="activity-title">{{ item.title }}</div>
+              <div class="activity-meta">
+                <span class="activity-date">{{ item.date }}</span>
+                <span class="activity-tag">{{ item.tags }}</span>
+                <span class="activity-views">👁️ {{ item.views }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 大家都在看模块 -->
     <div class="row-a1">
       <div class="wp">
         <div class="g-tit1">
-          <h3>最新速递</h3>
+          <h3>大家都在看</h3>
         </div>
-        <div class="box flex-box">
-          <!-- 轮播图 -->
-          <div class="slider" v-if="sliderItems.length">
-            <a @click.prevent="goToDetail(sliderItems[currentIndex].id)" class="con" style="cursor:pointer">
-              <div class="pic">
-                <img :src="sliderItems[currentIndex].img" :alt="sliderItems[currentIndex].title" />
-                <div class="slider-bar">
-                  <div class="slider-title">{{ sliderItems[currentIndex].title }}</div>
-                  <div class="slider-controls">
-                    <button
-                      v-for="(item, idx) in sliderItems"
-                      :key="idx"
-                      @click.stop="resetSlider(idx)"
-                      :class="{ active: idx === currentIndex }"
-                    ></button>
-                  </div>
-                </div>
+        <div class="hot-grid">
+          <div
+            class="hot-item"
+            v-for="item in hotList"
+            :key="item.id"
+            @click="goToDetail(item.id)"
+          >
+            <div class="hot-img">
+              <img :src="item.img" :alt="item.title" />
+            </div>
+            <div class="hot-info">
+              <div class="hot-title">{{ item.title }}</div>
+              <div class="hot-meta">
+                <span class="hot-date">{{ item.date }}</span>
+                <span class="hot-tag">{{ item.tags }}</span>
+                <span class="hot-views">👁️ {{ item.views }}</span>
               </div>
-            </a>
-            <div class="slider-date">{{ sliderItems[currentIndex].date }}</div>
-          </div>
-          <!-- 新闻列表 -->
-          <ul class="p-list1 grid-list">
-            <li v-for="news in newsList" :key="news.id">
-              <a
-                @click.prevent="goToDetail(news.id)"
-                class="con"
-                :title="news.title"
-                style="cursor:pointer"
-              >
-                <h3>{{ news.title }}</h3>
-                <span class="date">{{ news.date }}</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 就业信息模块 -->
-  <div class="row-a1">
-    <div class="wp">
-      <div class="g-tit1 flex-between">
-        <h3>就业信息</h3>
-        <span class="more-link" @click="goToNewsList('就业')">更多 &gt;</span>
-      </div>
-      <div class="employment-grid">
-        <div
-          class="employment-item"
-          v-for="item in employmentList"
-          :key="item.id"
-          @click="goToDetail(item.id)"
-        >
-          <div class="employment-img">
-            <img :src="item.img" :alt="item.title" />
-          </div>
-          <div class="employment-info">
-            <div class="employment-title">{{ item.title }}</div>
-            <div class="employment-meta">
-              <span class="employment-date">{{ item.date }}</span>
-              <span class="employment-tag">{{ item.tags }}</span>
-              <span class="employment-views">👁️ {{ item.views }}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- 校园活动模块 -->
-  <div class="row-a1">
-    <div class="wp">
-      <div class="g-tit1 flex-between">
-        <h3>校园活动</h3>
-        <span class="more-link" @click="goToNewsList('校园')">更多 &gt;</span>
-      </div>
-      <div class="activity-grid">
-        <div
-          class="activity-item"
-          v-for="item in activityList"
-          :key="item.id"
-          @click="goToDetail(item.id)"
-        >
-          <div class="activity-img">
-            <img :src="item.img" :alt="item.title" />
-          </div>
-          <div class="activity-info">
-            <div class="activity-title">{{ item.title }}</div>
-            <div class="activity-meta">
-              <span class="activity-date">{{ item.date }}</span>
-              <span class="activity-tag">{{ item.tags }}</span>
-              <span class="activity-views">👁️ {{ item.views }}</span>
-            </div>
-          </div>
-        </div>
+    <!-- 政策法规模块 -->
+    <div class="row-a1">
+      <div class="wp">
+        <PolicyTabs />
       </div>
     </div>
   </div>
-
-  <!-- 大家都在看模块 -->
-  <div class="row-a1">
-    <div class="wp">
-      <div class="g-tit1">
-        <h3>大家都在看</h3>
-      </div>
-      <div class="hot-grid">
-        <div
-          class="hot-item"
-          v-for="item in hotList"
-          :key="item.id"
-          @click="goToDetail(item.id)"
-        >
-          <div class="hot-img">
-            <img :src="item.img" :alt="item.title" />
-          </div>
-          <div class="hot-info">
-            <div class="hot-title">{{ item.title }}</div>
-            <div class="hot-meta">
-              <span class="hot-date">{{ item.date }}</span>
-              <span class="hot-tag">{{ item.tags }}</span>
-              <span class="hot-views">👁️ {{ item.views }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <FooterLinks />
 </template>
 
 <script setup>
+import HomeSwiper from './HomeSwiper.vue'
+import SearchNews from './SearchNews.vue'
+import FooterLinks from './FooterLinks.vue'
+import PolicyTabs from './PolicyTabs.vue'
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from '@/utils/axios'
@@ -757,5 +774,41 @@ onUnmounted(() => {
 .more-link:hover {
   background: #e0eaff;
   color: #174ea6;
+}
+
+.main-content {
+  padding-top: 56px; /* 与.top-navbar高度一致，避免被遮挡 */
+}
+
+.home-swiper-cover {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 36px auto;
+  box-sizing: border-box;
+  padding: 0 24px;
+}
+.home-swiper1 {
+  width: 100%;
+  height: 320px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px #0001;
+}
+.home-swiper1 img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  display: block;
+  border-radius: 18px;
+  background: #f5f7fa;
+}
+@media (max-width: 900px) {
+  .home-swiper1, .home-swiper1 img {
+    height: 180px;
+    border-radius: 10px;
+  }
+  .home-swiper-cover {
+    padding: 0 6px;
+  }
 }
 </style>
