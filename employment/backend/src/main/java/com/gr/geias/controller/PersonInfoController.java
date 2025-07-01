@@ -9,6 +9,7 @@ import com.gr.geias.service.PersonInfoService;
 import com.gr.geias.service.RouterService;
 import com.gr.geias.service.SpecialtyService;
 import com.gr.geias.util.JwtUtil;
+import com.gr.geias.util.TokenUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -31,7 +32,7 @@ import java.util.*;
 public class PersonInfoController {
     @Autowired
     private PersonInfoService personInfoService;
-    
+
     @Autowired
     private OperationLogService operationLogService;
 
@@ -351,7 +352,7 @@ public class PersonInfoController {
     public Map<String, Object> getUser(@RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<>(2);
         try {
-            Claims claims = JwtUtil.parseAccessToken(token);
+            Claims claims = TokenUtil.extractClaims(token);
             Integer userId = (Integer) claims.get("userId");
             PersonInfo person = personInfoService.getPersonById(userId);
             map.put("success", true);
@@ -378,7 +379,8 @@ public class PersonInfoController {
                                           @RequestParam("password") String password) {
         Map<String, Object> map = new HashMap<>(2);
         try {
-            Claims claims = JwtUtil.parseAccessToken(token);
+            Claims claims = TokenUtil.extractClaims(token);
+
             Integer userId = (Integer) claims.get("userId");
             PersonInfo person = personInfoService.getPersonById(userId);
             person.setUsername(username);
@@ -410,7 +412,8 @@ public class PersonInfoController {
                                        @RequestParam("file") String file) throws Exception {
         Map<String, Object> map = new HashMap<>(2);
         try {
-            Claims claims = JwtUtil.parseAccessToken(token);
+            Claims claims = TokenUtil.extractClaims(token);
+
             Integer userId = (Integer) claims.get("userId");
             PersonInfo person = personInfoService.getPersonById(userId);
 

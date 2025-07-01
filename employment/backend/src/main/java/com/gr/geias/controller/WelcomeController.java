@@ -4,6 +4,7 @@ import com.gr.geias.model.*;
 import com.gr.geias.enums.EnableStatusEnums;
 import com.gr.geias.service.*;
 import com.gr.geias.util.JwtUtil;
+import com.gr.geias.util.TokenUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -36,7 +37,7 @@ public class WelcomeController {
 
     @RequestMapping(value = "/getcountbyarea", method = RequestMethod.GET)
     public Map<String, Object> getCountByArea(@RequestHeader("Authorization") String token) {
-        Claims claims = JwtUtil.parseAccessToken(token);
+        Claims claims = TokenUtil.extractClaims(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
@@ -76,7 +77,7 @@ public class WelcomeController {
 
     @RequestMapping(value = "/getcountbysalary", method = RequestMethod.GET)
     public Map<String, Object> getCountBySalary(@RequestHeader("Authorization") String token) {
-        Claims claims = JwtUtil.parseAccessToken(token);
+        Claims claims = TokenUtil.extractClaims(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
@@ -92,7 +93,7 @@ public class WelcomeController {
 
     @RequestMapping(value = "/getcountorg", method = RequestMethod.GET)
     public Map<String, Object> getCountOrg(@RequestHeader("Authorization") String token) {
-        Claims claims = JwtUtil.parseAccessToken(token);
+        Claims claims = TokenUtil.extractClaims(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
@@ -148,7 +149,7 @@ public class WelcomeController {
 
     @RequestMapping(value = "/getcountorgratio", method = RequestMethod.GET)
     public Map<String, Object> getCountOrgRatio(@RequestHeader("Authorization") String token) {
-        Claims claims = JwtUtil.parseAccessToken(token);
+        Claims claims = TokenUtil.extractClaims(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         Map<String, Object> ruslt = new HashMap<String, Object>(4);
