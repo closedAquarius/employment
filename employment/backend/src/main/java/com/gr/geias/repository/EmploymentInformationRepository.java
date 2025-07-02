@@ -37,6 +37,10 @@ public interface EmploymentInformationRepository {
                            @Param("user") PersonInfo user,
                            @Param("salary") Integer[] salary);
 
+    Integer queryListCountByArea(@Param("info") EmploymentInformation info,
+                           @Param("user") PersonInfo user,
+                           @Param("salary") Integer[] salary);
+
     /**
      * 插入毕业生信息
      *

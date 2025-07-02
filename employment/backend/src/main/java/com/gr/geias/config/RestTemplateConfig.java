@@ -25,4 +25,4 @@ public class RestTemplateConfig {
         RestTemplate restTemplate = new RestTemplate(factory);
         return restTemplate;
     }
-} 
+}

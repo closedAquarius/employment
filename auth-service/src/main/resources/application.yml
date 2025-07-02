@@ -18,12 +18,12 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/graduateemploymentinfo?useUnicode=true&characterEncoding=utf8
       username: root
-      password: Liu050804
+      password: 238373
       jdbc-url: jdbc:mysql://localhost:3306/graduateemploymentinfo?useUnicode=true&characterEncoding=utf8
     postgresql:
       driver-class-name: org.postgresql.Driver
       url: jdbc:postgresql://localhost:5432/interview
-      username: lqy0584
+      username: 238373
       password: 
       jdbc-url: jdbc:postgresql://localhost:5432/interview
   

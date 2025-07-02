@@ -41,7 +41,7 @@ public interface PersonInfoRepository {
      *
      * @return 学院管理员列表
      */
-    @Select("select person_id,person_name from tb_person_info where enable_Status=4 and college_id is NULL")
+    @Select("select person_id,person_name from tb_person_info where enable_Status=2 and college_id is NULL")
     List<PersonInfo> queryCollegePerson();
 
     /**
@@ -123,4 +123,9 @@ public interface PersonInfoRepository {
     List<PersonInfo> queryPerson1Page(int offset, int limit);
 
     Integer queryPerson1Count();
+
+    List<PersonInfo> selectAllTeachers(@Param("offset") int offset, @Param("pageSize") int pageSize);
+
+    int countAllTeachers();
+
 } 

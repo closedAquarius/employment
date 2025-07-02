@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -70,6 +71,17 @@ public class PersonInfoServiceImpl implements PersonInfoService {
         Integer result = personInfoRepository.insertPerson(personInfo);
         return result > 0;
     }
+
+    @Override
+    public List<PersonInfo> getAllTeachers(int offset, int pageSize) {
+        return personInfoRepository.selectAllTeachers(offset, pageSize);
+    }
+
+    @Override
+    public int getAllTeachersCount() {
+        return personInfoRepository.countAllTeachers();
+    }
+
 
     @Override
     public Boolean updatePerson(PersonInfo personInfo) {
