@@ -4,7 +4,6 @@ import com.employment.auth.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +12,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.SecretKey;
+import java.util.Base64;
+import java.io.UnsupportedEncodingException;
+import javax.annotation.PostConstruct;
 
 /**
  * JWT工具类
@@ -38,10 +42,19 @@ public class JwtTokenUtil {
     
     @Value("${spring.application.name}")
     private String issuer;
-
-    private Key getSigningKey() {
-        byte[] keyBytes = secret.getBytes();
-        return Keys.hmacShaKeyFor(keyBytes);
+    
+    private SecretKey secretKey;
+    
+    @PostConstruct
+    public void init() {
+        // 确保密钥长度足够，并使用Base64解码
+        try {
+            byte[] keyBytes = Base64.getDecoder().decode(secret.getBytes("UTF-8"));
+            secretKey = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
+            System.out.println("JWT密钥初始化成功，使用算法: " + SignatureAlgorithm.HS256.getJcaName());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("JWT密钥初始化失败", e);
+        }
     }
 
     /**
@@ -92,7 +105,9 @@ public class JwtTokenUtil {
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(generateExpirationDate(expirationTime))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                .setIssuedAt(new Date())
+                .setId(java.util.UUID.randomUUID().toString())
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
@@ -107,17 +122,24 @@ public class JwtTokenUtil {
      * 从token中获取JWT中的负载
      */
     private Claims getClaimsFromToken(String token) {
-        Claims claims = null;
         try {
-            claims = Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
+            if (token == null || token.isEmpty()) {
+                throw new IllegalArgumentException("Token cannot be null or empty");
+            }
+            
+            // 如果token带有Bearer前缀，去除前缀
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+            
+            return Jwts.parser()
+                    .setSigningKey(secretKey)
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
-            // 解析失败
+            System.out.println("JWT解析错误: " + e.getMessage() + ", Token: " + (token != null ? token.substring(0, Math.min(10, token.length())) + "..." : "null"));
+            throw e; // 重新抛出异常以便上层处理
         }
-        return claims;
     }
 
     /**
@@ -168,7 +190,7 @@ public class JwtTokenUtil {
     public boolean validateToken(String token, String username) {
         String tokenUsername = getUsernameFromToken(token);
         return tokenUsername != null && tokenUsername.equals(username) && !isTokenExpired(token);
-        }
+    }
 
     /**
      * 判断token是否已经失效
@@ -211,10 +233,23 @@ public class JwtTokenUtil {
     }
 
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            if (token == null || token.isEmpty()) {
+                throw new IllegalArgumentException("Token cannot be null or empty");
+            }
+            
+            // 如果token带有Bearer前缀，去除前缀
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+            
+            return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            System.out.println("JWT解析错误: " + e.getMessage() + ", Token: " + (token != null ? token.substring(0, Math.min(10, token.length())) + "..." : "null"));
+            throw e; // 重新抛出异常以便上层处理
+        }
     }
 } 

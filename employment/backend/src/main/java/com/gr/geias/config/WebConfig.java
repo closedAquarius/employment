@@ -4,6 +4,9 @@ import com.gr.geias.interceptor.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -17,6 +20,17 @@ public class WebConfig implements WebMvcConfigurer {
     private TokenInterceptor tokenInterceptor;
     @Autowired
     private CompanyUserInterceptor companyUserInterceptor;
+
+    /**
+     * 配置RestTemplate，添加超时设置
+     */
+    @Bean
+    public RestTemplate restTemplate() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(5000); // 连接超时5秒
+        factory.setReadTimeout(10000);   // 读取超时10秒
+        return new RestTemplate(factory);
+    }
 
     /**
      * 配置拦截器

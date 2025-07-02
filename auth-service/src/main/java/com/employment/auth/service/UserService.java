@@ -3,6 +3,7 @@ package com.employment.auth.service;
 import com.employment.auth.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
     
@@ -10,9 +11,9 @@ public interface UserService {
      * 用户登录
      * @param username 用户名
      * @param password 密码
-     * @return 登录成功返回token，失败返回null
+     * @return 登录成功返回包含token和用户信息的Map，失败抛出异常
      */
-    String login(String username, String password);
+    Map<String, Object> login(String username, String password);
     
     /**
      * 根据token获取用户信息

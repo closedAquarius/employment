@@ -8,8 +8,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 
 /**
  * 认证客户端，用于与auth-service进行交互
@@ -19,44 +22,117 @@ public class AuthClient {
     private static final Logger logger = LoggerFactory.getLogger(AuthClient.class);
     private final RestTemplate restTemplate;
     private final String authServiceUrl;
+    private final String jwtSecret;
 
     public AuthClient(RestTemplate restTemplate, String authServiceUrl) {
+        this(restTemplate, authServiceUrl, null);
+    }
+    
+    public AuthClient(RestTemplate restTemplate, String authServiceUrl, String jwtSecret) {
         this.restTemplate = restTemplate;
         this.authServiceUrl = authServiceUrl;
+        this.jwtSecret = jwtSecret != null ? jwtSecret : "eAf6XIz7Q6CmE3N4K5L6M7N8O9P0Q1R2S3T4U5V6W7X8Y9Z0aBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
     }
 
     /**
-     * 验证令牌有效性
+     * 验证JWT令牌
      * @param token JWT令牌
-     * @return 验证结果，包含用户信息
+     * @return 用户信息，如果验证失败则返回null
      */
     public Map<String, Object> validateToken(String token) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + token);
-        
-            HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-            
         try {
-            logger.debug("Sending token validation request to {}", authServiceUrl + "/auth/validate");
+            logger.info("验证令牌: {}", token);
+            
+            // 首先尝试本地验证
+            Map<String, Object> localValidation = validateTokenLocally(token);
+            if (localValidation != null) {
+                logger.info("本地令牌验证成功");
+                return localValidation;
+            }
+            
+            // 本地验证失败，尝试远程验证
+            logger.info("本地验证失败，尝试远程验证");
+            
+            // 准备请求头
+            HttpHeaders headers = new HttpHeaders();
+            // 添加Bearer前缀，与auth-service的预期格式保持一致
+            headers.set("Authorization", "Bearer " + token);
+            
+            // 创建请求实体
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+        
+            // 发送验证请求
+            String validateUrl = authServiceUrl + "/auth/validate";
+            logger.info("发送验证请求到: {}", validateUrl);
+            
             ResponseEntity<Map> response = restTemplate.exchange(
-                    authServiceUrl + "/auth/validate",
+                    validateUrl, 
                 HttpMethod.GET, 
-                requestEntity, 
+                    entity, 
                 Map.class
             );
             
-            if (response.getStatusCode().is2xxSuccessful()) {
-                logger.debug("Token validation successful");
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                logger.info("令牌验证成功: {}", response.getBody());
                 return response.getBody();
             } else {
-                logger.warn("Token validation failed with status: {}", response.getStatusCode());
+                logger.warn("令牌验证失败: {}", response.getStatusCode());
+                return null;
             }
         } catch (Exception e) {
-            // 验证失败，记录日志
-            logger.error("Token validation failed: {}", e.getMessage(), e);
+            logger.error("验证令牌时发生错误", e);
+            return null;
         }
-        
-        return null;
+    }
+    
+    /**
+     * 本地验证JWT令牌，不依赖auth-service
+     * @param token JWT令牌
+     * @return 用户信息，如果验证失败则返回null
+     */
+    private Map<String, Object> validateTokenLocally(String token) {
+        try {
+            // 使用Sign类验证令牌
+            Claims claims = Sign.verifyToken(token, jwtSecret);
+            
+            // 检查令牌是否过期
+            if (claims.getExpiration().before(new Date())) {
+                logger.warn("令牌已过期");
+                return null;
+            }
+            
+            // 构建用户信息
+            Map<String, Object> userInfo = new HashMap<>();
+            
+            // 提取常用字段
+            if (claims.get("userId") != null) {
+                userInfo.put("userId", claims.get("userId"));
+            }
+            
+            if (claims.getSubject() != null) {
+                userInfo.put("username", claims.getSubject());
+            }
+            
+            if (claims.get("userType") != null) {
+                userInfo.put("userType", claims.get("userType"));
+            }
+            
+            if (claims.get("realName") != null) {
+                userInfo.put("realName", claims.get("realName"));
+            }
+            
+            // 将所有其他字段也添加到用户信息中
+            for (Map.Entry<String, Object> entry : claims.entrySet()) {
+                if (!userInfo.containsKey(entry.getKey())) {
+                    userInfo.put(entry.getKey(), entry.getValue());
+                }
+            }
+            
+            return userInfo;
+        } catch (Exception e) {
+            logger.warn("本地验证令牌失败: {}", e.getMessage());
+            return null;
+        }
     }
     
     /**

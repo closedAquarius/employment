@@ -7,15 +7,13 @@
             detail_id,
             resume_id,
             basic_info,
-            education_info,
+            education,
             work_experience,
             project_experience,
             skills,
             certificates,
             self_evaluation,
-            attachment_url,
-            create_time,
-            update_time
+            attachment_url
         from tb_resume_detail
         where resume_id = #{resumeId}
     </select>
@@ -24,27 +22,23 @@
         insert into tb_resume_detail (
             resume_id,
             basic_info,
-            education_info,
+            education,
             work_experience,
             project_experience,
             skills,
             certificates,
             self_evaluation,
-            attachment_url,
-            create_time,
-            update_time
+            attachment_url
         ) values (
             #{resumeId},
             #{basicInfo},
-            #{educationInfo},
+            #{education},
             #{workExperience},
             #{projectExperience},
             #{skills},
             #{certificates},
             #{selfEvaluation},
-            #{attachmentUrl},
-            #{createTime},
-            #{updateTime}
+            #{attachmentUrl}
         )
     </insert>
     
@@ -52,14 +46,13 @@
         update tb_resume_detail
         <set>
             <if test="basicInfo != null">basic_info = #{basicInfo},</if>
-            <if test="educationInfo != null">education_info = #{educationInfo},</if>
+            <if test="education != null">education = #{education},</if>
             <if test="workExperience != null">work_experience = #{workExperience},</if>
             <if test="projectExperience != null">project_experience = #{projectExperience},</if>
             <if test="skills != null">skills = #{skills},</if>
             <if test="certificates != null">certificates = #{certificates},</if>
             <if test="selfEvaluation != null">self_evaluation = #{selfEvaluation},</if>
-            <if test="attachmentUrl != null">attachment_url = #{attachmentUrl},</if>
-            update_time = #{updateTime}
+            <if test="attachmentUrl != null">attachment_url = #{attachmentUrl}</if>
         </set>
         where detail_id = #{detailId}
     </update>

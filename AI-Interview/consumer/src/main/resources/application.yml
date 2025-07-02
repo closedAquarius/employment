@@ -41,4 +41,4 @@ auth:
   service:
     url: http://localhost:8095  # auth-service服务地址
   token:
-    secret: ${AUTH_TOKEN_SECRET:your-secret-key}  # JWT密钥，建议通过环境变量配置
+    secret: eAf6XIz7Q6CmE3N4K5L6M7N8O9P0Q1R2S3T4U5V6W7X8Y9Z0aBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz  # 与auth-service使用相同的JWT密钥
