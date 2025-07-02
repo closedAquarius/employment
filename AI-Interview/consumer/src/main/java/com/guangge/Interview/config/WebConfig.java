@@ -19,7 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
     
     @Value("${jwt.secret:eAf6XIz7Q6CmE3N4K5L6M7N8O9P0Q1R2S3T4U5V6W7X8Y9Z0aBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz}")
     private String jwtSecret;
-    
+
     @Autowired
     private AuthClient authClient;
 

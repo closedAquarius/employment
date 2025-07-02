@@ -17,11 +17,11 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
     private final AuthClient authClient;
-    
+
     public AuthInterceptor(AuthClient authClient) {
         this.authClient = authClient;
     }
-    
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 从请求头中获取令牌
@@ -31,7 +31,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (token == null) {
             throw new RestException("401", "未提供认证令牌");
         }
-        
+
         // 验证令牌
         Map<String, Object> userInfo = authClient.validateToken(token);
         if (userInfo == null) {
@@ -42,10 +42,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         request.setAttribute("userId", userInfo.get("userId"));
         request.setAttribute("username", userInfo.get("username"));
         request.setAttribute("userType", userInfo.get("userType"));
-        
+
         return true;
     }
-    
+
     /**
      * 从请求中提取JWT令牌
      */

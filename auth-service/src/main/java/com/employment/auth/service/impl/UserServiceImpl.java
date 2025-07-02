@@ -76,8 +76,8 @@ public class UserServiceImpl implements UserService {
         System.out.println("用户登录成功: " + username);
         
         // 生成JWT令牌
-        String token = jwtTokenUtil.generateToken(user);
-        
+            String token = jwtTokenUtil.generateToken(user);
+            
         // 返回用户信息和令牌
         Map<String, Object> result = new HashMap<>();
         result.put("token", token);

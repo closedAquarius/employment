@@ -99,4 +99,4 @@ crawler:
 pagehelper:
   helper-dialect: postgresql
   reasonable: true
-  support-methods-arguments: true
+  support-methods-arguments: true 

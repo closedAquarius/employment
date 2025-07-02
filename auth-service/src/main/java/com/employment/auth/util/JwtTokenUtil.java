@@ -42,7 +42,7 @@ public class JwtTokenUtil {
     
     @Value("${spring.application.name}")
     private String issuer;
-    
+
     private SecretKey secretKey;
     
     @PostConstruct
@@ -190,7 +190,7 @@ public class JwtTokenUtil {
     public boolean validateToken(String token, String username) {
         String tokenUsername = getUsernameFromToken(token);
         return tokenUsername != null && tokenUsername.equals(username) && !isTokenExpired(token);
-    }
+        }
 
     /**
      * 判断token是否已经失效
@@ -245,8 +245,8 @@ public class JwtTokenUtil {
             
             return Jwts.parser()
                     .setSigningKey(secretKey)
-                    .parseClaimsJws(token)
-                    .getBody();
+                .parseClaimsJws(token)
+                .getBody();
         } catch (Exception e) {
             System.out.println("JWT解析错误: " + e.getMessage() + ", Token: " + (token != null ? token.substring(0, Math.min(10, token.length())) + "..." : "null"));
             throw e; // 重新抛出异常以便上层处理

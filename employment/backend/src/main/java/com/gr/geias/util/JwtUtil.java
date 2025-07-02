@@ -56,10 +56,10 @@ public class JwtUtil {
                 token = token.substring(7);
             }
             
-            return Jwts.parser()
+        return Jwts.parser()
                     .setSigningKey(secretKey)
-                    .parseClaimsJws(token)
-                    .getBody();
+                .parseClaimsJws(token)
+                .getBody();
         } catch (JwtException e) {
             System.out.println("JWT解析错误: " + e.getMessage() + ", Token: " + (token != null ? token.substring(0, Math.min(10, token.length())) + "..." : "null"));
             throw e;
@@ -86,10 +86,10 @@ public class JwtUtil {
                 token = token.substring(7);
             }
             
-            return Jwts.parser()
+        return Jwts.parser()
                     .setSigningKey(secretKey)
-                    .parseClaimsJws(token)
-                    .getBody();
+                .parseClaimsJws(token)
+                .getBody();
         } catch (JwtException e) {
             System.out.println("JWT解析错误: " + e.getMessage() + ", Token: " + (token != null ? token.substring(0, Math.min(10, token.length())) + "..." : "null"));
             throw e;

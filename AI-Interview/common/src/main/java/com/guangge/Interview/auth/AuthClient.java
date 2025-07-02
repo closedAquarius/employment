@@ -125,13 +125,13 @@ public class AuthClient {
             for (Map.Entry<String, Object> entry : claims.entrySet()) {
                 if (!userInfo.containsKey(entry.getKey())) {
                     userInfo.put(entry.getKey(), entry.getValue());
-                }
+        }
             }
             
             return userInfo;
         } catch (Exception e) {
             logger.warn("本地验证令牌失败: {}", e.getMessage());
-            return null;
+        return null;
         }
     }
     
