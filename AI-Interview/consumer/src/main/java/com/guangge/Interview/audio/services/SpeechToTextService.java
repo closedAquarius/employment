@@ -47,7 +47,7 @@ public class SpeechToTextService {
             
             // 检查sentences列表是否为空或为null
             if (sentences != null && !sentences.isEmpty()) {
-                result = (String) sentences.get(0).get("text");
+            result = (String) sentences.get(0).get("text");
             } else {
                 // 如果没有识别到文本，返回一个默认值
                 System.out.println("未能识别到语音内容，返回空字符串");

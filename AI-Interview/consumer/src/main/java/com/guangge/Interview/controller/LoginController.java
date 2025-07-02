@@ -27,7 +27,7 @@ public class LoginController {
     /**
      * 用户登录
      */
-    @PostMapping("/login")
+    @PostMapping("/login-api")
     public CommonResult<Map<String, Object>> login(@RequestBody Map<String, String> loginInfo) {
         String username = loginInfo.get("username");
         String password = loginInfo.get("password");

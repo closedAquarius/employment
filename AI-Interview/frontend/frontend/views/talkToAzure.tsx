@@ -27,28 +27,28 @@ function TalkToAzure() {
     {
       id: 1,
       name: '董明珠',
-      image: '/images/dongmingzhu.jpg',
+      image: '/direct-images/dongmingzhu.jpg',
       style: { borderColor: '#e74c3c' },
       description: '格力式高压面试，注重细节与执行力'
     },
     {
       id: 2,
       name: '雷军',
-      image: '/images/leijun.jpg',
+      image: '/direct-images/leijun.jpg',
       style: { borderColor: '#3498db' },
       description: '小米方法论，极致性价比思维'
     },
     {
       id: 3,
       name: '埃隆·马斯克',
-      image: '/images/elonmusk.jpg',
+      image: '/direct-images/elonmusk.jpg',
       style: { borderColor: '#00ff00' },
       description: '第一性原理拷问，火星殖民思维'
     },
     {
       id: 4,
       name: '唐纳德·特朗普',
-      image: '/images/trump.jpg',
+      image: '/direct-images/trump.jpg',
       style: {
         borderColor: '#ff0000',
         boxShadow: '0 0 10px gold'
@@ -196,7 +196,52 @@ function TalkToAzure() {
       eventSourceRef.current.addEventListener('output', (event) => {
         const data = JSON.parse(event.data);
         setMessages(prev => [...prev, { role: 'assistant', content: data.content }]);
+        
+        // 如果消息中包含音频数据，播放音频
+        if (data.audio) {
+          try {
+            console.log('收到音频数据，准备播放...');
+            // 将Base64编码的音频数据转换为Blob
+            const audioBlob = base64ToBlob(data.audio, 'audio/wav');
+            const audioUrl = URL.createObjectURL(audioBlob);
+            
+            // 创建音频元素并播放
+            const audioElement = new Audio(audioUrl);
+            audioElement.play().catch(e => console.error('音频播放失败:', e));
+            
+            // 播放完成后释放资源
+            audioElement.onended = () => {
+              URL.revokeObjectURL(audioUrl);
+            };
+          } catch (e) {
+            console.error('处理音频数据失败:', e);
+          }
+        }
       });
+      
+      // 添加ready事件处理
+      eventSourceRef.current.addEventListener('ready', (event) => {
+        const data = JSON.parse(event.data);
+        console.log('系统准备就绪:', data);
+        setMessages(prev => [...prev, { role: 'system', content: data.content }]);
+        // 提示用户开始说话
+        Notification.show('系统已准备就绪，请开始说话...', { theme: "success", duration: 3000 });
+      });
+
+      // 9. 直接发送人格初始化请求，不依赖数据通道
+      console.log('发送人格初始化请求...');
+      fetch('/api/webrtc/personality', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          webrtc_id: webrtc_id,
+          personality: personality.toString(),
+          page_type: "interview"  // 指定为面试页面类型
+        })
+      })
+      .then(response => response.json())
+      .then(data => console.log('人格初始化成功:', data))
+      .catch(error => console.error('人格初始化失败:', error));
 
       setConnectionState('connected');
     } catch (error) {
@@ -225,6 +270,26 @@ function TalkToAzure() {
       audioContextRef.current = null;
     }
     setConnectionState('disconnected');
+  };
+
+  // 将Base64转换为Blob对象
+  const base64ToBlob = (base64, mimeType) => {
+    const byteCharacters = atob(base64);
+    const byteArrays = [];
+    
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+      const slice = byteCharacters.slice(offset, offset + 512);
+      
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+    
+    return new Blob(byteArrays, { type: mimeType });
   };
 
   const handlePersonalitySelect = async (selectedId) => {

@@ -27,14 +27,47 @@ public class ConsumerService {
                 .bodyToFlux(String.class);
     }
 
-    public Flux<String> interViewChat(String chatId, String userMessage)  {
+    public Flux<String> interViewChat(String chatId, String userMessage, String token)  {
         ChatReqeust chatReqeust = new ChatReqeust();
         chatReqeust.setChatId(chatId);
         chatReqeust.setUserMessage(userMessage);
 
-        return this.webClient.post().uri("/interview/chat")
-                .bodyValue(chatReqeust)
-                .retrieve()
+        WebClient.RequestHeadersSpec<?> requestSpec = this.webClient.post().uri("/interview/chat")
+                .bodyValue(chatReqeust);
+                
+        // 如果提供了token，添加到请求头
+        if (token != null && !token.isEmpty()) {
+            requestSpec = requestSpec.header("Authorization", token);
+        }
+
+        return requestSpec.retrieve()
                 .bodyToFlux(String.class);
+    }
+
+    /**
+     * 发送邮件
+     * @param name 姓名
+     * @param email 邮箱（可选）
+     * @return void
+     */
+    public void sendMail(String name, String email) {
+        WebClient.RequestHeadersSpec<?> requestSpec;
+        
+        if (email != null && !email.isEmpty()) {
+            requestSpec = this.webClient.post()
+                .uri(uriBuilder -> uriBuilder
+                    .path("/frontend/sendMail")
+                    .queryParam("name", name)
+                    .queryParam("email", email)
+                    .build());
+        } else {
+            requestSpec = this.webClient.post()
+                .uri(uriBuilder -> uriBuilder
+                    .path("/frontend/sendMail")
+                    .queryParam("name", name)
+                    .build());
+        }
+        
+        requestSpec.retrieve().toBodilessEntity().block();
     }
 }

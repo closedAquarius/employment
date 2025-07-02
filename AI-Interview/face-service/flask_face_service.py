@@ -65,10 +65,16 @@ def save_face(image_base64, user_id):
     # 保存图像到已知用户目录
     if not os.path.exists(KNOWN_FACES_DIR):
         os.makedirs(KNOWN_FACES_DIR)
-    image_path = os.path.join(KNOWN_FACES_DIR + f"/{user_id}", f"{user_id}.jpg")
+    
+    # 确保用户目录存在
+    user_dir = os.path.join(KNOWN_FACES_DIR, user_id)
+    if not os.path.exists(user_dir):
+        os.makedirs(user_dir)
+        
+    image_path = os.path.join(user_dir, f"{user_id}.jpg")
     cv2.imwrite(image_path, image)
 
-    return {"status": "success", "message": f"Face saved for user {user_id}"}
+    return {"status": "0", "message": f"Face saved for user {user_id}"}
 
 @app.route("/register-face", methods=["POST"])
 def register_face():
@@ -82,6 +88,17 @@ def register_face():
 
 @app.route("/verify-face", methods=["POST"])
 def verify_face_endpoint():
+    data = request.json
+    image_base64 = data.get("image")
+    user_id = data.get("userId")
+    if not image_base64:
+        return jsonify({"status": "1", "message": "Missing image"}), 400
+    known_faces = load_known_faces(user_id)
+    result = verify_face(image_base64, known_faces)
+    return jsonify(result)
+
+@app.route("/verify", methods=["POST"])
+def verify_endpoint():
     data = request.json
     image_base64 = data.get("image")
     user_id = data.get("userId")

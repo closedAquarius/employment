@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = ConsumerConstant.SERVICE_NAME, url = "${consumer-service-endpoint}", configuration = FeignConfig.class)
 public interface ConsumerClient {
-    @PostMapping(value = "/login/direct")
-    CommonResult<UserResponse> login(@RequestParam("name") String name,
-                                     @RequestParam("code") String code);
+    @PostMapping(value = "/interview/login")
+    CommonResult<UserResponse> login(@RequestBody Map<String, String> loginInfo);
 
-    @PostMapping(value = "/login/verify-token")
-    CommonResult<String> verifyToken(@RequestHeader("token") String token);
+    @PostMapping(value = "/auth/verify-token")
+    CommonResult<Map<String, Object>> verifyToken(@RequestHeader("Authorization") String token);
 
     @GetMapping(value = "/frontend/interView")
     List<InterViewRecord> getInterView();
@@ -30,14 +30,15 @@ public interface ConsumerClient {
     List<CandidateRecord> getCandidates();
 
     @PostMapping(value = "/frontend/sendMail")
-    void sendMail(@RequestParam("name") String name);
+    void sendMail(@RequestParam("name") String name, 
+                 @RequestParam(value = "email", required = false) String email);
 
     @GetMapping(value = "/frontend/findInterView")
     List<InterViewRecord> findInterView(@RequestParam("question") String question);
 
     @PostMapping(value="/interview/face2faceChat", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "audio/wav")
-    ResponseEntity<byte[]> face2faceChat(@RequestParam("chatId") String chatId,@RequestParam(value ="userName", required = false) String userName,
-                                                @RequestPart(value = "audio", required = false) MultipartFile audio);
+    ResponseEntity<byte[]> face2faceChat(@RequestParam("chatId") String chatId, @RequestParam(value ="userName", required = false) String userName,
+                                                @RequestParam(value = "audio", required = false) MultipartFile audio);
 
     @GetMapping(value="/interview/welcomemp3", produces = "audio/mp3")
     ResponseEntity<byte[]> welcomemp3();

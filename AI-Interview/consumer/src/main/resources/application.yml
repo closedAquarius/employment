@@ -1,11 +1,20 @@
 spring:
   mail:
     protocol: smtp                   # 邮件协议
-    host: smtp.qq.com                # smtp 服务器地址 （163邮箱为例）
-    port: 587                        # 端口号（163邮箱为例）
+    host: smtp.qq.com                # smtp 服务器地址 （qq邮箱为例）
+    port: 465                        # 修改为SSL端口
     username: 2383731319@qq.com           # 发送人邮箱地址
     password: qkurpqhkilbqdigf          # 授权码
     default-encoding: utf-8          # 编码字符集
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
     debug: true                      # 开启debug模式用户会完整打印邮件发送过程的日志
 
   datasource:

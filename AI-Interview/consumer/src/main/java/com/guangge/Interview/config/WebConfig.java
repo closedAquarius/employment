@@ -49,7 +49,11 @@ public class WebConfig implements WebMvcConfigurer {
                         "/candidates",
                         "/frontend/candidates",
                         "/frontend/interView",
-                        "/interview/face2faceChat"
+                        "/frontend/sendMail",
+                        "/interview/face2faceChat",
+                        "/interview/makeProgram",
+                        "/interview/checkProgram",
+                        "/interview/chat"
                 );
     }
 
@@ -70,7 +74,11 @@ public class WebConfig implements WebMvcConfigurer {
                 "/candidates",
                 "/frontend/candidates",
                 "/frontend/interView",
-                "/interview/face2faceChat"
+                "/frontend/sendMail",
+                "/interview/face2faceChat",
+                "/interview/makeProgram",
+                "/interview/checkProgram",
+                "/interview/chat"
         );
     }
 

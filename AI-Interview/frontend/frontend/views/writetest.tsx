@@ -24,7 +24,7 @@ const Writetest = () => {
   const name = localStorage.getItem('username');
   const [messages, setMessages] = useState<MessageItem[]>([{
     role: 'assistant',
-    content: '欢迎您来到光哥面试系统! 请输入笔试者姓名。'
+    content: '欢迎您来到智联面试系统! 请输入笔试者姓名。'
   }]);
 
   useEffect(() => {
@@ -57,9 +57,13 @@ const Writetest = () => {
       content: message,
     });
 
+    // 获取token
+    const token = localStorage.getItem('token');
+    const tokenParam = token ? `&token=${encodeURIComponent(token.replace('Bearer ', ''))}` : '';
+
     // 初始化 EventSource
     const eventSource = new EventSource(
-      `/interview/chat?chatId=${chatId}&userMessage=${encodeURIComponent(message)}`
+      `/interview/chat?chatId=${chatId}&userMessage=${encodeURIComponent(message)}${tokenParam}`
     );
 
     let first = true;

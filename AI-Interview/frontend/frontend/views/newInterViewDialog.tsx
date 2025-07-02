@@ -4,6 +4,9 @@ import { Button } from '@vaadin/react-components/Button.js';
 import { Dialog } from '@vaadin/react-components/Dialog.js';
 import { TextField } from '@vaadin/react-components/TextField.js';
 import { VerticalLayout } from '@vaadin/react-components/VerticalLayout.js';
+import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
+
+export const config: ViewConfig = { title: '新增面试' };
 
 // 假设环境变量
 const apiBaseUrl = '';

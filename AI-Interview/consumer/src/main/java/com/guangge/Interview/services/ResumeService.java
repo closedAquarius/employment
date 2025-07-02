@@ -110,6 +110,18 @@ public class ResumeService {
         this.resumeRepository.save(resume);
     }
 
+    /**
+     * 更新用户邮箱
+     * @param name 用户名
+     * @param email 邮箱
+     */
+    public void updateEmail(String name, String email) {
+        var resume = findInterView(name);
+        resume.setEmail(email);
+        this.resumeRepository.save(resume);
+        logger.info("用户 {} 邮箱更新为 {}", name, email);
+    }
+
     public InterViewRecord getInterViewDetails(String name) {
         var resume = findInterView(name);
         return Dto2Record.toInterViewDetails(resume);

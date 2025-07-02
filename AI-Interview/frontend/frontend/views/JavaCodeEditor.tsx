@@ -7,13 +7,13 @@ import * as monaco from 'monaco-editor';
 import { Details } from '@vaadin/react-components/Details.js';
 import { VerticalLayout } from '@vaadin/react-components/VerticalLayout.js';
 import { ClipLoader } from 'react-spinners';
-import thinkingAnimation from 'Frontend/assets/animations/think-animation.json'; // 从 LottieFiles 下载的动画文件
+import thinkingAnimation from 'frontend/assets/animations/think-animation.json'; // 从 LottieFiles 下载的动画文件
 import Lottie from 'lottie-react';
-import withAuth from 'Frontend/components/withAuth';
+import withAuth from '../components/withAuth';
 import { ProgressBar } from '@vaadin/react-components/ProgressBar.js';
 import { motion } from 'framer-motion';
 
-export const config: ViewConfig = { menu: { order: 0, icon: 'vaadin:academy-cap' }, title: '光哥笔试' };
+export const config: ViewConfig = { menu: { order: 0, icon: 'vaadin:academy-cap' }, title: '智联笔试' };
 
 const JavaCodeEditor  = () => {
 
@@ -25,7 +25,7 @@ const JavaCodeEditor  = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const lottieRef = useRef(null);
-  const [showStartButton, setShowStartButton] = useState(true); // 是否显示“开始面试”按钮
+  const [showStartButton, setShowStartButton] = useState(true); // 是否显示"开始面试"按钮
   const location = useLocation();
   const { isFirst } = location.state || { isFirst: true }; // 获取状态
 
@@ -42,9 +42,17 @@ const JavaCodeEditor  = () => {
     const apiUrl = isFirst
       ? `/interview/makeProgram?first=true&name=${name}`
       : `/interview/makeProgram?first=false&name=${name}`;
-    setShowStartButton(false); // 隐藏“开始面试”按钮
+    setShowStartButton(false); // 隐藏"开始面试"按钮
     setLoading(true);
-    fetch(apiUrl)
+    
+    // 获取token
+    const token = localStorage.getItem('token');
+    
+    fetch(apiUrl, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
       .then((res) => res.json())
       .then((data) => {
         setCode(data.code);

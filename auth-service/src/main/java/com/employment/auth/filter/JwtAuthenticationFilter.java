@@ -33,7 +33,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/auth/login",
             "/auth/register",
             "/auth/health",
-            "/auth/validate"
+            "/auth/validate",
+            "/auth/verifyToken"
     );
 
     @Override

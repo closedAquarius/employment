@@ -4,9 +4,9 @@ import axios from 'axios';
 import { Button, VerticalLayout, HorizontalLayout } from '@vaadin/react-components';
 import ResumeForm from './ResumeForm';
 import { Notification } from '@vaadin/react-components/Notification.js';
-import withAuth from 'Frontend/components/withAuth';
-import Lottie from 'lottie-react';
-import rewriter from 'Frontend/assets/animations/resumeRewriter.json';
+import withAuth from '../components/withAuth';
+import { ProgressBar } from '@vaadin/react-components/ProgressBar.js';
+import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
 
 export const config: ViewConfig = {
   menu: {
@@ -83,11 +83,7 @@ function NewCv() {
               textAlign: 'center',
             }}
           >
-            <Lottie
-              animationData={rewriter}
-              loop={true}
-              style={{ width: '300px', height: '300px' }}
-            />
+            <ProgressBar indeterminate style={{ width: '300px' }} />
             <p style={{ marginTop: '10px', fontSize: '18px', color: '#333' }}>正在生成简历，请稍候...</p>
           </div>
         </>

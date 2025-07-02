@@ -2,6 +2,9 @@ import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { Dialog } from '@vaadin/react-components/Dialog';
 import { ClipLoader } from 'react-spinners';
+import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
+
+export const config: ViewConfig = { title: '人脸注册' };
 
 const FaceRegisterDialog = ({ onRegisterSuccess }) => {
   const webcamRef = useRef(null);
@@ -11,12 +14,18 @@ const FaceRegisterDialog = ({ onRegisterSuccess }) => {
 
   // 注册人脸
   const handleRegister = () => {
+    const userId = localStorage.getItem('userId');
+    if (!userId || userId === 'undefined') {
+      alert('请先登录后再尝试注册人脸');
+      return;
+    }
+    
     const imageSrc = webcamRef.current.getScreenshot();
     setImage(imageSrc);
     setIsLoading(true);
     fetch('/api/register-face', {
       method: 'POST',
-      body: JSON.stringify({ image: imageSrc, userId: localStorage.getItem('userId') }),
+      body: JSON.stringify({ image: imageSrc, userId: userId }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -65,7 +74,7 @@ const FaceRegisterDialog = ({ onRegisterSuccess }) => {
           人脸注册
         </h2>
         <p style={{ marginBottom: '15px', color: '#666', fontSize: '14px' }}>
-          请确保您的脸部清晰可见，并点击“注册人脸”按钮。
+          请确保您的脸部清晰可见，并点击"注册人脸"按钮。
         </p>
         <Webcam
           audio={false}

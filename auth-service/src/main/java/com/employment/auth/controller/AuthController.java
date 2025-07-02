@@ -82,6 +82,29 @@ public class AuthController {
     }
     
     /**
+     * 验证令牌 (与validate端点功能相同，但路径不同)
+     */
+    @GetMapping("/verifyToken")
+    public ResponseEntity<Map<String, Object>> verifyToken(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7); // 去掉"Bearer "前缀
+        
+        if (userService.validateToken(token)) {
+            User user = userService.getUserByToken(token);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("userId", user.getId());
+            response.put("username", user.getUsername());
+            response.put("realName", user.getRealName());
+            response.put("userType", user.getUserType());
+            response.put("avatar", user.getAvatar());
+            
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+    
+    /**
      * 刷新令牌
      */
     @GetMapping("/refresh")

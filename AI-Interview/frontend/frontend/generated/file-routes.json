@@ -32,7 +32,7 @@
         },
         "flowLayout": false,
         "params": {},
-        "title": "with Auth"
+        "title": "用户认证"
       },
       {
         "route": "face2facetest",
@@ -40,7 +40,7 @@
           "order": 1,
           "icon": "vaadin:users"
         },
-        "title": "光哥面试",
+        "title": "智联面试",
         "flowLayout": false,
         "params": {}
       },
@@ -48,7 +48,7 @@
         "route": "FaceRegisterDialog",
         "flowLayout": false,
         "params": {},
-        "title": "Face Register Dialog"
+        "title": "人脸注册"
       },
       {
         "route": "FaceVerificationDialog",
@@ -57,7 +57,7 @@
         },
         "flowLayout": false,
         "params": {},
-        "title": "Face Verification Dialog"
+        "title": "人脸验证"
       },
       {
         "route": "interviewResult",
@@ -75,7 +75,7 @@
           "order": 0,
           "icon": "vaadin:academy-cap"
         },
-        "title": "光哥笔试",
+        "title": "智联笔试",
         "flowLayout": false,
         "params": {}
       },
@@ -86,7 +86,7 @@
         },
         "flowLayout": false,
         "params": {},
-        "title": "with Auth"
+        "title": "用户认证"
       },
       {
         "route": "NewCv",
@@ -95,13 +95,13 @@
         },
         "flowLayout": false,
         "params": {},
-        "title": "with Auth"
+        "title": "用户认证"
       },
       {
         "route": "newInterViewDialog",
         "flowLayout": false,
         "params": {},
-        "title": "New Inter Dialog"
+        "title": "新增面试"
       },
       {
         "route": "ResumeForm",
@@ -110,7 +110,7 @@
         },
         "flowLayout": false,
         "params": {},
-        "title": "Resume Form"
+        "title": "简历表单"
       },
       {
         "route": "resumeRewriter",
@@ -149,7 +149,7 @@
         },
         "flowLayout": false,
         "params": {},
-        "title": "with Auth"
+        "title": "用户认证"
       }
     ]
   }

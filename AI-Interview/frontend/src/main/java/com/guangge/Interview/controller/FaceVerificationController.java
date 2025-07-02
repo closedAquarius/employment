@@ -19,11 +19,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/face")
+@RequestMapping("/api")
 public class FaceVerificationController {
     private static final Logger logger = LoggerFactory.getLogger(FaceVerificationController.class);
 
-    @Value("${flaskBaseUrl}")
+    @Value("${face-service.url}")
     private String flaskBaseUrl;
     
     @Autowired
@@ -42,12 +42,18 @@ public class FaceVerificationController {
             Map<String, Object> userInfo = null;
             if (authHeader != null && authHeader.startsWith(AuthConstant.TOKEN_PREFIX)) {
                 String token = authHeader.substring(AuthConstant.TOKEN_PREFIX.length()).trim();
+                logger.info("Validating token for face verification");
                 userInfo = authClient.validateToken(token);
+                logger.info("Token validation result: {}", userInfo != null ? "success" : "failed");
+            } else {
+                logger.warn("No valid auth header provided for face verification");
             }
             
             // 如果没有有效的用户信息，使用请求中的用户ID
             String userId = request.containsKey("userId") ? request.get("userId").toString() : 
                            (userInfo != null ? userInfo.get("id").toString() : "unknown");
+            
+            logger.info("Processing face verification for userId: {}", userId);
             
             // 准备请求数据
             Map<String, Object> requestData = new HashMap<>();
@@ -59,11 +65,13 @@ public class FaceVerificationController {
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestData, headers);
             
+            logger.info("Sending request to face service: {}/verify", flaskBaseUrl);
             ResponseEntity<Map> result = restTemplate.postForEntity(
-                    flaskBaseUrl + "/face/verify", 
+                    flaskBaseUrl + "/verify", 
                     entity, 
                     Map.class
             );
+            logger.info("Face service response status: {}", result.getStatusCode());
             
             // 如果是新用户且验证成功，同步用户信息到认证服务
             if (result.getBody() != null && 
@@ -79,11 +87,13 @@ public class FaceVerificationController {
                 newUser.put("status", AuthConstant.UserStatus.ENABLED);
                 
                 // 同步到认证服务
+                logger.info("Syncing new user to auth service: {}", userId);
                 authClient.syncUser(newUser);
             }
             
             return result.getBody();
         } catch (Exception e) {
+            logger.error("Face verification error", e);
             response.put("success", false);
             response.put("message", "人脸验证服务异常: " + e.getMessage());
             return response;
