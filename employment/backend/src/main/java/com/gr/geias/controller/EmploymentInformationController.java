@@ -137,10 +137,12 @@ public class EmploymentInformationController {
             List<Area> areaList = areaService.getArea(null);
             List<AreaCount> list = new ArrayList<>(36);
             EmploymentInformation employmentInformation = new EmploymentInformation();
+            System.out.println(areaList);
 
             for (Area area : areaList) {
                 employmentInformation.setArea(area);
-                Integer count = informationService.getCount(employmentInformation, person, null);
+                System.out.println(area);
+                Integer count = informationService.getCountByArea(employmentInformation, person, null);
                 AreaCount areaCount = new AreaCount();
                 areaCount.setName(area.getAreaName());
                 areaCount.setValue(count);

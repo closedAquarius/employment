@@ -29,6 +29,7 @@ public interface EmploymentInformationService {
      */
     Integer getCount(EmploymentInformation information, PersonInfo personInfo, Integer[] salary);
 
+    Integer getCountByArea(EmploymentInformation information, PersonInfo personInfo, Integer[] salary);
     /**
      * 添加毕业生就业信息
      * @param employmentInformation 就业信息

@@ -14,6 +14,7 @@
         <association property="area" column="area_id" javaType="com.gr.geias.model.Area">
             <id column="area_id" property="areaId"/>
             <result column="area_name" property="areaName"/>
+            <result column="parent_id" property="parentId"/>
         </association>
         <association property="classGrade" column="class_id" javaType="com.gr.geias.model.ClassGrade">
             <id column="class_id" property="classId"/>
@@ -49,6 +50,7 @@
         i.gender,
         a.area_id,
         a.area_name,
+        a.parent_id,
         cl.class_id,
         cl.class_name,
         co.college_id,
@@ -108,6 +110,59 @@
         </where>
         order by information_id
         limit #{indexnum},#{pagesize}
+    </select>
+
+    <select id="queryListCountByArea" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_employment_information i
+        JOIN tb_area a ON i.area_id = a.area_id
+        JOIN tb_class_grade cl ON i.class_id = cl.class_id
+        JOIN tb_college co ON i.college_id = co.college_id
+        JOIN tb_employment_way w ON i.employment_way_id = w.employment_way_id
+        JOIN tb_unit_kind k ON i.unit_id = k.unit_id
+        JOIN tb_specialty s ON i.specialty_id = s.specialty_id
+        <where>
+            <!-- 用户权限限制 -->
+            <if test="user != null and user.enableStatus == 0">
+                AND cl.admin_id = #{user.personId}
+            </if>
+            <if test="user != null and user.enableStatus == 1">
+                AND co.admin_id = #{user.personId}
+            </if>
+
+            <!-- 地区过滤逻辑：如果是省份 -->
+            <if test="info != null and info.area != null and info.area.areaId != null">
+                AND (
+                i.area_id = #{info.area.areaId}
+                OR i.area_id IN (
+                SELECT area_id FROM tb_area WHERE parent_id = #{info.area.areaId}
+                )
+                )
+            </if>
+
+            <!-- 其他字段筛选 -->
+            <if test="info != null and info.college != null and info.college.collegeId != null">
+                AND co.college_id = #{info.college.collegeId}
+            </if>
+            <if test="info != null and info.employmentWay != null and info.employmentWay.employmentWayId != null">
+                AND w.employment_way_id = #{info.employmentWay.employmentWayId}
+            </if>
+            <if test="info != null and info.specialty != null and info.specialty.specialtyId != null">
+                AND s.specialty_id = #{info.specialty.specialtyId}
+            </if>
+            <if test="info != null and info.unitKind != null and info.unitKind.unitId != null">
+                AND k.unit_id = #{info.unitKind.unitId}
+            </if>
+            <if test="info != null and info.classGrade != null and info.classGrade.classId != null">
+                AND cl.class_id = #{info.classGrade.classId}
+            </if>
+            <if test="info != null and info.name != null">
+                AND i.name LIKE CONCAT('%', #{info.name}, '%')
+            </if>
+            <if test="salary != null and salary.length == 2">
+                AND i.salary &gt;= #{salary[0]} AND i.salary &lt; #{salary[1]}
+            </if>
+        </where>
     </select>
     <select id="queryListCount" resultType="int">
         select

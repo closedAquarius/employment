@@ -42,6 +42,11 @@ public class EmploymentInformationServiceImpl implements EmploymentInformationSe
     }
 
     @Override
+    public Integer getCountByArea(EmploymentInformation information, PersonInfo personInfo, Integer[] salary) {
+        return informationRepository.queryListCountByArea(information, personInfo, salary);
+    }
+
+    @Override
     public Integer addEmpoymentInfo(EmploymentInformation employmentInformation) {
         return informationRepository.insertEmploymentInformation(employmentInformation);
     }
