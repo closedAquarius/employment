@@ -585,6 +585,7 @@ public class OrganizationController {
 
             List<PersonInfo> personInfoList = null;
             College college = null;
+            int total = 0;
 
             int offset = (pageNum - 1) * pageSize;
 
@@ -608,20 +609,19 @@ public class OrganizationController {
                         map.put("errMsg", "没有数据");
                         return map;
                     }
-                    college = collegeList.get(0);
-                    personInfoList = personInfoService.getPersonByCollegeId(college.getCollegeId());
+                    personInfoList = personInfoService.getAllTeachers(offset, pageSize);
+                    total = personInfoService.getAllTeachersCount();
+
                 } else {
                     college = collegeService.getCollegeById(collegeId);
                     personInfoList = personInfoService.getPersonByCollegeId(collegeId);
+                    total = personInfoService.getPersonByCollegeIdCount(collegeId);
                 }
             } else {
                 map.put("success", false);
                 map.put("errMsg", "无权限访问");
                 return map;
             }
-            // 查询总数
-            int total = personInfoService.getPersonByCollegeIdCount(college == null ? collegeId : college.getCollegeId());
-
 
             map.put("success", true);
             map.put("personInfoList", personInfoList);
