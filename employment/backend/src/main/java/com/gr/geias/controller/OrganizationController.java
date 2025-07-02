@@ -609,13 +609,18 @@ public class OrganizationController {
                         map.put("errMsg", "没有数据");
                         return map;
                     }
-                    personInfoList = personInfoService.getAllTeachers(offset, pageSize);
+                    personInfoList = personInfoService.getAllTeachers(offset, pageSize); // 查所有老师
                     total = personInfoService.getAllTeachersCount();
 
                 } else {
                     college = collegeService.getCollegeById(collegeId);
                     personInfoList = personInfoService.getPersonByCollegeId(collegeId);
-                    total = personInfoService.getPersonByCollegeIdCount(collegeId);
+                    personInfoList.removeIf(p -> p.getEnableStatus() != EnableStatusEnums.TEACHER.getState());
+
+                    total = (int) personInfoService.getPersonByCollegeId(collegeId)
+                                                    .stream()
+                                                    .filter(p -> p.getEnableStatus() == EnableStatusEnums.TEACHER.getState())
+                                                    .count();
                 }
             } else {
                 map.put("success", false);

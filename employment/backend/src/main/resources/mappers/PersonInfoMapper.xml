@@ -61,13 +61,13 @@
 
     <select id="selectAllTeachers" resultType="com.gr.geias.model.PersonInfo">
         SELECT * FROM tb_person_info
-        WHERE enable_status = 2
+        WHERE enable_status = 1
             LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <select id="countAllTeachers" resultType="int">
         SELECT COUNT(*) FROM tb_person_info
-        WHERE enable_status = 2
+        WHERE enable_status = 1
     </select>
 
 
