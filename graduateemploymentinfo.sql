@@ -11,7 +11,7 @@
  Target Server Version : 90200 (9.2.0)
  File Encoding         : 65001
 
- Date: 30/06/2025 10:26:05
+ Date: 02/07/2025 09:39:04
 */
 
 SET NAMES utf8mb4;
@@ -37,12 +37,16 @@ CREATE TABLE `employment_user` (
   `source_id` bigint DEFAULT NULL COMMENT '源系统用户ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='统一认证用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='统一认证用户表';
 
 -- ----------------------------
 -- Records of employment_user
 -- ----------------------------
 BEGIN;
+INSERT INTO `employment_user` (`id`, `username`, `password`, `email`, `phone`, `real_name`, `status`, `avatar`, `user_type`, `create_time`, `update_time`, `source_system`, `source_id`) VALUES (1, 'testuser', 'cc03e747a6afbbcbf8be7668acfebee5', 'test@example.com', NULL, '测试用户', 1, NULL, 0, '2025-06-30 10:36:12', '2025-06-30 10:36:12', 'auth-service', NULL);
+INSERT INTO `employment_user` (`id`, `username`, `password`, `email`, `phone`, `real_name`, `status`, `avatar`, `user_type`, `create_time`, `update_time`, `source_system`, `source_id`) VALUES (2, 'newuser', 'e10adc3949ba59abbe56e057f20f883e', NULL, NULL, 'New User', 1, NULL, 0, '2025-06-30 11:34:23', '2025-06-30 11:34:23', 'auth-service', NULL);
+INSERT INTO `employment_user` (`id`, `username`, `password`, `email`, `phone`, `real_name`, `status`, `avatar`, `user_type`, `create_time`, `update_time`, `source_system`, `source_id`) VALUES (3, 'testuser2', 'e10adc3949ba59abbe56e057f20f883e', NULL, NULL, '测试用户2', 1, NULL, 0, '2025-06-30 13:36:55', '2025-06-30 13:36:55', 'auth-service', NULL);
+INSERT INTO `employment_user` (`id`, `username`, `password`, `email`, `phone`, `real_name`, `status`, `avatar`, `user_type`, `create_time`, `update_time`, `source_system`, `source_id`) VALUES (4, 'empuser2', '123456', NULL, NULL, 'TestUser', 1, NULL, 0, '2025-06-30 13:36:56', '2025-06-30 13:36:56', 'employment', 34);
 COMMIT;
 
 -- ----------------------------
@@ -63,12 +67,46 @@ CREATE TABLE `operation_log` (
   `error_msg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_operation_time` (`operation_time`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of operation_log
 -- ----------------------------
 BEGIN;
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (1, 32, 2, 'HR', 'GET /companyinfo/company-info', '未知操作：/companyinfo/company-info', 'Params: {}, Result: {success=true, company=CompanyInfo(companyId=1, companyName=1, companyIntro=1, address=1, areaId=null, createTime=Sun Jun 29 13:28:31 CST 2025, UnitId=1, confirmed=true, areaName=null)}', '0:0:0:0:0:0:0:1', '2025-06-29 14:23:18', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (2, 32, 2, 'HR', 'POST /api/personinfo/login', '用户登录', NULL, NULL, '2025-06-29 14:27:31', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (3, 3, 3, 'admin123456', 'POST /api/personinfo/login', '用户登录', NULL, NULL, '2025-07-01 17:02:34', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (4, 3, 3, 'admin123456', 'POST /api/personinfo/login', '用户登录', NULL, NULL, '2025-07-01 17:06:23', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (5, 3, 3, 'admin123456', 'POST /api/personinfo/login', '用户登录', NULL, NULL, '2025-07-01 17:06:42', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (6, 3, 3, 'admin123456', 'POST /api/personinfo/login', '用户登录', NULL, NULL, '2025-07-01 17:10:06', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (7, 3, 3, 'admin123456', 'POST /api/personinfo/login', '用户登录', NULL, NULL, '2025-07-01 17:10:27', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (8, 3, 3, 'admin123456', 'POST /message/uploadFile', '上传文件消息', 'Params: {userId=[Ljava.lang.String;@5ef262e2, receiverId=[Ljava.lang.String;@28c0ede3}, Result: <200 OK OK,/uploads/messages/34e2b75d-a5b2-44fd-a2e8-e32ff2b59f9e.docx,[]>', '0:0:0:0:0:0:0:1', '2025-07-01 17:11:25', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (9, 3, 3, 'admin123456', 'POST /presentation/apply', '申请举办宣讲会', 'Exception: \r\n### Error updating database.  Cause: java.sql.SQLException: Field \'location\' doesn\'t have a default value\r\n### The error may exist in file [D:\\programstudy\\test\\employment\\employment\\backend\\target\\classes\\mappers\\PresentationMapper.xml]\r\n### The error may involve com.gr.geias.repository.PresentationRepository.insertPresentation-Inline\r\n### The error occurred while setting parameters\r\n### SQL: INSERT INTO tb_presentation (             company_id, title, capacity,             start_time, end_time, description, status, create_time, update_time         ) VALUES (                      ?, ?, ?,                      ?, ?, ?, ?, ?, ?                  )\r\n### Cause: java.sql.SQLException: Field \'location\' doesn\'t have a default value\n; Field \'location\' doesn\'t have a default value; nested exception is java.sql.SQLException: Field \'location\' doesn\'t have a default value', '0:0:0:0:0:0:0:1', '2025-07-01 17:26:55', 0, '\r\n### Error updating database.  Cause: java.sql.SQLException: Field \'location\' doesn\'t have a default value\r\n### The error may exist in file [D:\\programstudy\\test\\employment\\employment\\backend\\target\\classes\\mappers\\PresentationMapper.xml]\r\n### The error may involve com.gr.geias.repository.PresentationRepository.insertPresentation-Inline\r\n### The error occurred while setting parameters\r\n### SQL: INSERT INTO tb_presentation (             company_id, title, capacity,             start_time, end_time, description, status, create_time, update_time         ) VALUES (                      ?, ?, ?,                      ?, ?, ?, ?, ?, ?                  )\r\n### Cause: java.sql.SQLException: Field \'location\' doesn\'t have a default value\n; Field \'location\' doesn\'t have a default value; nested exception is java.sql.SQLException: Field \'location\' doesn\'t have a default value');
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (10, 3, 3, 'admin123456', 'POST /presentation/apply', '申请举办宣讲会', 'Exception: \r\n### Error updating database.  Cause: java.sql.SQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`graduateemploymentinfo`.`tb_presentation`, CONSTRAINT `fk_presentation_company` FOREIGN KEY (`company_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE RESTRICT ON UPDATE CASCADE)\r\n### The error may exist in file [D:\\programstudy\\test\\employment\\employment\\backend\\target\\classes\\mappers\\PresentationMapper.xml]\r\n### The error may involve com.gr.geias.repository.PresentationRepository.insertPresentation-Inline\r\n### The error occurred while setting parameters\r\n### SQL: INSERT INTO tb_presentation (             company_id, title, capacity,             start_time, end_time, description, status, create_time, update_time         ) VALUES (                      ?, ?, ?,                      ?, ?, ?, ?, ?, ?                  )\r\n### Cause: java.sql.SQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`graduateemploymentinfo`.`tb_presentation`, CONSTRAINT `fk_presentation_company` FOREIGN KEY (`company_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE RESTRICT ON UPDATE CASCADE)\n; Cannot add or update a child row: a foreign key constraint fails (`graduateemploymentinfo`.`tb_presentation`, CONSTRAINT `fk_presentation_company` FOREIGN KEY (`company_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE RESTRICT ON UPDATE CASCADE); nested exception is java.sql.SQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`graduateemploymentinfo`.`tb_presentation`, CONSTRAINT `fk_presentation_company` FOREIGN KEY (`company_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE RESTRICT ON UPDATE CASCADE)', '0:0:0:0:0:0:0:1', '2025-07-01 17:28:05', 0, '\r\n### Error updating database.  Cause: java.sql.SQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`graduateemploymentinfo`.`tb_presentation`, CONSTRAINT `fk_presentation_company` FOREIGN KEY (`company_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE RESTRICT ON UPDATE CASCADE)\r\n### The error may exist in file [D:\\programstudy\\test\\employment\\employment\\backend\\target\\classes\\mappers\\PresentationMapper.xml]\r\n### The error may involve com.gr.geias.repository.PresentationRepository.insertPresentation-Inline\r\n### The error occurred while setting parameters\r\n### SQL: INSERT INTO tb_presentation (             company_id, title, capacity,             start_time, end_time, description, status, create_time, update_time         ) VALUES (                      ?, ?, ?,                      ?, ?, ?, ?, ?, ?                  )\r\n### Cause: java.sql.SQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`graduateemploymentinfo`.`tb_presentation`, CONSTRAINT `fk_presentation_company` FOREIGN KEY (`company_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE RESTRICT ON UPDATE CASCADE)\n; Cannot add or update a child row: a foreign key constraint fails (`graduateemploymentinfo`.`tb_presentation`, CONSTRAINT `fk_presentation_company` FOREIGN KEY (`company_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE RESTRICT ON UPDATE CASCADE); nested exception is java.sql.SQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`graduateemploymentinfo`.`tb_presentation`, CONSTRAINT `fk_presentation_company` FOREIGN KEY (`company_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE RESTRICT ON UPDATE CASCADE)');
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (11, 3, 3, 'admin123456', 'POST /presentation/apply', '申请举办宣讲会', 'Params: {}, Result: <200 OK OK,宣讲会申请成功，等待审核,[]>', '0:0:0:0:0:0:0:1', '2025-07-01 17:30:39', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (12, 3, 3, 'admin123456', 'POST /presentation/apply', '申请举办宣讲会', 'Params: {}, Result: <200 OK OK,宣讲会申请成功，等待审核,[]>', '0:0:0:0:0:0:0:1', '2025-07-01 17:35:04', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (13, 3, 3, 'admin123456', 'GET /presentation/company/1', '获取公司申请的宣讲会列表', 'Params: {}, Result: <200 OK OK,[Presentation(presentationId=3, companyId=1, title=2025届春招宣讲会, location=null, capacity=100, startTime=Sat Jul 05 10:00:00 CST 2025, endTime=Sat Jul 05 12:00:00 CST 2025, description=主要介绍公司招聘需求、岗位信息, status=0, remark=null, createTime=Tue Jul 01 17:35:04 CST 2025, updateTime=Tue Jul 01 17:38:29 CST 2025, signupCount=0)],[]>', '0:0:0:0:0:0:0:1', '2025-07-01 17:38:52', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (14, 3, 3, 'admin123456', 'POST /api/personinfo/login', '用户登录', NULL, NULL, '2025-07-01 17:41:07', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (15, 3, 3, 'admin123456', 'GET /presentation/admin/presentations', '获取所有宣讲会申请记录', 'Params: {}, Result: <200 OK OK,[],[]>', '0:0:0:0:0:0:0:1', '2025-07-01 17:41:23', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (16, 3, 3, 'admin123456', 'GET /presentation/admin/presentations', '获取所有宣讲会申请记录', 'Params: {}, Result: <200 OK OK,[],[]>', '0:0:0:0:0:0:0:1', '2025-07-01 17:42:31', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (17, 3, 3, 'admin123456', 'POST /api/personinfo/login', '用户登录', NULL, NULL, '2025-07-01 17:45:53', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (18, 3, 3, 'admin123456', 'GET /presentation/admin/presentations', '获取所有宣讲会申请记录', 'Exception: \r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column \'c.unit.id\' in \'field list\'\r\n### The error may exist in file [D:\\programstudy\\test\\employment\\employment\\backend\\target\\classes\\mappers\\PresentationMapper.xml]\r\n### The error may involve defaultParameterMap\r\n### The error occurred while setting parameters\r\n### SQL: SELECT         p.presentation_id,         p.title,         p.location,         p.capacity,         p.start_time,         p.end_time,         p.description,         p.status,         p.remark,         p.signup_count,         p.create_time,         p.update_time,         c.company_id AS companyId,         c.company_name AS companyName,         c.unit.id as companyType         FROM tb_presentation p         JOIN tb_company_info c ON p.company_id = c.company_id                    ORDER BY p.create_time DESC\r\n### Cause: java.sql.SQLSyntaxErrorException: Unknown column \'c.unit.id\' in \'field list\'\n; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: Unknown column \'c.unit.id\' in \'field list\'', '0:0:0:0:0:0:0:1', '2025-07-01 17:46:02', 0, '\r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column \'c.unit.id\' in \'field list\'\r\n### The error may exist in file [D:\\programstudy\\test\\employment\\employment\\backend\\target\\classes\\mappers\\PresentationMapper.xml]\r\n### The error may involve defaultParameterMap\r\n### The error occurred while setting parameters\r\n### SQL: SELECT         p.presentation_id,         p.title,         p.location,         p.capacity,         p.start_time,         p.end_time,         p.description,         p.status,         p.remark,         p.signup_count,         p.create_time,         p.update_time,         c.company_id AS companyId,         c.company_name AS companyName,         c.unit.id as companyType         FROM tb_presentation p         JOIN tb_company_info c ON p.company_id = c.company_id                    ORDER BY p.create_time DESC\r\n### Cause: java.sql.SQLSyntaxErrorException: Unknown column \'c.unit.id\' in \'field list\'\n; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: Unknown column \'c.unit.id\' in \'field list\'');
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (19, 3, 3, 'admin123456', 'POST /api/personinfo/login', '用户登录', NULL, NULL, '2025-07-01 17:47:08', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (20, 3, 3, 'admin123456', 'GET /presentation/admin/presentations', '获取所有宣讲会申请记录', 'Params: {}, Result: <200 OK OK,[PresentationWithCompanyDTO(presentationId=3, title=2025届春招宣讲会, location=null, capacity=100, startTime=Sat Jul 05 10:00:00 CST 2025, endTime=Sat Jul 05 12:00:00 CST 2025, description=主要介绍公司招聘需求、岗位信息, status=0, remark=null, signupCount=0, createTime=Tue Jul 01 17:35:04 CST 2025, updateTime=Tue Jul 01 17:38:29 CST 2025, companyId=1, companyName=1, companyType=1)],[]>', '0:0:0:0:0:0:0:1', '2025-07-01 17:47:16', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (21, 3, 3, 'admin123456', 'PUT /presentation/3/approve', '审批通过宣讲会申请', 'Params: {remark=[Ljava.lang.String;@2b3fdd6e, location=[Ljava.lang.String;@356f73c9}, Result: <200 OK OK,审批通过成功,[]>', '0:0:0:0:0:0:0:1', '2025-07-01 17:48:57', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (22, 3, 3, 'admin123456', 'POST /presentation/3/signup', '学生报名宣讲会', 'Params: {studentId=[Ljava.lang.String;@4be4a81f}, Result: <200 OK OK,报名成功！,[]>', '0:0:0:0:0:0:0:1', '2025-07-01 17:50:27', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (23, 3, 3, 'admin123456', 'GET /presentation/student/signed', '获取学生已报名宣讲会列表', 'Params: {studentId=[Ljava.lang.String;@4d34523c}, Result: <200 OK OK,[],[]>', '0:0:0:0:0:0:0:1', '2025-07-01 17:51:18', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (24, 3, 3, 'admin123456', 'GET /presentation/student/signed', '获取学生已报名宣讲会列表', 'Params: {studentId=[Ljava.lang.String;@1ee915ec}, Result: <200 OK OK,[],[]>', '0:0:0:0:0:0:0:1', '2025-07-01 17:51:22', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (25, 3, 3, 'admin123456', 'POST /api/personinfo/login', '用户登录', NULL, NULL, '2025-07-01 17:59:18', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (26, 3, 3, 'admin123456', 'GET /presentation/student/signed', '获取学生已报名宣讲会列表', 'Params: {studentId=[Ljava.lang.String;@2d0bc46d}, Result: <200 OK OK,[PresentationWithCompanyDTO(presentationId=3, title=2025届春招宣讲会, location=B203, capacity=100, startTime=Sat Jul 05 10:00:00 CST 2025, endTime=Sat Jul 05 12:00:00 CST 2025, description=主要介绍公司招聘需求、岗位信息, status=1, remark=审核通过, signupCount=1, createTime=Tue Jul 01 17:35:04 CST 2025, updateTime=Tue Jul 01 17:50:27 CST 2025, companyId=1, companyName=1, companyType=国企)],[]>', '0:0:0:0:0:0:0:1', '2025-07-01 17:59:27', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (27, 3, 3, 'admin123456', 'DELETE /presentation/student/cancel', '学生撤销宣讲会报名', 'Params: {studentId=[Ljava.lang.String;@61166a5, presentationId=[Ljava.lang.String;@146e8d3c}, Result: <200 OK OK,取消报名成功,[]>', '0:0:0:0:0:0:0:1', '2025-07-01 18:03:11', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (28, 3, 3, 'admin123456', 'GET /presentation/specialty/5', '获取宣讲会专业分布', 'Exception: \r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column \'p.class_id\' in \'on clause\'\r\n### The error may exist in file [D:\\programstudy\\test\\employment\\employment\\backend\\target\\classes\\mappers\\PresentationSignupMapper.xml]\r\n### The error may involve defaultParameterMap\r\n### The error occurred while setting parameters\r\n### SQL: SELECT sp.specialty_name AS specialtyName, COUNT(*) AS count         FROM tb_presentation_signup ps             JOIN tb_person_info p ON ps.student_id = p.person_id             JOIN tb_class_grade c ON p.class_id = c.class_id             JOIN tb_specialty sp ON c.specialty_id = sp.specialty_id         WHERE ps.presentation_id = ?         GROUP BY sp.specialty_name\r\n### Cause: java.sql.SQLSyntaxErrorException: Unknown column \'p.class_id\' in \'on clause\'\n; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: Unknown column \'p.class_id\' in \'on clause\'', '0:0:0:0:0:0:0:1', '2025-07-01 18:03:45', 0, '\r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column \'p.class_id\' in \'on clause\'\r\n### The error may exist in file [D:\\programstudy\\test\\employment\\employment\\backend\\target\\classes\\mappers\\PresentationSignupMapper.xml]\r\n### The error may involve defaultParameterMap\r\n### The error occurred while setting parameters\r\n### SQL: SELECT sp.specialty_name AS specialtyName, COUNT(*) AS count         FROM tb_presentation_signup ps             JOIN tb_person_info p ON ps.student_id = p.person_id             JOIN tb_class_grade c ON p.class_id = c.class_id             JOIN tb_specialty sp ON c.specialty_id = sp.specialty_id         WHERE ps.presentation_id = ?         GROUP BY sp.specialty_name\r\n### Cause: java.sql.SQLSyntaxErrorException: Unknown column \'p.class_id\' in \'on clause\'\n; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: Unknown column \'p.class_id\' in \'on clause\'');
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (29, 3, 3, 'admin123456', 'POST /api/personinfo/login', '用户登录', NULL, NULL, '2025-07-01 18:06:54', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (30, 3, 3, 'admin123456', 'GET /presentation/specialty/5', '获取宣讲会专业分布', 'Params: {}, Result: <200 OK OK,[],[]>', '0:0:0:0:0:0:0:1', '2025-07-01 18:07:05', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (31, 3, 3, 'admin123456', 'POST /presentation/3/signup', '学生报名宣讲会', 'Params: {studentId=[Ljava.lang.String;@65108282}, Result: <200 OK OK,报名成功！,[]>', '0:0:0:0:0:0:0:1', '2025-07-01 18:07:27', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (32, 3, 3, 'admin123456', 'GET /presentation/specialty/5', '获取宣讲会专业分布', 'Params: {}, Result: <200 OK OK,[],[]>', '0:0:0:0:0:0:0:1', '2025-07-01 18:07:31', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (33, 3, 3, 'admin123456', 'GET /presentation/specialty/5', '获取宣讲会专业分布', 'Params: {}, Result: <200 OK OK,[],[]>', '0:0:0:0:0:0:0:1', '2025-07-01 18:09:27', 1, NULL);
+INSERT INTO `operation_log` (`id`, `person_id`, `enable_status`, `username`, `operation_type`, `target`, `details`, `ip_address`, `operation_time`, `success`, `error_msg`) VALUES (34, 3, 3, 'admin123456', 'GET /presentation/specialty/3', '获取宣讲会专业分布', 'Params: {}, Result: <200 OK OK,[{specialtyName=软件工程, count=1}],[]>', '0:0:0:0:0:0:0:1', '2025-07-01 18:09:34', 1, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -212,15 +250,20 @@ CREATE TABLE `tb_company_info` (
   `address` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '企业地址',
   `area_id` int DEFAULT NULL COMMENT '所属地区',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `unit_id` int DEFAULT NULL COMMENT '企业类型ID',
+  `confirmed` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`company_id`) USING BTREE,
   KEY `area_id` (`area_id`) USING BTREE,
-  CONSTRAINT `fk_company_area` FOREIGN KEY (`area_id`) REFERENCES `tb_area` (`area_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='参会企业信息表';
+  KEY `unit_id` (`unit_id`) USING BTREE,
+  CONSTRAINT `fk_company_area` FOREIGN KEY (`area_id`) REFERENCES `tb_area` (`area_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_company_unit` FOREIGN KEY (`unit_id`) REFERENCES `tb_unit_kind` (`unit_id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='参会企业信息表';
 
 -- ----------------------------
 -- Records of tb_company_info
 -- ----------------------------
 BEGIN;
+INSERT INTO `tb_company_info` (`company_id`, `company_name`, `company_intro`, `address`, `area_id`, `create_time`, `unit_id`, `confirmed`) VALUES (1, '1', '1', '1', NULL, '2025-06-29 13:28:31', 1, 1);
 COMMIT;
 
 -- ----------------------------
@@ -308,13 +351,15 @@ CREATE TABLE `tb_interview` (
   KEY `idx_position_id` (`position_id`),
   KEY `idx_status` (`status`),
   KEY `idx_is_synced` (`is_synced`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='面试信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='面试信息表';
 
 -- ----------------------------
 -- Records of tb_interview
 -- ----------------------------
 BEGIN;
-INSERT INTO `tb_interview` (`id`, `resume_id`, `position_id`, `status`, `remarks`, `interview_time`, `location`, `interviewer`, `is_synced`, `create_time`, `update_time`) VALUES (4, 1, 1, 1, NULL, '2024-07-01 18:00:00', '线上面试', '面试官A', 0, '2025-06-30 10:18:45', '2025-06-30 10:18:45');
+INSERT INTO `tb_interview` (`id`, `resume_id`, `position_id`, `status`, `remarks`, `interview_time`, `location`, `interviewer`, `is_synced`, `create_time`, `update_time`) VALUES (4, 1, 1, 3, '面试已完成', '2024-07-01 18:00:00', '线上面试', '面试官A', 1, '2025-06-30 10:18:45', '2025-06-30 11:04:38');
+INSERT INTO `tb_interview` (`id`, `resume_id`, `position_id`, `status`, `remarks`, `interview_time`, `location`, `interviewer`, `is_synced`, `create_time`, `update_time`) VALUES (5, 1, 1, 3, '面试已完成', '2025-07-01 18:00:00', NULL, NULL, 1, '2025-06-30 10:36:53', '2025-06-30 10:57:54');
+INSERT INTO `tb_interview` (`id`, `resume_id`, `position_id`, `status`, `remarks`, `interview_time`, `location`, `interviewer`, `is_synced`, `create_time`, `update_time`) VALUES (6, 1, 1, 2, '面试进行中', '2025-07-02 18:00:00', NULL, NULL, 1, '2025-06-30 10:44:29', '2025-06-30 10:48:29');
 COMMIT;
 
 -- ----------------------------
@@ -330,15 +375,17 @@ CREATE TABLE `tb_job_fair` (
   `end_time` datetime NOT NULL COMMENT '结束时间',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `organizer_id` int DEFAULT NULL COMMENT '主办人ID（管理员或教师）',
+  `booth_total` int DEFAULT '0' COMMENT '可用展位总数',
   PRIMARY KEY (`job_fair_id`) USING BTREE,
   KEY `organizer_id` (`organizer_id`) USING BTREE,
   CONSTRAINT `fk_job_fair_organizer` FOREIGN KEY (`organizer_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='招聘会信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='招聘会信息表';
 
 -- ----------------------------
 -- Records of tb_job_fair
 -- ----------------------------
 BEGIN;
+INSERT INTO `tb_job_fair` (`job_fair_id`, `title`, `description`, `location`, `start_time`, `end_time`, `create_time`, `organizer_id`, `booth_total`) VALUES (1, '2025届校园招聘会', '本次招聘会汇聚优质企业，欢迎同学们积极参与。', '中南大学双创中心', '2025-06-10 09:00:00', '2025-06-11 16:00:00', '2025-06-29 09:04:21', 3, 50);
 COMMIT;
 
 -- ----------------------------
@@ -348,7 +395,8 @@ DROP TABLE IF EXISTS `tb_job_fair_company`;
 CREATE TABLE `tb_job_fair_company` (
   `job_fair_id` int NOT NULL COMMENT '招聘会ID',
   `company_id` int NOT NULL COMMENT '企业ID',
-  `booth_location` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '展位位置',
+  `booth_location` int DEFAULT NULL COMMENT '展位位置',
+  `status` int DEFAULT '0' COMMENT '申请状态：0-待审核，1-通过，2-拒绝',
   PRIMARY KEY (`job_fair_id`,`company_id`) USING BTREE,
   KEY `fk_jfc_company` (`company_id`) USING BTREE,
   CONSTRAINT `fk_jfc_company` FOREIGN KEY (`company_id`) REFERENCES `tb_company_info` (`company_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
@@ -469,12 +517,32 @@ CREATE TABLE `tb_news` (
   PRIMARY KEY (`news_id`) USING BTREE,
   KEY `idx_publisher` (`publisher_id`) USING BTREE,
   CONSTRAINT `tb_news_tb_person_info` FOREIGN KEY (`publisher_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='新闻资讯表';
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='新闻资讯表';
 
 -- ----------------------------
 -- Records of tb_news
 -- ----------------------------
 BEGIN;
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (21, '校园招聘会成功举办', '我校于本周成功举办大型校园招聘会，吸引数十家企业参与，提供上千岗位。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '李华', 3, '2025-06-30 10:40:12', '2025-06-30 15:31:25', 122, '校园新闻', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (22, '计算机学院举办技术讲座', '讲座涵盖AI、大数据等前沿领域，吸引大量学生参与。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '王敏', 3, '2025-06-30 10:40:12', '2025-07-01 09:28:55', 87, '学术交流', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (23, '校企合作新突破', '我校与XX科技公司签署实习与科研合作协议。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '张伟', 3, '2025-06-30 10:40:12', '2025-06-30 14:59:53', 135, '就业动态', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (24, '毕业生就业率再创新高', '2025届毕业生整体就业率达98.6%，创历史新高。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '陈晨', 3, '2025-06-30 10:40:12', '2025-07-01 08:07:15', 209, '就业动态', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (25, '新生入学教育顺利开展', '2025级新生参加为期一周的入学教育和军训。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '刘洋', 3, '2025-06-30 10:40:12', '2025-06-30 15:39:07', 75, '校园新闻', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (26, '图书馆新增阅读空间', '图书馆增设安静自习区，为学生学习提供良好环境。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '周婷', 3, '2025-06-30 10:40:12', '2025-06-30 10:40:12', 42, '校园建设', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (27, '人工智能实验室落成', '我校新建AI实验室正式投入使用，服务相关课程教学。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '赵强', 3, '2025-06-30 10:40:12', '2025-06-30 10:40:12', 90, '教学科研', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (28, '大学生创新创业大赛开幕', '激发创新精神，培养创业能力，大赛精彩纷呈。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '孙悦', 3, '2025-06-30 10:40:12', '2025-06-30 10:40:12', 112, '校园活动', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (29, '毕业设计展圆满结束', '艺术学院举办毕业展，展示学生四年成果。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '李想', 3, '2025-06-30 10:40:12', '2025-06-30 14:16:43', 78, '艺术设计', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (30, '优秀校友回校讲学', '我校杰出校友回母校分享职场经验。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '丁磊', 3, '2025-06-30 10:40:12', '2025-06-30 10:40:12', 88, '校友动态', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (31, '软件学院组织企业参观', '师生一同参观合作企业，深入了解工作流程。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '刘娜', 3, '2025-06-30 10:40:12', '2025-06-30 10:40:12', 93, '就业实践', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (32, '学院举办简历制作培训', '指导学生完善简历，提高求职竞争力。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '马龙', 3, '2025-06-30 10:40:12', '2025-07-01 09:25:41', 68, '就业服务', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (33, '心理健康月活动启动', '开展各类心理讲座与咨询活动，关注学生心理健康。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '何晶', 3, '2025-06-30 10:40:12', '2025-06-30 10:40:12', 47, '校园文化', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (34, '校园文化节即将举行', '音乐、舞蹈、戏剧等多种形式的节目精彩呈现。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '杨帆', 3, '2025-06-30 10:40:12', '2025-06-30 10:40:12', 128, '校园活动', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (35, '我校师生在省级比赛获奖', '斩获编程、英语演讲等多项省级大奖。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '苏梅', 3, '2025-06-30 10:40:12', '2025-06-30 10:40:12', 139, '竞赛获奖', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (36, '“三下乡”活动纪实', '暑期社会实践团队奔赴各地服务基层群众。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '魏强', 3, '2025-06-30 10:40:12', '2025-06-30 10:40:12', 52, '社会实践', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (37, '学院发布暑期实习安排', '2025年暑期实习计划发布，覆盖多个院系。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '王蕾', 3, '2025-06-30 10:40:12', '2025-06-30 10:40:12', 101, '就业动态', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (38, '学生组织纳新启动', '社团、学生会等组织面向全校开展纳新。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '韩冰', 3, '2025-06-30 10:40:12', '2025-06-30 10:40:12', 61, '学生工作', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (39, '校长新年致辞发布', '鼓舞人心的新年寄语，展望美好未来。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '校办', 3, '2025-06-30 10:40:12', '2025-07-01 09:21:16', 202, '校园新闻', 0);
+INSERT INTO `tb_news` (`news_id`, `title`, `content`, `image_urls`, `author_name`, `publisher_id`, `publish_time`, `update_time`, `read_count`, `tags`, `is_deleted`) VALUES (40, '计算机课程改革实施', '新学期起采用项目驱动+小组协作教学模式。', 'uploads/news/8c12eeae-8848-4d75-85f3-676544ee3349.jpg', '陈刚', 3, '2025-06-30 10:40:12', '2025-06-30 10:40:12', 75, '教学改革', 0);
 COMMIT;
 
 -- ----------------------------
@@ -493,12 +561,32 @@ CREATE TABLE `tb_news_comment` (
   KEY `idx_user` (`user_id`) USING BTREE,
   CONSTRAINT `fk_comment_news` FOREIGN KEY (`news_id`) REFERENCES `tb_news` (`news_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_comment_user` FOREIGN KEY (`user_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='新闻评论表';
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='新闻评论表';
 
 -- ----------------------------
 -- Records of tb_news_comment
 -- ----------------------------
 BEGIN;
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (1, 21, 3, '非常精彩的活动，期待下一次！', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (2, 22, 4, '内容很有启发性，值得一读。', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (3, 23, 5, '希望多举办这种讲座！', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (4, 24, 6, '就业率真不错，学校给力！', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (5, 25, 3, '新生教育内容很实用。', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (6, 26, 4, '图书馆越来越漂亮了！', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (7, 27, 5, 'AI实验室我去参观过，很先进。', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (8, 28, 6, '创业大赛真的激励人心。', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (9, 29, 3, '展览作品很有创意！', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (10, 30, 4, '校友分享干货满满。', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (11, 31, 5, '企业参观让我学到很多。', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (12, 32, 6, '简历培训真的帮大忙了。', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (13, 33, 3, '心理健康活动非常有意义。', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (14, 34, 4, '文化节太精彩了！', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (15, 35, 5, '为获奖同学点赞！', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (16, 36, 6, '三下乡活动让人感动。', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (17, 37, 3, '我已经报名暑期实习了！', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (18, 38, 4, '学生组织太热情了，欢迎加入。', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (19, 39, 5, '校长讲话很有力量。', '2025-06-30 11:28:51', 0);
+INSERT INTO `tb_news_comment` (`comment_id`, `news_id`, `user_id`, `content`, `create_time`, `is_deleted`) VALUES (20, 40, 6, '课程改革方向不错，希望能参与更多项目。', '2025-06-30 11:28:51', 0);
 COMMIT;
 
 -- ----------------------------
@@ -548,8 +636,10 @@ CREATE TABLE `tb_person_info` (
 -- Records of tb_person_info
 -- ----------------------------
 BEGIN;
-INSERT INTO `tb_person_info` (`person_id`, `enable_Status`, `person_name`, `create_time`, `password`, `username`, `college_id`) VALUES (3, 2, '超级管理员', '2020-03-06 19:27:50', 'admin1', 'admin', NULL);
-INSERT INTO `tb_person_info` (`person_id`, `enable_Status`, `person_name`, `create_time`, `password`, `username`, `college_id`) VALUES (32, 2, '测试', '2025-06-28 10:42:37', '123', '2', NULL);
+INSERT INTO `tb_person_info` (`person_id`, `enable_Status`, `person_name`, `create_time`, `password`, `username`, `college_id`) VALUES (3, 3, '超级管理员', '2020-03-06 19:27:50', 'admin', 'admin123456', NULL);
+INSERT INTO `tb_person_info` (`person_id`, `enable_Status`, `person_name`, `create_time`, `password`, `username`, `college_id`) VALUES (4, 1, '测试hr', '2025-06-29 13:24:56', '123', 'HR', 1);
+INSERT INTO `tb_person_info` (`person_id`, `enable_Status`, `person_name`, `create_time`, `password`, `username`, `college_id`) VALUES (5, 0, '小明', '2025-06-30 11:27:19', '123', '123', 1);
+INSERT INTO `tb_person_info` (`person_id`, `enable_Status`, `person_name`, `create_time`, `password`, `username`, `college_id`) VALUES (6, 0, '小美', '2025-06-30 11:27:52', '123', '1234', 1);
 COMMIT;
 
 -- ----------------------------
@@ -560,7 +650,7 @@ CREATE TABLE `tb_presentation` (
   `presentation_id` int NOT NULL AUTO_INCREMENT COMMENT '宣讲会ID',
   `company_id` int NOT NULL COMMENT '公司人员ID，对应tb_person_info.person_id，enable_status=2',
   `title` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '宣讲会主题/标题',
-  `location` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '举办地点（如教室编号或地址）',
+  `location` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '举办地点（如教室编号或地址）',
   `capacity` int NOT NULL COMMENT '场地可容纳人数',
   `start_time` datetime NOT NULL COMMENT '宣讲会开始时间',
   `end_time` datetime NOT NULL COMMENT '宣讲会结束时间',
@@ -570,15 +660,16 @@ CREATE TABLE `tb_presentation` (
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '备注说明',
   `signup_count` int DEFAULT '0' COMMENT '当前报名人数',
-  PRIMARY KEY (`presentation_id`) USING BTREE,
+  PRIMARY KEY (`presentation_id` DESC) USING BTREE,
   KEY `idx_company_id` (`company_id`) USING BTREE,
-  CONSTRAINT `fk_presentation_company` FOREIGN KEY (`company_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='宣讲会申请记录表';
+  CONSTRAINT `fk_presentation_company` FOREIGN KEY (`company_id`) REFERENCES `tb_company_info` (`company_id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='宣讲会申请记录表';
 
 -- ----------------------------
 -- Records of tb_presentation
 -- ----------------------------
 BEGIN;
+INSERT INTO `tb_presentation` (`presentation_id`, `company_id`, `title`, `location`, `capacity`, `start_time`, `end_time`, `description`, `status`, `create_time`, `update_time`, `remark`, `signup_count`) VALUES (3, 1, '2025届春招宣讲会', 'B203', 100, '2025-07-05 10:00:00', '2025-07-05 12:00:00', '主要介绍公司招聘需求、岗位信息', 1, '2025-07-01 17:35:04', '2025-07-01 18:07:26', '审核通过', 1);
 COMMIT;
 
 -- ----------------------------
@@ -595,12 +686,45 @@ CREATE TABLE `tb_presentation_signup` (
   KEY `fk_signup_student` (`student_id`) USING BTREE,
   CONSTRAINT `fk_signup_presentation` FOREIGN KEY (`presentation_id`) REFERENCES `tb_presentation` (`presentation_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_signup_student` FOREIGN KEY (`student_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='宣讲会报名表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='宣讲会报名表';
 
 -- ----------------------------
 -- Records of tb_presentation_signup
 -- ----------------------------
 BEGIN;
+INSERT INTO `tb_presentation_signup` (`signup_id`, `presentation_id`, `student_id`, `signup_time`) VALUES (2, 3, 5, '2025-07-01 18:07:26');
+COMMIT;
+
+-- ----------------------------
+-- Table structure for tb_private_message
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_private_message`;
+CREATE TABLE `tb_private_message` (
+  `message_id` bigint NOT NULL AUTO_INCREMENT COMMENT '消息ID',
+  `sender_id` int NOT NULL COMMENT '发送者ID（tb_person_info.person_id）',
+  `receiver_id` int NOT NULL COMMENT '接收者ID（tb_person_info.person_id）',
+  `content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '消息内容',
+  `send_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
+  `is_read` tinyint DEFAULT '0' COMMENT '是否已读（0=未读，1=已读）',
+  `is_deleted_sender` tinyint DEFAULT '0' COMMENT '发送方是否删除（0=否，1=是）',
+  `is_deleted_receiver` tinyint DEFAULT '0' COMMENT '接收方是否删除（0=否，1=是）',
+  `message_type` tinyint DEFAULT '0' COMMENT '消息类型（0=文本，1=图片，2=文件）',
+  `file_url` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '附件或图片的URL',
+  PRIMARY KEY (`message_id`) USING BTREE,
+  KEY `idx_sender` (`sender_id`) USING BTREE,
+  KEY `idx_receiver` (`receiver_id`) USING BTREE,
+  CONSTRAINT `fk_private_receiver` FOREIGN KEY (`receiver_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_private_sender` FOREIGN KEY (`sender_id`) REFERENCES `tb_person_info` (`person_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 ROW_FORMAT=DYNAMIC COMMENT='私聊消息表';
+
+-- ----------------------------
+-- Records of tb_private_message
+-- ----------------------------
+BEGIN;
+INSERT INTO `tb_private_message` (`message_id`, `sender_id`, `receiver_id`, `content`, `send_time`, `is_read`, `is_deleted_sender`, `is_deleted_receiver`, `message_type`, `file_url`) VALUES (2, 3, 4, 'API.docx', '2025-06-29 14:55:09', 0, 1, 0, 2, NULL);
+INSERT INTO `tb_private_message` (`message_id`, `sender_id`, `receiver_id`, `content`, `send_time`, `is_read`, `is_deleted_sender`, `is_deleted_receiver`, `message_type`, `file_url`) VALUES (3, 3, 4, 'API.docx', '2025-06-29 15:01:50', 0, 0, 0, 2, '/uploads/messages/156b82b6-5f70-443c-992e-cd69f19f2dd3.docx');
+INSERT INTO `tb_private_message` (`message_id`, `sender_id`, `receiver_id`, `content`, `send_time`, `is_read`, `is_deleted_sender`, `is_deleted_receiver`, `message_type`, `file_url`) VALUES (5, 3, 4, '你好，这是测试消息', '2025-07-01 16:23:26', 0, 0, 0, 0, NULL);
+INSERT INTO `tb_private_message` (`message_id`, `sender_id`, `receiver_id`, `content`, `send_time`, `is_read`, `is_deleted_sender`, `is_deleted_receiver`, `message_type`, `file_url`) VALUES (6, 3, 4, 'API.docx', '2025-07-01 17:11:25', 0, 0, 0, 2, '/uploads/messages/34e2b75d-a5b2-44fd-a2e8-e32ff2b59f9e.docx');
 COMMIT;
 
 -- ----------------------------
@@ -617,12 +741,13 @@ CREATE TABLE `tb_resume` (
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`resume_id`),
   KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='简历基本信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='简历基本信息表';
 
 -- ----------------------------
 -- Records of tb_resume
 -- ----------------------------
 BEGIN;
+INSERT INTO `tb_resume` (`resume_id`, `user_id`, `resume_name`, `is_default`, `status`, `create_time`, `update_time`) VALUES (1, 1, '测试简历', 0, 1, '2025-06-30 10:47:28', '2025-06-30 10:47:28');
 COMMIT;
 
 -- ----------------------------
