@@ -115,4 +115,12 @@ public interface PersonInfoRepository {
      */
     @Update("update tb_person_info set face_token=#{faceToken} where person_id=#{personId}")
     Integer updatePersonById(@Param("personId") Integer personId, @Param("faceToken") String faceToken);
+
+    List<PersonInfo> queryPersonByCollegeIdPage(Integer collegeId, int offset, int limit);
+
+    Integer queryPersonByCollegeIdCount(Integer collegeId);
+
+    List<PersonInfo> queryPerson1Page(int offset, int limit);
+
+    Integer queryPerson1Count();
 } 

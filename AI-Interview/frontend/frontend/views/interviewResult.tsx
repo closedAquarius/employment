@@ -1,14 +1,14 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
 import {useEffect, useState} from "react";
-import {AssistantService, ClientService} from "Frontend/generated/endpoints";
-import InterViewRecords from "../generated/com/guangge/Interview/writtentest/InterViewRecord";
+import {AssistantService, ClientService} from "frontend/generated/endpoints";
+import InterViewRecords from "frontend/generated/com/guangge/Interview/writtentest/InterViewRecord";
 import {GridColumn} from "@vaadin/react-components/GridColumn";
 import {Grid,type GridEventContext} from "@vaadin/react-components/Grid";
 import {MessageInput} from "@vaadin/react-components/MessageInput";
 import {nanoid} from "nanoid";
 import {SplitLayout} from "@vaadin/react-components/SplitLayout";
 import Message, {MessageItem} from "../components/Message";
-import MessageList from "Frontend/components/MessageList";
+import MessageList from "frontend/components/MessageList";
 import { Button, Notification, TextField } from '@vaadin/react-components';
 import { Tooltip } from '@vaadin/react-components/Tooltip.js';
 import { HorizontalLayout } from '@vaadin/react-components/HorizontalLayout.js';
@@ -16,7 +16,7 @@ import { VerticalLayout } from '@vaadin/react-components/VerticalLayout.js';
 import { Avatar } from '@vaadin/react-components/Avatar.js';
 import { TextArea } from '@vaadin/react-components/TextArea.js';
 import newInterViewDialog from "./newInterViewDialog";
-import withAuth from 'Frontend/components/withAuth';
+import withAuth from '../components/withAuth';
 import axios from 'axios';
 
 export const config: ViewConfig = { menu: { order: 3, icon: 'vaadin:records' }, title: '面试结果' };

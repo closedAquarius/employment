@@ -50,4 +50,9 @@ public interface CollegeRepository {
      */
     @Delete("DELETE FROM tb_college WHERE college_id = #{collegeId}")
     Integer delCollegeById(@Param("collegeId") Integer collegeId);
+
+    List<College> queryCollegePage(@Param("name") String name, @Param("offset") int offset, @Param("limit") int limit);
+
+    int queryCollegeCount(@Param("name") String name);
+
 }

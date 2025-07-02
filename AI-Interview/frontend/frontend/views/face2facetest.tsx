@@ -1,53 +1,110 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Lottie from 'lottie-react';
-import {AssistantService, ClientService} from "Frontend/generated/endpoints";
-import {nanoid} from "nanoid";
+import { nanoid } from "nanoid";
 import { ClipLoader } from 'react-spinners';
 import { motion } from 'framer-motion';
-import talkingAnimation from 'Frontend/assets/animations/talking-animation.json'; // 从 LottieFiles 下载的动画文件
-import thinkingAnimation from 'Frontend/assets/animations/think-animation.json'; // 从 LottieFiles 下载的动画文件
-import microphoneAnimation from 'Frontend/assets/animations/microphone-animation.json'; // 从 LottieFiles 下载的动画文件
 import { FaMicrophone, FaStop, FaPaperPlane } from 'react-icons/fa';
-import withAuth from 'Frontend/components/withAuth';
 import FaceVerificationDialog from './FaceVerificationDialog';
+import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
+import { Notification } from '@vaadin/react-components/Notification.js';
 
-export const config: ViewConfig = { menu: { order: 1, icon: 'vaadin:users' }, title: '光哥面试' };
+export const config: ViewConfig = { menu: { order: 1, icon: 'vaadin:users' }, title: '智联面试' };
 
 const AudioRecorder = () => {
-  const [showStartButton, setShowStartButton] = useState(true); // 是否显示“开始面试”按钮
-  const [showAnswerButton, setShowAnswerButton] = useState(false); // 是否显示“回答”按钮
+  const [showStartButton, setShowStartButton] = useState(true); // 是否显示"开始面试"按钮
+  const [showAnswerButton, setShowAnswerButton] = useState(false); // 是否显示"回答"按钮
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [audioBlob, setAudioBlob] = useState(null);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState('');
-  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [chatId, setChatId] = useState(nanoid());
   const lottieRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isFaceVerified, setIsFaceVerified] = useState(false); // 人脸识别状态
+  const [userName, setUserName] = useState('');
+  const [userId, setUserId] = useState('');
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    // 确保获取到最新的用户信息
+    const storedUserName = localStorage.getItem('username');
+    const storedUserId = localStorage.getItem('userId');
+    const storedToken = localStorage.getItem('token');
+    
+    if (storedUserName) {
+      setUserName(storedUserName);
+      console.log("从本地存储获取用户名:", storedUserName);
+    } else {
+      setUserName('张三'); // 使用默认用户名
+      console.log("未找到用户名，使用默认值: 张三");
+    }
+    
+    if (storedUserId) {
+      setUserId(storedUserId);
+      console.log("从本地存储获取用户ID:", storedUserId);
+    } else {
+      setUserId('1'); // 使用默认用户ID
+      console.log("未找到用户ID，使用默认值: 1");
+    }
+    
+    if (storedToken) {
+      setToken(storedToken);
+      console.log("从本地存储获取认证令牌");
+    } else {
+      console.warn("未找到认证令牌");
+    }
+  }, []);
 
   const handleVerificationSuccess = () => {
     setIsFaceVerified(true); // 人脸识别成功后启用开始按钮
   };
 
+  // 显示通知
+  const showNotification = (message: string, theme = 'error') => {
+    Notification.show(message, {
+      position: 'middle',
+      duration: 3000,
+      theme
+    });
+  };
+
   // 播放欢迎语音
   const playWelcomeAudio = async () => {
-    if (!isFaceVerified) return; // 如果人脸识别未通过，不执行
+    if (!isFaceVerified) {
+      showNotification("请先完成人脸验证");
+      return;
+    }
+    
+    if (!userName) {
+      showNotification("未获取到用户名，请重新登录");
+      return;
+    }
 
-    setShowStartButton(false); // 隐藏“开始面试”按钮
+    setShowStartButton(false); // 隐藏"开始面试"按钮
     setIsRecording(false);
     setIsProcessing(true);
 
     const formData = new FormData();
     formData.append('chatId', chatId);
-    formData.append('userName', localStorage.getItem('username'));
+    formData.append('userName', userName);
+    if (userId) {
+      formData.append('userId', userId);
+    }
 
     try {
+      console.log(`Starting interview with userName: ${userName}, userId: ${userId || 'undefined'}`);
       const response = await fetch(`/interview/face2faceChat`, {
         method: 'POST',
+        headers: token ? {
+          'Authorization': `Bearer ${token}`
+        } : {},
         body: formData,
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
       const responseBlob = await response.blob();
       const audioUrl = URL.createObjectURL(responseBlob);
@@ -60,9 +117,14 @@ const AudioRecorder = () => {
       setAudioUrl(audioUrl);
       setIsProcessing(false);
       playAudio(audioUrl);
-    } catch (error) {
+      
+      // 显示回答按钮
+      setShowAnswerButton(true);
+    } catch (error: any) {
       console.error('Error sending audio to backend:', error);
+      showNotification(`开始面试失败: ${error.message}`);
       setIsProcessing(false);
+      setShowStartButton(true); // 重新显示开始按钮
     }
   };
 
@@ -70,24 +132,25 @@ const AudioRecorder = () => {
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
-      setMediaRecorder(mediaRecorder);
+      const recorder = new MediaRecorder(stream);
+      setMediaRecorder(recorder);
 
-      const audioChunks = [];
-      mediaRecorder.ondataavailable = (event) => {
+      const audioChunks: Blob[] = [];
+      recorder.ondataavailable = (event) => {
         audioChunks.push(event.data);
       };
 
-      mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-        setAudioBlob(audioBlob);
-        sendAudioToBackend(audioBlob);
+      recorder.onstop = () => {
+        const blob = new Blob(audioChunks, { type: 'audio/wav' });
+        setAudioBlob(blob);
+        sendAudioToBackend(blob);
       };
 
-      mediaRecorder.start();
+      recorder.start();
       setIsRecording(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error accessing microphone:', error);
+      showNotification(`无法访问麦克风: ${error.message}`);
     }
   };
 
@@ -101,17 +164,28 @@ const AudioRecorder = () => {
   };
 
   // 发送音频到后端
-  const sendAudioToBackend = async (audioBlob) => {
+  const sendAudioToBackend = async (blob: Blob) => {
     const formData = new FormData();
     formData.append('chatId', chatId);
-    formData.append('userName', '');
-    formData.append('audio', audioBlob, 'recording.webm');
+    formData.append('userName', userName);
+    if (userId) {
+      formData.append('userId', userId);
+    }
+    formData.append('audio', blob, 'recording.webm');
 
     try {
+      console.log(`Sending audio with userName: ${userName}, userId: ${userId || 'undefined'}`);
       const response = await fetch(`/interview/face2faceChat`, {
         method: 'POST',
+        headers: token ? {
+          'Authorization': `Bearer ${token}`
+        } : {},
         body: formData,
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
       const responseBlob = await response.blob();
       const audioUrl = URL.createObjectURL(responseBlob);
@@ -124,49 +198,30 @@ const AudioRecorder = () => {
       setAudioUrl(audioUrl);
       setIsProcessing(false);
       playAudio(audioUrl);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending audio to backend:', error);
+      showNotification(`发送音频失败: ${error.message}`);
       setIsProcessing(false);
+      setShowAnswerButton(true); // 重新显示回答按钮
     }
   };
 
   // 播放音频
-  const playAudio = (audioUrl) => {
-    const audio = new Audio(audioUrl);
-    audio.play();
+  const playAudio = (url) => {
+    const audio = new Audio(url);
+    audio.play().catch(error => {
+      console.error('Error playing audio:', error);
+      showNotification(`播放音频失败: ${error.message}`);
+    });
     setIsPlaying(true);
-
-    // 同步动画
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const analyser = audioContext.createAnalyser();
-    const source = audioContext.createMediaElementSource(audio);
-    source.connect(analyser);
-    analyser.connect(audioContext.destination);
-
-    const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-    const animate = () => {
-      if (!isPlaying) return;
-
-      analyser.getByteFrequencyData(dataArray);
-      const average = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
-
-      // 根据音频波形调整动画速度
-      if (lottieRef.current) {
-        lottieRef.current.setSpeed(average / 50 + 1);
-      }
-
-      requestAnimationFrame(animate);
-    };
-
-    animate();
 
     audio.onended = () => {
       setIsPlaying(false);
       setIsRecording(false);
-      setShowAnswerButton(true); // 显示“回答”按钮
+      setShowAnswerButton(true); // 显示"回答"按钮
       if (!isCompleted) {
-        startRecording();
+        // 不要自动开始录音，等待用户点击回答按钮
+        // startRecording();
       }
     };
   };
@@ -184,17 +239,18 @@ const AudioRecorder = () => {
       {showStartButton && (
         <motion.button
           onClick={playWelcomeAudio}
+          disabled={!isFaceVerified}
           style={{
             padding: '15px 30px',
             fontSize: '18px',
             borderRadius: '10px',
             border: 'none',
-            backgroundColor: '#4CAF50',
+            backgroundColor: isFaceVerified ? '#4CAF50' : '#cccccc',
             color: 'white',
-            cursor: 'pointer',
+            cursor: isFaceVerified ? 'pointer' : 'not-allowed',
           }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: isFaceVerified ? 1.1 : 1 }}
+          whileTap={{ scale: isFaceVerified ? 0.9 : 1 }}
         >
           开始面试
         </motion.button>
@@ -241,108 +297,66 @@ const AudioRecorder = () => {
               zIndex: 10, // 动画在底层
             }}
           >
-            <Lottie
-              lottieRef={lottieRef}
-              animationData={microphoneAnimation}
-              loop={true}
-              style={{ width: '200px', height: '200px' }} // 调整动画大小
-            />
-             <div
-             style={{
-               marginTop: '10px',
-               fontSize: '20px',
-               fontWeight: 'bold',
-               color: '#333',
-             }}
-           >
-             请回答问题...
-           </div>
+            <div style={{ fontSize: '24px', color: '#4CAF50' }}>
+              正在录音...
+            </div>
           </div>
         )}
 
-          {isCompleted &&(
-          <motion.div
-            initial={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5, rotate: 360 }}
-            transition={{ duration: 1, ease: "easeInOut" }}
+        {/* 处理中动画 */}
+        {isProcessing && (
+          <div
             style={{
-              width: 200,
-              height: 200,
-              backgroundColor: 'lightblue',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: '10px',
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 10,
             }}
           >
-            <h1>Goodbye!</h1>
-          </motion.div>
-          )}
-
-          {/* 加载动画 */}
-          {isProcessing && !isCompleted && (
-            <div
-              style={{
-                position: 'fixed',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                zIndex: 2, // 动画小人在上层
-                pointerEvents: 'none', // 禁止点击
-              }}
-            >
-              <Lottie
-                lottieRef={lottieRef}
-                animationData={thinkingAnimation}
-                loop={true}
-                style={{ width: '300px', height: '300px' }} // 调整动画大小
-              />
-               <div
-               style={{
-                 marginTop: '10px',
-                 fontSize: '20px',
-                 fontWeight: 'bold',
-                 color: '#333',
-               }}
-             >
-               正在思考您的回答...
-             </div>
+            <ClipLoader color="#4CAF50" size={50} />
+            <div style={{ marginTop: '20px', fontSize: '18px', color: '#4CAF50' }}>
+              处理中...
             </div>
-          )}
+          </div>
+        )}
 
-          {/* 动画小人 */}
-          {isPlaying && !isCompleted && (
-            <div
-              style={{
-                position: 'fixed',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                zIndex: 2, // 动画小人在上层
-                pointerEvents: 'none', // 禁止点击
-              }}
-            >
-              <Lottie
-                lottieRef={lottieRef}
-                animationData={talkingAnimation}
-                loop={true}
-                style={{ width: '600px', height: '400px' }} // 调整动画大小
-              />
-               <div
-               style={{
-                 marginTop: '10px',
-                 fontSize: '20px',
-                 fontWeight: 'bold',
-                 color: '#333',
-               }}
-             >
-               面试官正在回答...
-             </div>
+        {/* 播放中动画 */}
+        {isPlaying && (
+          <div
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 10,
+            }}
+          >
+            <div style={{ fontSize: '24px', color: '#4CAF50' }}>
+              面试官正在说话...
             </div>
-          )}
-        </div>
-        </div>
+          </div>
+        )}
+
+        {/* 完成提示 */}
+        {isCompleted && (
+          <div
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 10,
+            }}
+          >
+            <div style={{ fontSize: '24px', color: '#4CAF50' }}>
+              面试已结束，谢谢参与！
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
-export default withAuth(AudioRecorder);
+export default AudioRecorder;

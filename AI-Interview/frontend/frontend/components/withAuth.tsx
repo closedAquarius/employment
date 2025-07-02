@@ -1,59 +1,46 @@
-import React, { useEffect, useState, ComponentType } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
 
-const withAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
+export const config: ViewConfig = { title: '用户认证' };
 
-  return (props: P) => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+// 简单的身份验证高阶组件
+const withAuth = (Component) => {
+  return function WithAuthComponent(props) {
     const navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+      // 检查本地存储中是否有令牌
       try {
         const token = localStorage.getItem('token');
+        
         if (!token) {
-          navigate('/');
+          // 如果没有令牌，重定向到登录页面
+          navigate('/login');
           return;
         }
         
-        // 调用统一认证服务验证令牌
-        fetch('/login/verify-token', {
-                method: 'POST',
-                headers: {
-                    'token': token
-                  },
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.code == 401) {
-              localStorage.removeItem('username');
-              localStorage.removeItem('token');
-              navigate('/');
-            } else {
-              // 从响应中获取用户信息
-              if (data.userInfo) {
-                localStorage.setItem('username', data.userInfo.username);
-                localStorage.setItem('userId', data.userInfo.id);
-              }
-              setIsAuthenticated(true);
-            }
-        })
-        .catch((err) => {
-           localStorage.removeItem('username');
-           localStorage.removeItem('token');
-           navigate('/');
-        });
-      } catch {
-        localStorage.removeItem('username');
-        localStorage.removeItem('token');
-        navigate('/');
+        // 如果有令牌，设置为已认证
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Authentication error:', error);
+        navigate('/login');
+      } finally {
+        setLoading(false);
       }
     }, [navigate]);
 
-    if (isAuthenticated === null) {
+    if (loading) {
       return <div>Loading...</div>;
     }
 
-    return <WrappedComponent {...props} />;
+    if (!isAuthenticated) {
+      return null;
+    }
+
+    return <Component {...props} />;
   };
 };
 

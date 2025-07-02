@@ -116,7 +116,8 @@ return (
                                           'Content-Type': 'application/x-www-form-urlencoded',
                                         },
                                         body: new URLSearchParams({
-                                          name: interView.name,
+                                          name: candidates.name,
+                                          email: candidates.email || ''
                                         }),
                                       })
                                         .then(response => {
@@ -124,9 +125,11 @@ return (
                                             throw new Error('发送邮件失败');
                                           }
                                           console.log('邮件发送成功');
+                                          Notification.show('邮件发送成功', { position: 'bottom-center', duration: 3000 });
                                         })
                                         .catch(error => {
                                           console.error('发送邮件时出错:', error);
+                                          Notification.show('发送邮件失败: ' + error.message, { position: 'bottom-center', duration: 3000, theme: 'error' });
                                         });
                             }}>
                      ✉

@@ -55,4 +55,12 @@ public interface CollegeService {
      * @return 学院信息
      */
     College getCollegeById(Integer collegeId);
-} 
+
+    /**
+     *   获取分页学院列表
+     */
+    List<College> getCollegePage(String name, int offset, int limit);
+
+    int getCollegeCount(String name);
+
+}

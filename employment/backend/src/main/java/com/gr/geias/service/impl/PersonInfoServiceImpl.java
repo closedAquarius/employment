@@ -139,4 +139,26 @@ public class PersonInfoServiceImpl implements PersonInfoService {
             return null;
         }
     }
+
+    @Override
+    public List<PersonInfo> getPersonByCollegeIdPage(Integer collegeId, int offset, int limit) {
+        return personInfoRepository.queryPersonByCollegeIdPage(collegeId, offset, limit);
+    }
+
+    @Override
+    public int getPersonByCollegeIdCount(Integer collegeId) {
+        Integer count = personInfoRepository.queryPersonByCollegeIdCount(collegeId);
+        return count == null ? 0 : count;
+    }
+
+    @Override
+    public List<PersonInfo> getPerson1Page(int offset, int limit) {
+        return personInfoRepository.queryPerson1Page(offset, limit);
+    }
+
+    @Override
+    public int getPerson1Count() {
+        Integer count = personInfoRepository.queryPerson1Count();
+        return count == null ? 0 : count;
+    }
 } 

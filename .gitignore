@@ -50,3 +50,7 @@ Thumbs.db
 # 其他不需要的文件
 vite.generated.ts
 vite.generated.nowts AI-Interview/face-service/AI-Interview-py/
+
+# Documentation files
+AI-Interview-Complete-API-Documentation.md
+AI-Interview-Frontend-Files.md

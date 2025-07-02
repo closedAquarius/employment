@@ -56,4 +56,23 @@ public interface SpecialtyService {
      * @return 人数
      */
     Integer getAndSetSpecialtyCount(Integer specialtyId);
+
+    /**
+     * 分页获取专业列表
+     * @param collegeId
+     * @param name
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<Specialty> getSpecialtyPage(Integer collegeId, String name, int offset, int limit);
+
+    /**
+     *  获取符合条件的专业总数
+     * @param collegeId
+     * @param name
+     * @return
+     */
+    int getSpecialtyCount(Integer collegeId, String name);
+
 } 

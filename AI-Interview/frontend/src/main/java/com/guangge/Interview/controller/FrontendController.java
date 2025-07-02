@@ -28,8 +28,9 @@ public class FrontendController {
     }
 
     @PostMapping(value = "/sendMail")
-    public void sendMail(@RequestParam("name") String name) {
-        this.consumerClient.sendMail(name);
+    public void sendMail(@RequestParam("name") String name,
+                        @RequestParam(value = "email", required = false) String email) {
+        this.consumerClient.sendMail(name, email);
     }
 
     @GetMapping(value = "/findInterView")

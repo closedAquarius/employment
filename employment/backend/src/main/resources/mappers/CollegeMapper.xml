@@ -40,4 +40,29 @@
         where college_id =#{college.collegeId}
     </update>
 
+    <!-- 分页查询学院 -->
+    <select id="queryCollegePage" resultType="com.gr.geias.model.College">
+        SELECT *
+        FROM tb_college
+        <where>
+            <if test="name != null and name != ''">
+                college_name LIKE CONCAT('%', #{name}, '%')
+            </if>
+        </where>
+        ORDER BY college_id ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 查询总数 -->
+    <select id="queryCollegeCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_college
+        <where>
+            <if test="name != null and name != ''">
+                college_name LIKE CONCAT('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+
+
 </mapper> 

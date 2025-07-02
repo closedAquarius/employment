@@ -22,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .csrf().disable()
             .authorizeRequests()
-                .antMatchers("/auth/login", "/auth/register", "/auth/health").permitAll()
+                .antMatchers("/auth/login", "/auth/register", "/auth/health", "/auth/validate", "/auth/verifyToken").permitAll()
                 .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

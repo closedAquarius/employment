@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -107,5 +108,15 @@ public class ClassGradeServiceImpl implements ClassGradeService {
         } catch (Exception e) {
             throw new RuntimeException("删除记录失败", e);
         }
+    }
+
+    @Override
+    public List<ClassGrade> getClassGradePage(Integer specialtyId, int offset, int limit) {
+        return classGradeRepository.queryClassGradePage(specialtyId, offset, limit);
+    }
+
+    @Override
+    public int getClassGradeCount(Integer specialtyId) {
+        return classGradeRepository.queryClassGradeCount(specialtyId);
     }
 } 

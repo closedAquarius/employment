@@ -71,4 +71,27 @@ public interface SpecialtyRepository {
      * @return
      */
     Integer queryCountSpecialty(@Param("specialtyId")Integer specialtyId);
-} 
+
+    /**
+     *
+     * @param collegeId
+     * @param name
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<Specialty> querySpecialtyPage(@Param("collegeId") Integer collegeId,
+                                       @Param("name") String name,
+                                       @Param("offset") int offset,
+                                       @Param("limit") int limit);
+
+    /**
+     *
+     * @param collegeId
+     * @param name
+     * @return
+     */
+    int querySpecialtyCount(@Param("collegeId") Integer collegeId,
+                            @Param("name") String name);
+
+}

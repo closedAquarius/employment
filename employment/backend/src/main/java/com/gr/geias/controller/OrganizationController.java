@@ -1,3 +1,4 @@
+
 package com.gr.geias.controller;
 
 import com.gr.geias.dto.ClassGradeAndSpecialty;
@@ -9,7 +10,8 @@ import com.gr.geias.model.PersonInfo;
 import com.gr.geias.model.Specialty;
 import com.gr.geias.enums.EnableStatusEnums;
 import com.gr.geias.service.*;
-import com.gr.geias.util.JwtUtil;
+import com.gr.geias.util.PageMath;
+import com.gr.geias.util.TokenUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -37,25 +39,38 @@ public class OrganizationController {
      * @return
      */
     @RequestMapping(value = "/getcollegelist", method = RequestMethod.GET)
-    public Map<String, Object> getCollegeList(@RequestParam(value = "name", required = false) String name) {
-        Map<String, Object> map = new HashMap<String, Object>(3);
-        List<College> college = collegeService.getCollege(null);
-        List<CollegeAndPerson> list = new ArrayList<CollegeAndPerson>();
-        for (int i = 0; i < college.size(); i++) {
-            CollegeAndPerson collegeAndPerson = new CollegeAndPerson();
-            College college1 = college.get(i);
-            collegeAndPerson.setCollege(college1);
-            PersonInfo personById = personInfoService.getPersonById(college1.getAdminId());
-            collegeAndPerson.setPersonInfo(personById);
-            Integer integer = organizationNumService.getcollegeCount(college1.getCollegeId());
-            collegeAndPerson.setSum(integer);
-            list.add(collegeAndPerson);
+    public Map<String, Object> getCollegeList(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "pageSize", defaultValue = "8") Integer pageSize,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum){
+        Map<String, Object> map = new HashMap<String, Object>(4);
+        try {
+            int rowIndex = PageMath.pageNumtoRowIndex(pageNum, pageSize);
+            // 获取全部学院
+            List<College> collegePageList = collegeService.getCollegePage(name, rowIndex, pageSize);
+            int total = collegeService.getCollegeCount(name); // 总数
+
+            List<CollegeAndPerson> list = new ArrayList<>();
+            for (College college : collegePageList) {
+                CollegeAndPerson collegeAndPerson = new CollegeAndPerson();
+                collegeAndPerson.setCollege(college);
+                PersonInfo personById = personInfoService.getPersonById(college.getAdminId());
+                collegeAndPerson.setPersonInfo(personById);
+                Integer count = organizationNumService.getcollegeCount(college.getCollegeId());
+                collegeAndPerson.setSum(count);
+                list.add(collegeAndPerson);
+            }
+
+            map.put("success", true);
+            map.put("list", list);
+            map.put("total", total);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", "分页查询出错: " + e.getMessage());
         }
-        map.put("success", true);
-        map.put("List", list);
+
         return map;
     }
-
     /**
      * 查询所有空闲的学院管理员 enable_Status=1 and college_id = null 权限 2
      *
@@ -169,7 +184,7 @@ public class OrganizationController {
     @RequestMapping(value = "/getcollegeinit", method = RequestMethod.GET)
     public Map<String, Object> getCollegeinit(@RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<String, Object>(3);
-        Claims claims = JwtUtil.parseAccessToken(token);
+        Claims claims = TokenUtil.extractClaims(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         List<College> college = null;
@@ -193,49 +208,44 @@ public class OrganizationController {
      * @return
      */
     @RequestMapping(value = "/getspecialty", method = RequestMethod.GET)
-    public Map<String, Object> getSpecialty(@RequestParam(value = "collegeId", required = false) Integer collegeId,
-                                            @RequestHeader("Authorization") String token) {
-        Map<String, Object> map = new HashMap<>(3);
+    public Map<String, Object> getSpecialty(
+            @RequestParam(value = "collegeId", required = false) Integer collegeId,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "8") Integer pageSize,
+            @RequestHeader("Authorization") String token) {
+
+        Map<String, Object> map = new HashMap<>(4);
+        int offset = (pageNum - 1) * pageSize;
 
         try {
-            Claims claims = JwtUtil.parseAccessToken(token);
+            Claims claims = TokenUtil.extractClaims(token);
             Integer userId = (Integer) claims.get("userId");
             PersonInfo person = personInfoService.getPersonById(userId);
 
-            List<Specialty> specialtyList = null;
-            College college = null;
-
             EnableStatusEnums role = EnableStatusEnums.stateOf(person.getEnableStatus());
-
-            if (role == EnableStatusEnums.ADMINISTRATOR) {
-                // 管理员可以查所有学院
-                if (collegeId == null) {
-                    List<College> collegeList = collegeService.getCollege(null);
-                    if (collegeList == null || collegeList.isEmpty()) {
-                        map.put("success", false);
-                        map.put("errMsg", "没有学院数据");
-                        return map;
-                    }
-                    college = collegeList.get(0);
-                } else {
-                    college = collegeService.getCollegeById(collegeId);
-                }
-                specialtyList = specialtyService.getSpecialty(college.getCollegeId());
-            } else {
-                // 其它角色无权访问
+            if (role != EnableStatusEnums.ADMINISTRATOR) {
                 map.put("success", false);
                 map.put("errMsg", "无权限访问该接口");
                 return map;
             }
+
+            // 查专业分页
+            List<Specialty> specialtyList = specialtyService.getSpecialtyPage(collegeId, name, offset, pageSize);
 
             // 拼装结果
             List<SpecialtyAndCollege> list = new ArrayList<>();
             for (Specialty specialty : specialtyList) {
                 SpecialtyAndCollege sac = new SpecialtyAndCollege();
                 sac.setSpecialty(specialty);
+
+                // 根据专业的 collegeId 重新获取学院信息
+                College college = collegeService.getCollegeById(specialty.getCollegeId());
                 sac.setCollege(college);
+
                 Integer count = organizationNumService.getspecialtyCount(specialty.getSpecialtyId());
                 sac.setSum(count);
+
                 list.add(sac);
             }
 
@@ -243,7 +253,7 @@ public class OrganizationController {
             map.put("List", list);
         } catch (Exception e) {
             map.put("success", false);
-            map.put("errMsg", "Token无效或查询出错");
+            map.put("errMsg", "Token无效或查询出错: " + e.getMessage());
         }
 
         return map;
@@ -266,7 +276,7 @@ public class OrganizationController {
             map.put("errMsg", "输入信息错误！");
             return map;
         }
-        Claims claims = JwtUtil.parseAccessToken(token);
+        Claims claims = TokenUtil.extractClaims(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         Specialty specialty = new Specialty();
@@ -368,15 +378,21 @@ public class OrganizationController {
      * @return
      */
     @RequestMapping(value = "/getclassgrade", method = RequestMethod.GET)
-    public Map<String, Object> getClassGrade(@RequestParam("specialtyId") Integer specialtyId) {
+    public Map<String, Object> getClassGrade(
+            @RequestParam("specialtyId") Integer specialtyId,
+            @RequestParam(value = "pageSize", defaultValue = "8") Integer pageSize,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
         Map<String, Object> map = new HashMap<String, Object>(3);
         try {
             Specialty specialtyById = specialtyService.getSpecialtyById(specialtyId);
-            List<ClassGrade> classGradeList = classGradeService.getClassGrade(specialtyId, null);
+
+            int offset = (pageNum - 1) * pageSize;
+
+            List<ClassGrade> classGradeList = classGradeService.getClassGradePage(specialtyId,  offset, pageSize);
+            int total = classGradeService.getClassGradeCount(specialtyId);
             List<ClassGradeAndSpecialty> list = new ArrayList<ClassGradeAndSpecialty>();
-            for (int i = 0; i < classGradeList.size(); i++) {
+            for (ClassGrade classGrade : classGradeList) {
                 ClassGradeAndSpecialty classGradeAndSpecialty = new ClassGradeAndSpecialty();
-                ClassGrade classGrade = classGradeList.get(i);
                 classGradeAndSpecialty.setClassGrade(classGrade);
                 classGradeAndSpecialty.setSpecialty(specialtyById);
                 Integer classGradeCount = organizationNumService.getClassGradeCount(classGrade.getClassId());
@@ -387,12 +403,12 @@ public class OrganizationController {
             }
             map.put("success", true);
             map.put("List", list);
-            return map;
+            map.put("total", total);
         } catch (Exception e) {
             map.put("success", false);
             map.put("errMsg", "获取班级列表失败");
-            return map;
         }
+        return map;
     }
 
     /**
@@ -404,7 +420,7 @@ public class OrganizationController {
     @RequestMapping(value = "/getpersoninit", method = RequestMethod.GET)
     public Map<String, Object> getpersoninit(@RequestParam("collegeId") Integer collegeId, @RequestHeader("Authorization") String token) {
         Map<String, Object> map = new HashMap<String, Object>(3);
-        Claims claims = JwtUtil.parseAccessToken(token);
+        Claims claims = TokenUtil.extractClaims(token);
         Integer userId = (Integer) claims.get("userId");
         PersonInfo person = personInfoService.getPersonById(userId);
         List<PersonInfo> personByCollegeId = null;
@@ -557,16 +573,20 @@ public class OrganizationController {
      */
     @RequestMapping(value = "/getperson_0", method = RequestMethod.GET)
     public Map<String, Object> getperson_0(@RequestParam(value = "collegeId", required = false) Integer collegeId,
+                                           @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                                           @RequestParam(value = "pageSize", defaultValue = "8") Integer pageSize,
                                            @RequestHeader("Authorization") String token) {
 
         Map<String, Object> map = new HashMap<>(3);
         try {
-            Claims claims = JwtUtil.parseAccessToken(token);
+            Claims claims = TokenUtil.extractClaims(token);
             Integer userId = (Integer) claims.get("userId");
             PersonInfo person = personInfoService.getPersonById(userId);
 
             List<PersonInfo> personInfoList = null;
             College college = null;
+
+            int offset = (pageNum - 1) * pageSize;
 
 //            if (person.getEnableStatus() == EnableStatusEnums.PREXY.getState()) {
 //                // 院长只能查看自己学院的人
@@ -579,7 +599,7 @@ public class OrganizationController {
 //                }
 //                college = collegeList.get(0);
 //            } else
-                if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
+            if (person.getEnableStatus() == EnableStatusEnums.ADMINISTRATOR.getState()) {
                 // 管理员可以查看任意学院
                 if (collegeId == null) {
                     List<College> collegeList = collegeService.getCollege(null);
@@ -599,10 +619,14 @@ public class OrganizationController {
                 map.put("errMsg", "无权限访问");
                 return map;
             }
+            // 查询总数
+            int total = personInfoService.getPersonByCollegeIdCount(college == null ? collegeId : college.getCollegeId());
+
 
             map.put("success", true);
             map.put("personInfoList", personInfoList);
             map.put("college", college);
+            map.put("total", total);
             return map;
 
         } catch (Exception e) {
@@ -745,27 +769,44 @@ public class OrganizationController {
      *
      * @return
      */
-    @RequestMapping("/getperson_1")
-    public Map<String, Object> getperson_1() {
-        Map<String, Object> map = new HashMap<String, Object>(3);
-        List<PersonInfo> personInfoList = personInfoService.getPerson1();
-        List<CollegeAndPerson> list = new ArrayList<CollegeAndPerson>();
-        for (int i = 0; i < personInfoList.size(); i++) {
-            CollegeAndPerson collegeAndPerson = new CollegeAndPerson();
-            PersonInfo personInfo = personInfoList.get(i);
-            collegeAndPerson.setPersonInfo(personInfo);
-            List<College> collegeList = collegeService.getCollege(personInfo.getPersonId());
-            College college = null;
-            if (collegeList.size() != 0) {
-                college = collegeList.get(0);
+    @RequestMapping(value = "/getperson_1", method = RequestMethod.GET)
+    public Map<String, Object> getperson_1(
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "8") Integer pageSize) {
+        Map<String, Object> map = new HashMap<>(4);
+
+        try {
+            int offset = (pageNum - 1) * pageSize;
+
+            List<PersonInfo> personInfoList = personInfoService.getPerson1Page(offset, pageSize);
+
+            List<CollegeAndPerson> list = new ArrayList<>();
+            for (PersonInfo personInfo : personInfoList) {
+                CollegeAndPerson collegeAndPerson = new CollegeAndPerson();
+                collegeAndPerson.setPersonInfo(personInfo);
+                List<College> collegeList = collegeService.getCollege(personInfo.getPersonId());
+                College college = null;
+                if (!collegeList.isEmpty()) {
+                    college = collegeList.get(0);
+                }
+                collegeAndPerson.setCollege(college);
+                list.add(collegeAndPerson);
             }
-            collegeAndPerson.setCollege(college);
-            list.add(collegeAndPerson);
+
+            // 查询总数
+            int total = personInfoService.getPerson1Count();
+
+            map.put("success", true);
+            map.put("List", list);
+            map.put("total", total);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", "获取数据失败");
         }
-        map.put("success", true);
-        map.put("List", list);
+
         return map;
     }
+
 
     /**
      * 添加学院管理 权限2
@@ -834,10 +875,10 @@ public class OrganizationController {
             }
             return map;
         }catch (Exception e){
-        map.put("success", false);
-        map.put("errMsg", "登录名重复,请修改后重试");
-        return map;
-    }
+            map.put("success", false);
+            map.put("errMsg", "登录名重复,请修改后重试");
+            return map;
+        }
     }
 
     /**

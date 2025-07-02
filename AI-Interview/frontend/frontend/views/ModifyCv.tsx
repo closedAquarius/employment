@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
 import { Document, Page, pdfjs } from 'react-pdf';
-import withAuth from 'Frontend/components/withAuth';
-import Lottie from 'lottie-react';
-import rewriter from 'Frontend/assets/animations/resumeRewriter.json';
+import withAuth from '../components/withAuth';
+import { ProgressBar } from '@vaadin/react-components/ProgressBar.js';
 import { TextArea } from '@vaadin/react-components/TextArea.js';
 import { Upload } from '@vaadin/react-components/Upload.js';
 import { Notification } from '@vaadin/react-components/Notification.js';
@@ -218,10 +217,10 @@ function ModifyCv() {
               textAlign: 'center',
             }}
           >
-            <Lottie
-              animationData={rewriter}
-              loop={true}
-              style={{ width: '300px', height: '300px' }}
+            <ProgressBar
+              value={0}
+              max={100}
+              style={{ width: '300px', height: '20px' }}
             />
             <p style={{ marginTop: '10px', fontSize: '18px', color: '#333' }}>正在修改简历，请稍候...</p>
           </div>

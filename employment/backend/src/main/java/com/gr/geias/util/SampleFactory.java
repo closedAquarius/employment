@@ -7,9 +7,9 @@ import com.baidu.aip.face.AipFace;
  */
 public class SampleFactory {
     // 设置APPID/AK/SK
-    private static final String APP_ID = "你的APPID";
-    private static final String API_KEY = "你的API_KEY";
-    private static final String SECRET_KEY = "你的SECRET_KEY";
+    private static final String APP_ID = "119395855";
+    private static final String API_KEY = "n76ryUKwPYaYAVC1GOA7Bo9x";
+    private static final String SECRET_KEY = "bzEd6xW2EyGsBv4j7kSWfMwEXenrH2vH";
     
     private static AipFace aipFace;
 

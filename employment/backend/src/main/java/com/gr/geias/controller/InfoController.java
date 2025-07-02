@@ -49,13 +49,20 @@ public class InfoController {
     }
 
     @RequestMapping("/getclassgrade")
-    public Map<String, Object> getClassGrade(@RequestParam("specialtyId") Integer specialtyId) {
-        Map<String, Object> map = new HashMap<String, Object>(3);
-        List<ClassGrade> classGrade = classGradeService.getClassGrade(specialtyId, null);
-        map.put("success", true);
-        map.put("classGradeList", classGrade);
+    public Map<String, Object> getClassGrade(
+            @RequestParam(value = "specialtyId", required = false) Integer specialtyId) {
+        Map<String, Object> map = new HashMap<>(3);
+        try {
+            List<ClassGrade> classGrade = classGradeService.getClassGrade(specialtyId, null);
+            map.put("success", true);
+            map.put("classGradeList", classGrade);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", "获取班级列表失败");
+        }
         return map;
     }
+
 
     @RequestMapping("/getinit")
     public Map<String, Object> getinit() {

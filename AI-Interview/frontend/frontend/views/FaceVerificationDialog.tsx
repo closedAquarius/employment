@@ -2,6 +2,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import { Dialog } from '@vaadin/react-components/Dialog';
 import { ClipLoader } from 'react-spinners';
+import { Notification } from '@vaadin/react-components/Notification.js';
+import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
 
 export const config: ViewConfig = {
   menu: {
@@ -17,8 +19,18 @@ const FaceVerificationDialog = ({ onVerificationSuccess }) => {
   const [message, setMessage] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
   const [attempts, setAttempts] = useState(0);
+  const [userId, setUserId] = useState('');
 
   useEffect(() => {
+    // 获取用户ID
+    const storedUserId = localStorage.getItem('userId');
+    if (storedUserId) {
+      setUserId(storedUserId);
+    } else {
+      setMessage('未找到用户ID，请先登录');
+      Notification.show('未找到用户ID，请先登录', { theme: "error", duration: 3000 });
+    }
+
     // 清除消息
     const timer = setTimeout(() => {
       if (message) {
@@ -29,17 +41,30 @@ const FaceVerificationDialog = ({ onVerificationSuccess }) => {
   }, [message]);
 
   const registerFace = async (imageSrc) => {
+    if (!userId) {
+      setMessage('未找到用户ID，请先登录');
+      return false;
+    }
+
     setIsRegistering(true);
     setMessage('正在注册人脸...');
     try {
+      console.log(`Registering face for userId: ${userId}`);
       const response = await fetch(`/api/register-face`, {
         method: 'POST',
-        body: JSON.stringify({ image: imageSrc, userId: localStorage.getItem('userId') }),
+        body: JSON.stringify({ image: imageSrc, userId: userId }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
       const data = await response.json();
+      console.log("注册结果:", data);
+      
       if (data.status === '0') {
         setMessage('人脸注册成功，请再次拍照进行验证');
         return true;
@@ -48,6 +73,7 @@ const FaceVerificationDialog = ({ onVerificationSuccess }) => {
         return false;
       }
     } catch (error) {
+      console.error('Face registration error:', error);
       setMessage(`人脸注册出错: ${error.message}`);
       return false;
     } finally {
@@ -56,28 +82,42 @@ const FaceVerificationDialog = ({ onVerificationSuccess }) => {
   };
 
   const capture = async () => {
+    if (!userId) {
+      setMessage('未找到用户ID，请先登录');
+      return;
+    }
+
     const imageSrc = webcamRef.current.getScreenshot();
+    if (!imageSrc) {
+      setMessage('无法获取摄像头图像，请检查摄像头权限');
+      return;
+    }
+    
     setImage(imageSrc);
     setIsLoading(true);
     setMessage('正在验证...');
     
     try {
-      console.info("userid:", localStorage.getItem('userId'));
+      console.log(`Verifying face for userId: ${userId}`);
       const response = await fetch(`/api/verify-face`, {
-      method: 'POST',
-      body: JSON.stringify({ image: imageSrc, userId: localStorage.getItem('userId') }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+        method: 'POST',
+        body: JSON.stringify({ image: imageSrc, userId: userId }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
       
       const data = await response.json();
       console.log("验证结果:", data);
       
       if (data.status === '0') {
         setMessage('验证成功');
-          onVerificationSuccess();
-          setIsDialogOpen(false);
+        onVerificationSuccess();
+        setIsDialogOpen(false);
       } else if (data.message && data.message.includes('No registered face found')) {
         // 如果没有注册过人脸，自动注册
         setMessage('未找到注册的人脸，正在自动注册...');
@@ -94,7 +134,7 @@ const FaceVerificationDialog = ({ onVerificationSuccess }) => {
       setMessage(`验证出错: ${error.message}`);
       console.error('Face verification error:', error);
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -165,7 +205,7 @@ const FaceVerificationDialog = ({ onVerificationSuccess }) => {
             cursor: 'pointer',
             transition: 'background-color 0.3s ease',
           }}
-          disabled={isLoading || isRegistering}
+          disabled={isLoading || isRegistering || !userId}
         >
           {isLoading ? '验证中...' : isRegistering ? '注册中...' : '拍照'}
         </button>

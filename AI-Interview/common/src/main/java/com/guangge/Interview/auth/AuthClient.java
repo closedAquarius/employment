@@ -1,5 +1,7 @@
 package com.guangge.Interview.auth;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,6 +16,7 @@ import java.util.Map;
  */
 public class AuthClient {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthClient.class);
     private final RestTemplate restTemplate;
     private final String authServiceUrl;
 
@@ -34,6 +37,7 @@ public class AuthClient {
             HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
             
         try {
+            logger.debug("Sending token validation request to {}", authServiceUrl + "/auth/validate");
             ResponseEntity<Map> response = restTemplate.exchange(
                     authServiceUrl + "/auth/validate",
                 HttpMethod.GET, 
@@ -42,11 +46,14 @@ public class AuthClient {
             );
             
             if (response.getStatusCode().is2xxSuccessful()) {
+                logger.debug("Token validation successful");
                 return response.getBody();
+            } else {
+                logger.warn("Token validation failed with status: {}", response.getStatusCode());
             }
         } catch (Exception e) {
             // 验证失败，记录日志
-            System.err.println("Token validation failed: " + e.getMessage());
+            logger.error("Token validation failed: {}", e.getMessage(), e);
         }
         
         return null;
@@ -64,6 +71,7 @@ public class AuthClient {
             loginRequest.put("password", password);
             
         try {
+            logger.debug("Sending login request for user: {}", username);
             ResponseEntity<Map> response = restTemplate.postForEntity(
                     authServiceUrl + "/auth/login",
                 loginRequest, 
@@ -71,11 +79,14 @@ public class AuthClient {
             );
             
             if (response.getStatusCode().is2xxSuccessful()) {
+                logger.debug("Login successful for user: {}", username);
                 return response.getBody();
+            } else {
+                logger.warn("Login failed for user: {} with status: {}", username, response.getStatusCode());
             }
         } catch (Exception e) {
             // 登录失败，记录日志
-            System.err.println("Login failed: " + e.getMessage());
+            logger.error("Login failed for user {}: {}", username, e.getMessage(), e);
         }
         
         return null;
@@ -93,6 +104,7 @@ public class AuthClient {
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
         
         try {
+            logger.debug("Sending token refresh request");
             ResponseEntity<Map> response = restTemplate.exchange(
                     authServiceUrl + "/auth/refresh",
                     HttpMethod.GET,
@@ -101,12 +113,15 @@ public class AuthClient {
             );
             
             if (response.getStatusCode().is2xxSuccessful()) {
+                logger.debug("Token refresh successful");
                 Map<String, String> responseBody = response.getBody();
                 return responseBody != null ? responseBody.get("token") : null;
+            } else {
+                logger.warn("Token refresh failed with status: {}", response.getStatusCode());
             }
         } catch (Exception e) {
             // 刷新失败，记录日志
-            System.err.println("Token refresh failed: " + e.getMessage());
+            logger.error("Token refresh failed: {}", e.getMessage(), e);
         }
         
         return null;
@@ -119,6 +134,7 @@ public class AuthClient {
      */
     public Map<String, Object> syncUser(Map<String, Object> user) {
         try {
+            logger.debug("Syncing user to auth service: {}", user.get("username"));
             ResponseEntity<Map> response = restTemplate.postForEntity(
                     authServiceUrl + "/auth/sync-user?sourceSystem=ai-interview",
                     user,
@@ -126,15 +142,18 @@ public class AuthClient {
             );
             
             if (response.getStatusCode().is2xxSuccessful()) {
+                logger.debug("User sync successful for: {}", user.get("username"));
                 return response.getBody();
+            } else {
+                logger.warn("User sync failed for: {} with status: {}", user.get("username"), response.getStatusCode());
             }
         } catch (Exception e) {
             // 同步失败，记录日志
-            System.err.println("User sync failed: " + e.getMessage());
+            logger.error("User sync failed for {}: {}", user.get("username"), e.getMessage(), e);
         }
         
         return null;
-        }
+    }
     
     /**
      * 同步用户信息到认证服务

@@ -11,6 +11,21 @@ server:
 spring:
   application:
     name: frontend
+  web:
+    resources:
+      static-locations:
+        - file:./static/
+        - file:./external/static/
+        - classpath:/static/
+      cache:
+        period: 0  # 开发阶段禁用缓存
+  mvc:
+    static-path-pattern: /**
+
+# 应用自定义配置
+app:
+  image:
+    directory: ${user.dir}/frontend/static/images
 
 # Consumer服务端点
 consumer-service-endpoint: http://localhost:8088
@@ -18,10 +33,10 @@ consumer-service-endpoint: http://localhost:8088
 # 人脸识别服务配置
 face-service:
   url: http://localhost:5001
-  
-# Python Azure OpenAI服务配置
+
+# Python语音服务配置
 python:
   azure:
     openai:
       service:
-        url: http://localhost:7960
+        url: http://localhost:7860

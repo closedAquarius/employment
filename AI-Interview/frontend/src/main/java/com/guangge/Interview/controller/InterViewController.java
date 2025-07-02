@@ -33,14 +33,22 @@ public class InterViewController {
     }
 
     @GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> chat(@RequestParam("chatId") String chatId, @RequestParam("userMessage") String userMessage)  {
-        return this.consumerService.interViewChat(chatId,userMessage);
+    public Flux<String> chat(@RequestParam("chatId") String chatId, 
+                             @RequestParam("userMessage") String userMessage,
+                             @RequestParam(value = "token", required = false) String token)  {
+        // 如果提供了token，加上Bearer前缀
+        String authToken = token != null ? ("Bearer " + token) : null;
+        return this.consumerService.interViewChat(chatId, userMessage, authToken);
     }
 
     @PostMapping(value="/face2faceChat", produces = "audio/wav")
-    public ResponseEntity<byte[]> face2faceChat(@RequestParam("chatId") String chatId,@RequestParam(value ="userName", required = false) String userName,
-                                                @RequestParam(value = "audio", required = false) MultipartFile audio) {
-        return this.consumerClient.face2faceChat(chatId,userName,audio);
+    public ResponseEntity<byte[]> face2faceChat(@RequestParam("chatId") String chatId,
+                                               @RequestParam(value ="userName", required = false) String userName,
+                                               @RequestParam(value = "userId", required = false) String userId,
+                                               @RequestParam(value = "audio", required = false) MultipartFile audio) {
+        logger.info("Received face2face request: chatId={}, userName={}, userId={}, audio={}", 
+                    chatId, userName, userId, (audio != null ? "present" : "null"));
+        return this.consumerClient.face2faceChat(chatId, userName, audio);
     }
 
     @GetMapping(value="/welcomemp3", produces = "audio/mp3")
@@ -73,6 +81,16 @@ public class InterViewController {
         logger.debug("Output: " + request.getOutput());
         logger.debug("Code: " + request.getCode());
 
+        return this.consumerService.checkProgram(request);
+    }
+    
+    @PostMapping(value = "/checkProgram", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> checkProgramPost(@RequestBody CheckProgramRequest request) {
+        logger.debug("POST Question: " + request.getQuestion());
+        logger.debug("POST Input: " + request.getInput());
+        logger.debug("POST Output: " + request.getOutput());
+        logger.debug("POST Code: " + request.getCode());
+        
         return this.consumerService.checkProgram(request);
     }
 }
