@@ -51,6 +51,17 @@ public interface PersonInfoService {
     Boolean insertPerson(PersonInfo personInfo);
 
     /**
+     *
+     * @param offset
+     * @param pageSize
+     * @return
+     */
+    List<PersonInfo> getAllTeachers(int offset, int pageSize);
+
+    int getAllTeachersCount();
+
+
+    /**
      * 修改人员信息
      * @param personInfo 人员信息
      * @return 是否成功

@@ -10,10 +10,10 @@
             </if>
         </where>
     </select>
-    <update id="addCollege" parameterType="com.gr.geias.model.College" useGeneratedKeys="true" keyColumn="college_id"
+    <insert id="addCollege" parameterType="com.gr.geias.model.College" useGeneratedKeys="true" keyColumn="college_id"
             keyProperty="collegeId">
         insert into tb_college(college_name,create_time,admin_id) values(#{college.collegeName},#{college.createTime},#{college.adminId})
-    </update>
+    </insert>
 
     <select id="quereyCollegeCount" resultType="int">
     select

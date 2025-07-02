@@ -11,11 +11,11 @@
     </select>
 
 
-    <update id="insertSpecialty" parameterType="com.gr.geias.model.Specialty" useGeneratedKeys="true"
+    <insert id="insertSpecialty" parameterType="com.gr.geias.model.Specialty" useGeneratedKeys="true"
             keyColumn="specialty_id"
             keyProperty="specialtyId">
         insert into tb_specialty(specialty_name,create_time,college_id) values(#{specialty.specialtyName},#{specialty.createTime},#{specialty.collegeId})
-    </update>
+    </insert>
 
     <select id="queryCountSpecialty" resultType="int">
 select

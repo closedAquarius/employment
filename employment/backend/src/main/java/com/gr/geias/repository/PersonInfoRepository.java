@@ -123,4 +123,9 @@ public interface PersonInfoRepository {
     List<PersonInfo> queryPerson1Page(int offset, int limit);
 
     Integer queryPerson1Count();
+
+    List<PersonInfo> selectAllTeachers(@Param("offset") int offset, @Param("pageSize") int pageSize);
+
+    int countAllTeachers();
+
 } 
