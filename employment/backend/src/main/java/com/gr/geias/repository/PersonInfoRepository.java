@@ -58,7 +58,13 @@ public interface PersonInfoRepository {
      * @param collegeId 学院ID
      * @return 教师列表
      */
-    @Select("select * from tb_person_info where enable_Status=1 and college_id=#{collegeId}")
+    @Select("SELECT \n" +
+            "        p.*, \n" +
+            "        c.college_name AS collegeName\n" +
+            "    FROM tb_person_info p\n" +
+            "    LEFT JOIN tb_college c ON p.college_id = c.college_id\n" +
+            "    WHERE p.enable_status = 1\n"+
+            "    AND p.college_id = #{collegeId}"  )
     List<PersonInfo> queryPersonByCollegeId(@Param("collegeId") Integer collegeId);
 
     /**
