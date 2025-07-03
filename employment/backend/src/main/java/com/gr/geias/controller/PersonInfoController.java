@@ -60,6 +60,7 @@ public class PersonInfoController {
                 String refreshToken = JwtUtil.generateRefreshToken(login.getPersonId(), login.getUsername(),login.getEnableStatus());
                 Date expires = new Date(System.currentTimeMillis() + 1000 * 60 * 30); // 30分钟
                 Map<String, Object> data = new HashMap<>();
+                data.put("id", login.getPersonId());
                 data.put("avatar", ""); // 可根据你的字段改
                 data.put("username", login.getUsername());
                 data.put("nickname", login.getPersonName());
