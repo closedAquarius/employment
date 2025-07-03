@@ -34,6 +34,15 @@ public class RouterServiceImpl implements RouterService {
     }
 
     @Override
+    public List<Map<String, Object>> getHRRoutes() {
+        List<Map<String, Object>> routes = new ArrayList<>();
+        routes.add(createCompanyInfoRouter());      // 企业信息首页
+        routes.add(createJobFairRouter());  // 申请宣讲招聘会
+        routes.add(createJobRouter()); // 发布岗位
+        return routes;
+    }
+
+    @Override
     public List<Map<String, Object>> getRoutesByRole(String role) {
         this.role = role;
         switch (role) {
@@ -43,6 +52,8 @@ public class RouterServiceImpl implements RouterService {
                 return getTeacherRoutes();
             case "2":
                 return getAdminRoutes();
+            case "3":
+                return getHRRoutes();
             default:
                 return new ArrayList<>();
         }
@@ -343,6 +354,16 @@ public class RouterServiceImpl implements RouterService {
         children.add(matchChild);
 
         // AI面试
+        Map<String, Object> writeChild = new HashMap<>();
+        writeChild.put("path", "/interview/write");
+        writeChild.put("name", "write");
+        writeChild.put("component", "interview/write");
+        Map<String, Object> writeMeta = new HashMap<>();
+        writeMeta.put("title", "AI笔试");
+        writeChild.put("meta", writeMeta);
+        children.add(writeChild);
+
+        // AI面试
         Map<String, Object> aiChild = new HashMap<>();
         aiChild.put("path", "/interview/ai");
         aiChild.put("name", "ai");
@@ -365,4 +386,107 @@ public class RouterServiceImpl implements RouterService {
         organizationRouter.put("children", children);
         return organizationRouter;
     }
+
+    /**
+     * 创建企业信息路由
+     */
+    private Map<String, Object> createCompanyInfoRouter() {
+        Map<String, Object> homeRouter = new HashMap<>();
+        homeRouter.put("path", "/companyInfo");
+        homeRouter.put("redirect", "/companyInfo/index");
+
+        Map<String, Object> meta = new HashMap<>();
+        meta.put("icon", "custom/sv");
+        meta.put("title", "企业信息");
+        meta.put("rank", 1);
+        homeRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+        Map<String, Object> welcomeChild = new HashMap<>();
+        welcomeChild.put("path", "/companyInfo/index");
+        welcomeChild.put("name", "CompanyInfo");
+        welcomeChild.put("component", "companyInfo/index");
+
+
+        Map<String, Object> welcomeMeta = new HashMap<>();
+        welcomeMeta.put("title", "企业信息");
+        welcomeChild.put("meta", welcomeMeta);
+
+        children.add(welcomeChild);
+        homeRouter.put("children", children);
+
+        return homeRouter;
+    }
+
+    /**
+     * 创建招聘发布路由
+     */
+    private Map<String, Object> createJobFairRouter() {
+        Map<String, Object> staffRouter = new HashMap<>();
+        staffRouter.put("path", "/holdJobFair");
+        staffRouter.put("redirect", "/holdJobFair/presentation");
+
+        Map<String, Object> meta = new HashMap<>();
+        meta.put("icon", "custom/jobFair");
+        meta.put("title", "宣讲招聘");
+        meta.put("rank", 4);
+        staffRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+
+        // 参加宣讲会管理
+        Map<String, Object> presentationChild = new HashMap<>();
+        presentationChild.put("path", "/holdJobFair/presentation");
+        presentationChild.put("name", "holdPresentation");
+        presentationChild.put("component", "holdJobFair/presentation");
+        Map<String, Object> counselorMeta = new HashMap<>();
+        counselorMeta.put("title", "申请宣讲会");
+        presentationChild.put("meta", counselorMeta);
+        children.add(presentationChild);
+
+        // 参加招聘会管理
+        Map<String, Object> jobFairChild = new HashMap<>();
+        jobFairChild.put("path", "/holdJobFair/jobFair");
+        jobFairChild.put("name", "holdJobFair");
+        jobFairChild.put("component", "holdJobFair/jobFair");
+        Map<String, Object> administratorMeta = new HashMap<>();
+        administratorMeta.put("title", "发布招聘会");
+        jobFairChild.put("meta", administratorMeta);
+        children.add(jobFairChild);
+
+        staffRouter.put("children", children);
+        return staffRouter;
+    }
+
+    /**
+     * 创建发布岗位路由
+     */
+    private Map<String, Object> createJobRouter() {
+        Map<String, Object> homeRouter = new HashMap<>();
+        homeRouter.put("path", "/job");
+        homeRouter.put("redirect", "/job/index");
+
+        Map<String, Object> meta = new HashMap<>();
+        meta.put("icon", "custom/sv");
+        meta.put("title", "发布岗位");
+        meta.put("rank", 5);
+        homeRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+        Map<String, Object> welcomeChild = new HashMap<>();
+        welcomeChild.put("path", "/job/index");
+        welcomeChild.put("name", "Job");
+        welcomeChild.put("component", "job/index");
+
+
+        Map<String, Object> welcomeMeta = new HashMap<>();
+        welcomeMeta.put("title", "发布岗位");
+        welcomeChild.put("meta", welcomeMeta);
+
+        children.add(welcomeChild);
+        homeRouter.put("children", children);
+
+        return homeRouter;
+    }
+
 }
