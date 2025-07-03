@@ -32,7 +32,7 @@
         },
         "flowLayout": false,
         "params": {},
-        "title": "用户认证"
+        "title": "with Auth"
       },
       {
         "route": "face2facetest",
@@ -46,9 +46,9 @@
       },
       {
         "route": "FaceRegisterDialog",
+        "title": "人脸注册",
         "flowLayout": false,
-        "params": {},
-        "title": "人脸注册"
+        "params": {}
       },
       {
         "route": "FaceVerificationDialog",
@@ -57,7 +57,7 @@
         },
         "flowLayout": false,
         "params": {},
-        "title": "人脸验证"
+        "title": "Face Verification Dialog"
       },
       {
         "route": "interviewResult",
@@ -86,7 +86,7 @@
         },
         "flowLayout": false,
         "params": {},
-        "title": "用户认证"
+        "title": "with Auth"
       },
       {
         "route": "NewCv",
@@ -95,13 +95,13 @@
         },
         "flowLayout": false,
         "params": {},
-        "title": "用户认证"
+        "title": "with Auth"
       },
       {
         "route": "newInterViewDialog",
+        "title": "新增面试",
         "flowLayout": false,
-        "params": {},
-        "title": "新增面试"
+        "params": {}
       },
       {
         "route": "ResumeForm",
@@ -110,7 +110,7 @@
         },
         "flowLayout": false,
         "params": {},
-        "title": "简历表单"
+        "title": "Resume Form"
       },
       {
         "route": "resumeRewriter",
@@ -124,13 +124,9 @@
       },
       {
         "route": "spokenlanguage",
-        "menu": {
-          "order": 5,
-          "icon": "vaadin:chat"
-        },
-        "title": "口语练习",
         "flowLayout": false,
-        "params": {}
+        "params": {},
+        "title": "with Auth"
       },
       {
         "route": "talkToAzure",
@@ -149,7 +145,7 @@
         },
         "flowLayout": false,
         "params": {},
-        "title": "用户认证"
+        "title": "with Auth"
       }
     ]
   }

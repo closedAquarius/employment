@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.HashMap;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -53,30 +57,39 @@ public class UserServiceImpl implements UserService {
     private static final String TOKEN_BLACKLIST_PREFIX = "auth:blacklist:";
 
     @Override
-    public String login(String username, String password) {
-        User user = getUserByUsername(username);
+    public Map<String, Object> login(String username, String password) {
+        System.out.println("尝试登录用户: " + username);
         
+        // 从数据库查询用户
+        User user = getUserByUsername(username);
         if (user == null) {
-            return null;
+            System.out.println("用户不存在: " + username);
+            throw new UsernameNotFoundException("用户名不存在");
         }
         
         // 验证密码
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            return null;
+            System.out.println("密码不匹配: " + username);
+            throw new BadCredentialsException("密码错误");
         }
         
-        // 生成token
+        System.out.println("用户登录成功: " + username);
+        
+        // 生成JWT令牌
             String token = jwtTokenUtil.generateToken(user);
             
-        // 将用户信息存入Redis，方便后续使用
-        String tokenKey = TOKEN_PREFIX + token;
-        redisTemplate.opsForValue().set(tokenKey, user, jwtExpiration, TimeUnit.MILLISECONDS);
+        // 返回用户信息和令牌
+        Map<String, Object> result = new HashMap<>();
+        result.put("token", token);
+        result.put("userId", user.getId());
+        result.put("username", user.getUsername());
+        result.put("userType", user.getUserType());
+        result.put("realName", user.getRealName());
+        result.put("avatar", user.getAvatar());
         
-        // 更新用户最后登录时间
-        user.setUpdateTime(new Date());
-        updateUser(user);
-            
-            return token;
+        System.out.println("生成的令牌: " + token.substring(0, Math.min(30, token.length())) + "...");
+        
+        return result;
     }
 
     @Override

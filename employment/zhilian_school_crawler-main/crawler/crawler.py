@@ -2,7 +2,7 @@ import time
 import json
 import os
 import pandas as pd
-from datetime import datetime
+from pip._internal.utils import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -10,18 +10,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-import argparse
-import random
-import requests
-from bs4 import BeautifulSoup
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import sys
-
-# 添加项目根目录到Python路径
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-# 从根目录导入
 from process_data import extract_empty_file_map
+import argparse
 
 
 def login(driver):
@@ -47,7 +37,7 @@ def extract_major_info(driver):
     """提取专业信息并导出为 JSON"""
     major_info = {}
 
-    # 点击"更多专业"按钮
+    # 点击“更多专业”按钮
     more_major_btn = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, ".expand-filter__more span"))
     )
@@ -109,7 +99,7 @@ def auto_login(driver):
         # 点击二维码登录区域
     qrcode_login_element.click()
     # 切换到账号密码登录
-     # 切换到"账密登录"标签
+     # 切换到“账密登录”标签
     tab_login_btn = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//li[text()='账密登录']"))
         )
@@ -212,7 +202,7 @@ def get_additional_info(driver):
 
     #获取职位描述
     try:
-        # 获取职位描述中的"工作职责"和"任职资格"
+        # 获取职位描述中的“工作职责”和“任职资格”
         job_description = driver.find_element(By.CSS_SELECTOR, "div.job-info__desc").text
     except NoSuchElementException:
         job_description = "信息暂无"
@@ -299,6 +289,7 @@ def crawl_major_jobs(driver, major_name, major_code,start_index):
             EC.presence_of_element_located((By.CLASS_NAME, "position-card"))
         )
         time.sleep(2) # 等待页面加载完毕
+        page_data = []
         while True:
             # 第一阶段：收集本页所有职位基础信息
             page_index += 1
@@ -309,7 +300,7 @@ def crawl_major_jobs(driver, major_name, major_code,start_index):
             log_str = f"【{time_str}】【{major_name}】第 {page_index} 页数据获取开始！"
             save_log(log_str)
             position_items = driver.find_elements(By.CLASS_NAME, "position-card")
-            page_data = []
+            #page_data = []
             position_cards = []
             # 获取所有的卡片信息，保存到position_cards列表中
             for item in position_items:
@@ -322,6 +313,10 @@ def crawl_major_jobs(driver, major_name, major_code,start_index):
             # 获取所有基础信息
             for item in position_cards:
                 try:
+                    if len(page_data) >= 20:  # 如果获取的职位信息达到20个，停止当前专业
+                        print(f"已获取20个职位，跳转到下一个专业")
+                        return True  # 跳出当前专业的抓取
+
                     start_ID += 1
                     base_info = get_base_info(item,start_ID)
                     base_info["专业ID"] = major_code  # 或者用 start_index
@@ -361,13 +356,13 @@ def crawl_major_jobs(driver, major_name, major_code,start_index):
                 except Exception as e:
                     print(f"处理第 {index+1} 个职位时出错：{str(e)}")
                     # 恢复页面状态
-                    while len(driver.window_handles) > 1:
-                        driver.switch_to.window(driver.window_handles[-1])
-                        driver.close()
-                    driver.switch_to.window(original_window)
-                    driver.refresh()
-                    WebDriverWait(driver, 15).until(
-                        EC.presence_of_element_located((By.CLASS_NAME, "position-list")))
+                    # while len(driver.window_handles) > 1:
+                    #     driver.switch_to.window(driver.window_handles[-1])
+                    #     driver.close()
+                    # driver.switch_to.window(original_window)
+                    # driver.refresh()
+                    # WebDriverWait(driver, 15).until(
+                    #     EC.presence_of_element_located((By.CLASS_NAME, "position-list")))
                     # input("请手动处理该职位，按回车继续")
                     continue
                     # return False
@@ -382,16 +377,16 @@ def crawl_major_jobs(driver, major_name, major_code,start_index):
                 WebDriverWait(driver, 15).until(
                     EC.presence_of_element_located((By.CLASS_NAME, "position-list"))
                 )
-                if not check_login_status(driver):
-                    return False
+                # if not check_login_status(driver):
+                #     return False
                 time.sleep(2)
             except Exception:
                 print("⏹ 已到达最后一页")
-                if not check_login_status(driver):
-                    return False
-                else:
-                    return True
-                  
+                # if not check_login_status(driver):
+                #     return False
+                # else:
+                return True
+
     except Exception as e:
         print(f"⏸ {major_name} 中断于第{page_index}页：{str(e)}")
         return False
@@ -416,6 +411,7 @@ def get_job_positions(driver, job_class_map,args_auto):
 
     # 转换为有序列表（保持原顺序）
     major_list = list(job_class_map.items())
+    data_file = "../crawler/crawler/data/job.json"
     
     # 加载上次进度
     start_index = 0
@@ -528,10 +524,10 @@ def run_spider(args):
     """主函数，运行爬虫"""
     # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     # driver = webdriver.Chrome(executable_path="D:\Download\chromedriver-win64\chromedriver.exe")
-    service = Service(ChromeDriverManager().install())  # 自动下载并管理驱动
+    service = Service(executable_path="chromedriver.exe")  # 自动下载并管理驱动
     driver = webdriver.Chrome(service=service)
     driver.maximize_window()
-
+    # 使用本地驱动路径
     try:
         # 获取专业代码映射
         job_class_map = get_job_class_map()
@@ -543,35 +539,9 @@ def run_spider(args):
         driver.quit()
 
 
-# 创建Flask应用
-app = Flask(__name__)
-CORS(app)  # 允许跨域请求
-
-@app.route('/crawl', methods=['POST'])
-def start_crawl():
-    """启动爬虫的API端点"""
-    data = request.json
-    auto_mode = data.get('auto', False)
-    
-    try:
-        # 这里调用爬虫函数
-        # 实际项目中应该异步执行，避免阻塞API
-        print(f"Starting crawler in {'auto' if auto_mode else 'manual'} mode")
-        
-        # 返回成功信息
-        return jsonify({
-            "status": "success",
-            "message": f"Crawler started in {'auto' if auto_mode else 'manual'} mode",
-            "timestamp": datetime.now().isoformat()
-        })
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e),
-            "timestamp": datetime.now().isoformat()
-        }), 500
-
 if __name__ == "__main__":
-    # 如果直接运行此脚本，启动Flask服务
-    port = int(os.environ.get("PORT", 8000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--auto", action="store_true", default=False, help="默认非自动模式，手动输入专业代码")
+    args = parser.parse_args()
+    run_spider(args)
