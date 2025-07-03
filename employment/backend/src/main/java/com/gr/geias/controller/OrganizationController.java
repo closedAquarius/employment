@@ -920,8 +920,8 @@ public class OrganizationController {
     public Map<String,Object> getOrganizationInfo(){
         List<College> collegeList = collegeService.getCollege(null);
         Map<String,Object> school = new HashMap<String, Object>(4);
-        school.put("name", "XXX大学");
-        school.put("symbolSize", 100);
+        school.put("name", "小南大学");
+        school.put("symbolSize", 150);
         school.put("draggable", true);
         school.put("value", 27);
         school.put("x", 0);
@@ -938,14 +938,14 @@ public class OrganizationController {
             Map<String,Object> collegeCategories = new HashMap<String,Object>(1);
             College college = collegeList.get(i);
             collegeOrganization.put("name", college.getCollegeName());
-            collegeOrganization.put("symbolSize", 60);
+            collegeOrganization.put("symbolSize", 100);
             collegeOrganization.put("draggable", true);
             collegeOrganization.put("category", college.getCollegeName());
             collegeOrganization.put("value", 3);
             collegeOrganization.put("x", 1);
             collegeOrganization.put("y", -125);
             data.add(collegeOrganization);
-            collegeLinks.put("source", "XXX大学");
+            collegeLinks.put("source", "小南大学");
             collegeLinks.put("target", college.getCollegeName());
             links.add(collegeLinks);
             collegeCategories.put("name", college.getCollegeName());
@@ -957,7 +957,7 @@ public class OrganizationController {
                 Map<String,Object> specialtyOrganization = new HashMap<String,Object>(5);
                 Map<String,Object> specialtyLinks = new HashMap<String,Object>(2);
                 specialtyOrganization.put("name", specialty.getSpecialtyName());
-                specialtyOrganization.put("symbolSize", 30);
+                specialtyOrganization.put("symbolSize", 70);
                 specialtyOrganization.put("draggable", true);
                 specialtyOrganization.put("category", college.getCollegeName());
                 specialtyOrganization.put("value", 1);
