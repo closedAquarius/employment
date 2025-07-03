@@ -28,4 +28,6 @@ public class PersonInfo implements Serializable {
     private Integer collegeId;
 
     private String faceToken;
+
+    private String collegeName;
 } 

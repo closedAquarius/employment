@@ -8,17 +8,48 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 认证控制器
+ */
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    /**
+     * 用于登录请求的DTO
+     */
+    public static class LoginRequest {
+        private String username;
+        private String password;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
 
     /**
      * 健康检查端点
@@ -35,49 +66,69 @@ public class AuthController {
      * 用户登录
      */
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> loginInfo) {
-        String username = loginInfo.get("username");
-        String password = loginInfo.get("password");
-        
-        String token = userService.login(username, password);
-        
-        if (token != null) {
-            User user = userService.getUserByToken(token);
-            
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", token);
-            response.put("userId", user.getId());
-            response.put("username", user.getUsername());
-            response.put("realName", user.getRealName());
-            response.put("userType", user.getUserType());
-            response.put("avatar", user.getAvatar());
-            
-            return ResponseEntity.ok(response);
-        } else {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            Map<String, Object> result = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+            return ResponseEntity.ok(result);
+        } catch (UsernameNotFoundException | BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     
     /**
-     * 验证令牌
+     * 验证Token有效性
      */
     @GetMapping("/validate")
-    public ResponseEntity<Map<String, Object>> validateToken(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7); // 去掉"Bearer "前缀
-        
-        if (userService.validateToken(token)) {
-            User user = userService.getUserByToken(token);
+    public ResponseEntity<?> validateToken(HttpServletRequest request) {
+        try {
+            String token = extractTokenFromRequest(request);
+            if (token == null) {
+                System.out.println("验证失败: 未提供认证令牌");
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "未提供认证令牌");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(errorResponse);
+            }
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("userId", user.getId());
-            response.put("username", user.getUsername());
-            response.put("realName", user.getRealName());
-            response.put("userType", user.getUserType());
-            response.put("avatar", user.getAvatar());
+            System.out.println("验证令牌: " + token.substring(0, Math.min(20, token.length())) + "...");
             
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            boolean isValid = userService.validateToken(token);
+            if (isValid) {
+                User user = userService.getUserByToken(token);
+                if (user == null) {
+                    System.out.println("验证失败: 找不到对应的用户");
+                    Map<String, String> errorResponse = new HashMap<>();
+                    errorResponse.put("error", "找不到对应的用户");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                            .body(errorResponse);
+                }
+                
+                Map<String, Object> response = new HashMap<>();
+                response.put("userId", user.getId());
+                response.put("username", user.getUsername());
+                response.put("realName", user.getRealName());
+                response.put("userType", user.getUserType());
+                response.put("avatar", user.getAvatar());
+                
+                System.out.println("验证成功: 用户 " + user.getUsername());
+                return ResponseEntity.ok(response);
+            } else {
+                System.out.println("验证失败: 令牌无效");
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "令牌无效或已过期");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(errorResponse);
+            }
+        } catch (Exception e) {
+            System.out.println("验证过程发生异常: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "验证过程发生异常: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse);
         }
     }
     
@@ -86,7 +137,14 @@ public class AuthController {
      */
     @GetMapping("/verifyToken")
     public ResponseEntity<Map<String, Object>> verifyToken(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7); // 去掉"Bearer "前缀
+        String token;
+        // 判断是否包含Bearer前缀
+        if (authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7); // 去掉"Bearer "前缀
+        } else {
+            // 没有Bearer前缀，直接使用
+            token = authHeader;
+        }
         
         if (userService.validateToken(token)) {
             User user = userService.getUserByToken(token);
@@ -175,7 +233,8 @@ public class AuthController {
         Long userId = userService.createUser(user);
         
         // 自动登录
-        String token = userService.login(user.getUsername(), userDTO.getPassword());
+        Map<String, Object> loginResult = userService.login(user.getUsername(), userDTO.getPassword());
+        String token = (String) loginResult.get("token");
         
         Map<String, Object> response = new HashMap<>();
         response.put("code", 200);
@@ -184,5 +243,19 @@ public class AuthController {
         response.put("token", token);
         
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * 从请求中提取Token
+     */
+    private String extractTokenFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        } else if (bearerToken != null) {
+            // 兼容不带Bearer前缀的情况
+            return bearerToken;
+        }
+        return null;
     }
 } 

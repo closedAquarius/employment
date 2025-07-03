@@ -11,7 +11,11 @@ public class RouterServiceImpl implements RouterService {
 
     @Override
     public List<Map<String, Object>> getStudentRoutes() {
-        return Collections.emptyList();
+        List<Map<String, Object>> routes = new ArrayList<>();
+        routes.add(createCVRouter());      // 个人简历
+        routes.add(createAttendJobFairRouter());  // 招聘宣讲
+        routes.add(createInterviewRouter()); // 模拟面试
+        return routes;
     }
 
     @Override
@@ -57,7 +61,7 @@ public class RouterServiceImpl implements RouterService {
         homeRouter.put("redirect", "/adminWelcome/index");
 
         Map<String, Object> meta = new HashMap<>();
-        meta.put("icon", "custom/home");
+        meta.put("icon", "custom/myHome");
         meta.put("title", "我的桌面");
         meta.put("rank", 1);
         homeRouter.put("meta", meta);
@@ -239,5 +243,126 @@ public class RouterServiceImpl implements RouterService {
 
         staffRouter.put("children", children);
         return staffRouter;
+    }
+
+    /**
+     * 创建学生个人简历路由
+     */
+    private Map<String, Object> createCVRouter() {
+        Map<String, Object> homeRouter = new HashMap<>();
+        homeRouter.put("path", "/studentCV");
+        homeRouter.put("redirect", "/studentCV/index");
+
+        Map<String, Object> meta = new HashMap<>();
+        meta.put("icon", "custom/sv");
+        meta.put("title", "个人简历");
+        meta.put("rank", 1);
+        homeRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+        Map<String, Object> welcomeChild = new HashMap<>();
+        welcomeChild.put("path", "/studentCV/index");
+        welcomeChild.put("name", "StudentCV");
+        welcomeChild.put("component", "studentCV/index");
+
+
+        Map<String, Object> welcomeMeta = new HashMap<>();
+        welcomeMeta.put("title", "个人简历");
+        welcomeChild.put("meta", welcomeMeta);
+
+        children.add(welcomeChild);
+        homeRouter.put("children", children);
+
+        return homeRouter;
+    }
+
+    /**
+     * 创建学生参与招聘宣讲路由
+     */
+    private Map<String, Object> createAttendJobFairRouter() {
+        Map<String, Object> staffRouter = new HashMap<>();
+        staffRouter.put("path", "/attendJobFair");
+        staffRouter.put("redirect", "/attendJobFair/presentation");
+
+        Map<String, Object> meta = new HashMap<>();
+        meta.put("icon", "custom/jobFair");
+        meta.put("title", "宣讲招聘");
+        meta.put("rank", 4);
+        staffRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+
+        // 参加宣讲会管理
+        Map<String, Object> presentationChild = new HashMap<>();
+        presentationChild.put("path", "/attendJobFair/presentation");
+        presentationChild.put("name", "presentation");
+        presentationChild.put("component", "attendJobFair/presentation");
+        Map<String, Object> counselorMeta = new HashMap<>();
+        counselorMeta.put("title", "宣讲会");
+        presentationChild.put("meta", counselorMeta);
+        children.add(presentationChild);
+
+        // 参加招聘会管理
+        Map<String, Object> jobFairChild = new HashMap<>();
+        jobFairChild.put("path", "/attendJobFair/jobFair");
+        jobFairChild.put("name", "jobFair");
+        jobFairChild.put("component", "attendJobFair/jobFair");
+        Map<String, Object> administratorMeta = new HashMap<>();
+        administratorMeta.put("title", "招聘会");
+        jobFairChild.put("meta", administratorMeta);
+        children.add(jobFairChild);
+
+        staffRouter.put("children", children);
+        return staffRouter;
+    }
+
+    /**
+     * 创建模拟面试路由
+     */
+    private Map<String, Object> createInterviewRouter() {
+        Map<String, Object> organizationRouter = new HashMap<>();
+        organizationRouter.put("path", "/interview");
+        organizationRouter.put("redirect", "/interview/match");
+
+        Map<String, Object> meta = new HashMap<>();
+        meta.put("icon", "custom/interview");
+        meta.put("title", "模拟面试");
+        meta.put("rank", 3);
+        organizationRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+
+        // 职能匹配
+        Map<String, Object> matchChild = new HashMap<>();
+        matchChild.put("path", "/interview/match");
+        matchChild.put("name", "match");
+        matchChild.put("component", "interview/match");
+        Map<String, Object> matchMeta = new HashMap<>();
+        matchMeta.put("title", "职能匹配");
+        matchChild.put("meta", matchMeta);
+        children.add(matchChild);
+
+        // AI面试
+        Map<String, Object> aiChild = new HashMap<>();
+        aiChild.put("path", "/interview/ai");
+        aiChild.put("name", "ai");
+        aiChild.put("component", "interview/ai");
+        Map<String, Object> aiMeta = new HashMap<>();
+        aiMeta.put("title", "AI面试");
+        aiChild.put("meta", aiMeta);
+        children.add(aiChild);
+
+        // 老板面试
+        Map<String, Object> bossChild = new HashMap<>();
+        bossChild.put("path", "/interview/boss");
+        bossChild.put("name", "boss");
+        bossChild.put("component", "interview/boss");
+        Map<String, Object> bossMeta = new HashMap<>();
+        bossMeta.put("title", "老板面试");
+        bossChild.put("meta", bossMeta);
+        children.add(bossChild);
+
+        organizationRouter.put("children", children);
+        return organizationRouter;
     }
 }

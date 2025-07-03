@@ -60,8 +60,12 @@
     </select>
 
     <select id="selectAllTeachers" resultType="com.gr.geias.model.PersonInfo">
-        SELECT * FROM tb_person_info
-        WHERE enable_status = 1
+        SELECT
+            p.*,
+            c.college_name AS collegeName
+        FROM tb_person_info p
+                 LEFT JOIN tb_college c ON p.college_id = c.college_id
+        WHERE p.enable_status = 1
             LIMIT #{pageSize} OFFSET #{offset}
     </select>
 

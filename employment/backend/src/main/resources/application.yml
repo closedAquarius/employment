@@ -11,7 +11,7 @@ spring:
         driver-class-name: com.mysql.jdbc.Driver
         url: jdbc:mysql://localhost:3306/graduateemploymentinfo?useUnicode=true&characterEncoding=utf8
         username: root
-        password: 1234
+        password: 238373
         filter: stat,wall,log4j
         initial-size: 5
         max-active: 20
@@ -47,7 +47,7 @@ spring:
       driver-class-name: com.mysql.jdbc.Driver
       url: jdbc:mysql://localhost:3306/graduateemploymentinfo?useUnicode=true&characterEncoding=utf8
       username: root
-      password: 1234
+      password: 238373
       filter: stat,wall,log4j
       initial-size: 5
       max-active: 20
@@ -72,4 +72,31 @@ logging:
         geias:
           repository: debug
 server:
-  port: 8080 
+  port: 8080
+
+# 添加面试API配置
+employment:
+  api:
+    key: ${EMPLOYMENT_API_KEY:ai-interview-secret-key}  # API密钥，建议通过环境变量配置
+
+# JWT配置
+jwt:
+  secret: eAf6XIz7Q6CmE3N4K5L6M7N8O9P0Q1R2S3T4U5V6W7X8Y9Z0aBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
+  expiration: 86400000  # 24小时，单位毫秒
+  header: Authorization
+  token-prefix: Bearer
+
+# AI面试系统API配置
+ai-interview:
+  api:
+    url: http://localhost:8088  # AI面试系统API地址
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInN1YiI6ImFkbWluIiwidXNlclR5cGUiOjIsImV4cCI6MTcyMTk2NTQ5MH0.AXCTmPqQZ_Aw-BLjV9Hs1GzPuJkA5-3zxjxrKMnQ9Eo  # 使用与auth-service相同密钥签名的JWT令牌
+
+# 爬虫服务配置
+crawler:
+  url: http://localhost:8000  # 爬虫服务URL
+
+pagehelper:
+  helper-dialect: postgresql
+  reasonable: true
+  support-methods-arguments: true

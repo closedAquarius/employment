@@ -1,6 +1,7 @@
 package com.gr.geias.service;
 
 import com.gr.geias.model.PersonInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

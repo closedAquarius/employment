@@ -42,7 +42,7 @@ spring:
 
 # JWT配置
 jwt:
-  secret: yourSecretKey123456789012345678901234567890
+  secret: eAf6XIz7Q6CmE3N4K5L6M7N8O9P0Q1R2S3T4U5V6W7X8Y9Z0aBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
   expiration: 86400000  # 24小时，单位毫秒
   header: Authorization
   token-prefix: Bearer 
