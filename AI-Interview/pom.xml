@@ -31,14 +31,4 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>central</id>
-			<url>https://repo1.maven.org/maven2</url>
-		</repository>
-		<repository>
-			<id>spring-releases</id>
-			<url>https://repo.spring.io/release</url>
-		</repository>
-	</repositories>
 </project>
