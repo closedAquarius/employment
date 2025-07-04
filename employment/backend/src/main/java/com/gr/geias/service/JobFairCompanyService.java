@@ -14,4 +14,5 @@ public interface JobFairCompanyService {
 
     int countApprovedCompanies(Integer jobFairId);
 
+    List<JobFairCompany> selectJobFairCompaniesWithStatus(Integer status);
 }

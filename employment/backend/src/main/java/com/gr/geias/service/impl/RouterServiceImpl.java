@@ -30,6 +30,7 @@ public class RouterServiceImpl implements RouterService {
         routes.add(createGraduateRouter());  // 毕业生就业信息
         routes.add(createOrganizationRouter()); // 组织架构管理
         routes.add(createStaffRouter());     // 人员管理
+        routes.add(createAdminJobAndPresentationRouter());       // 宣讲会和招聘会管理
         return routes;
     }
 
@@ -254,6 +255,44 @@ public class RouterServiceImpl implements RouterService {
 
         staffRouter.put("children", children);
         return staffRouter;
+    }
+
+    private Map<String, Object> createAdminJobAndPresentationRouter() {
+        Map<String, Object> graduateRouter = new HashMap<>();
+        graduateRouter.put("path", "/publishJobFair");
+        graduateRouter.put("name", "publishJobFair");
+        graduateRouter.put("redirect", "/publishJobFair");
+
+        Map<String, Object> meta = new HashMap<>();
+        // meta.put("icon", "custom/graduate");
+        meta.put("title", "宣讲与招聘");
+        meta.put("rank", 5);
+        graduateRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+
+        // 毕业生就业总体数据
+        Map<String, Object> dataChild = new HashMap<>();
+        dataChild.put("path", "/publishJobFair/presentation");
+        dataChild.put("name", "publishJobFairOfPresentation");
+        dataChild.put("component", "publishJobFair/presentation");
+        Map<String, Object> dataMeta = new HashMap<>();
+        dataMeta.put("title", "宣讲会");
+        dataChild.put("meta", dataMeta);
+        children.add(dataChild);
+
+        // 毕业生主要就业方式
+        Map<String, Object> typeChild = new HashMap<>();
+        typeChild.put("path", "/publishJobFair/jobFair");
+        typeChild.put("name", "publishJobFairOfJobFair");
+        typeChild.put("component", "publishJobFair/jobFair");
+        Map<String, Object> typeMeta = new HashMap<>();
+        typeMeta.put("title", "招聘会");
+        typeChild.put("meta", typeMeta);
+        children.add(typeChild);
+
+        graduateRouter.put("children", children);
+        return graduateRouter;
     }
 
     /**
