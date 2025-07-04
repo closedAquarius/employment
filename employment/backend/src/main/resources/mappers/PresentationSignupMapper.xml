@@ -104,7 +104,7 @@
         SELECT sp.specialty_name AS specialtyName, COUNT(*) AS count
         FROM tb_presentation_signup ps
             JOIN tb_person_info p ON ps.student_id = p.person_id
-            JOIN tb_class_grade c ON p.class_id = c.class_id
+            JOIN tb_class_grade c ON p.college_id = c.class_id
             JOIN tb_specialty sp ON c.specialty_id = sp.specialty_id
         WHERE ps.presentation_id = #{presentationId}
         GROUP BY sp.specialty_name
@@ -115,7 +115,7 @@
         SELECT c.class_name AS className, COUNT(*) AS count
         FROM tb_presentation_signup ps
             JOIN tb_person_info p ON ps.student_id = p.person_id
-            JOIN tb_class_grade c ON p.class_id = c.class_id
+            JOIN tb_class_grade c ON p.college__id = c.class_id
         WHERE ps.presentation_id = #{presentationId}
         GROUP BY c.class_name
     </select>
