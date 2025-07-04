@@ -260,31 +260,40 @@ public class RouterServiceImpl implements RouterService {
      * 创建学生个人简历路由
      */
     private Map<String, Object> createCVRouter() {
-        Map<String, Object> homeRouter = new HashMap<>();
-        homeRouter.put("path", "/studentCV");
-        homeRouter.put("redirect", "/studentCV/index");
+        Map<String, Object> cvRouter = new HashMap<>();
+        cvRouter.put("path", "/studentCV");
+        cvRouter.put("redirect", "/studentCV/newCV");
 
         Map<String, Object> meta = new HashMap<>();
-        meta.put("icon", "custom/sv");
+        meta.put("icon", "custom/jobFair");
         meta.put("title", "个人简历");
         meta.put("rank", 1);
-        homeRouter.put("meta", meta);
+        cvRouter.put("meta", meta);
 
         List<Map<String, Object>> children = new ArrayList<>();
-        Map<String, Object> welcomeChild = new HashMap<>();
-        welcomeChild.put("path", "/studentCV/index");
-        welcomeChild.put("name", "StudentCV");
-        welcomeChild.put("component", "studentCV/index");
 
+        // 创建个人简历
+        Map<String, Object> newChild = new HashMap<>();
+        newChild.put("path", "/studentCV/newCV");
+        newChild.put("name", "newCV");
+        newChild.put("component", "studentCV/newCV");
+        Map<String, Object> newMeta = new HashMap<>();
+        newMeta.put("title", "创建简历");
+        newChild.put("meta", newMeta);
+        children.add(newChild);
 
-        Map<String, Object> welcomeMeta = new HashMap<>();
-        welcomeMeta.put("title", "个人简历");
-        welcomeChild.put("meta", welcomeMeta);
+        // 优化个人简历
+        Map<String, Object> modifyChild = new HashMap<>();
+        modifyChild.put("path", "/studentCV/modifyCV");
+        modifyChild.put("name", "modifyCV");
+        modifyChild.put("component", "studentCV/modifyCV");
+        Map<String, Object> modifyMeta = new HashMap<>();
+        modifyMeta.put("title", "优化简历");
+        modifyChild.put("meta", modifyMeta);
+        children.add(modifyChild);
 
-        children.add(welcomeChild);
-        homeRouter.put("children", children);
-
-        return homeRouter;
+        cvRouter.put("children", children);
+        return cvRouter;
     }
 
     /**
@@ -383,6 +392,16 @@ public class RouterServiceImpl implements RouterService {
         bossChild.put("meta", bossMeta);
         children.add(bossChild);
 
+        // 面试结果
+        Map<String, Object> resultChild = new HashMap<>();
+        resultChild.put("path", "/interview/result");
+        resultChild.put("name", "result");
+        resultChild.put("component", "interview/result");
+        Map<String, Object> resultMeta = new HashMap<>();
+        resultMeta.put("title", "面试结果");
+        resultChild.put("meta", resultMeta);
+        children.add(resultChild);
+
         organizationRouter.put("children", children);
         return organizationRouter;
     }
@@ -477,7 +496,6 @@ public class RouterServiceImpl implements RouterService {
         welcomeChild.put("path", "/job/index");
         welcomeChild.put("name", "Job");
         welcomeChild.put("component", "job/index");
-
 
         Map<String, Object> welcomeMeta = new HashMap<>();
         welcomeMeta.put("title", "发布岗位");
