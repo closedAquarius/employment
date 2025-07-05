@@ -124,6 +124,7 @@ public class PresentationController {
      */
     @GetMapping("/student/unsigned")
     public ResponseEntity<List<PresentationWithCompanyDTO>> getUnSignedPresentations(@RequestParam Integer studentId) {
+        System.out.println("studentId:" + studentId);
         return ResponseEntity.ok(presentationSignupService.getUnSignedPresentations(studentId));
     }
 

@@ -44,13 +44,13 @@
 
             c.company_id,
             c.company_name,
-            cp.username AS company_username,
-            u.unit_name AS company_type
+            u.unit_name AS company_type,
+            c.company_intro,
+            c.address
 
         FROM tb_presentation_signup s
                  JOIN tb_presentation p ON s.presentation_id = p.presentation_id
                  JOIN tb_company_info c ON p.company_id = c.company_id
-                 JOIN tb_person_info cp ON c.company_id = cp.person_id
                  LEFT JOIN tb_unit_kind u ON c.unit_id = u.unit_id
         WHERE s.student_id = #{studentId}
     </select>
@@ -73,12 +73,11 @@
 
             c.company_id,
             c.company_name,
-            cp.username AS company_username,
-            u.unit_name AS company_type
-
+            u.unit_name AS company_type,
+            c.company_intro,
+            c.address
         FROM tb_presentation p
                  JOIN tb_company_info c ON p.company_id = c.company_id
-                 JOIN tb_person_info cp ON c.company_id = cp.person_id
                  LEFT JOIN tb_unit_kind u ON c.unit_id = u.unit_id
         WHERE p.status = 1
           AND p.presentation_id NOT IN (

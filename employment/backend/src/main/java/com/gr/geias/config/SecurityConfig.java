@@ -50,7 +50,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 //FairController
                 .antMatchers(
-                        "/fairs/JobFairWithCompanies",
                         "/fairs/jobfair",
                         "/fairs/jobfairsWithboothstatus",
                         "/fairs/adminReview")
@@ -70,7 +69,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 //FairController
                 .antMatchers(
-                        "/fairs/JobFairWithCompanies",
                         "/fairs/jobfair",
                         "/fairs/jobfairsWithboothstatus",
                         "/fairs/adminReview"

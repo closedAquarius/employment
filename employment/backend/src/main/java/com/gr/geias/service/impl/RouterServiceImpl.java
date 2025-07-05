@@ -264,7 +264,7 @@ public class RouterServiceImpl implements RouterService {
         graduateRouter.put("redirect", "/publishJobFair");
 
         Map<String, Object> meta = new HashMap<>();
-        // meta.put("icon", "custom/graduate");
+        meta.put("icon", "custom/jobFair");
         meta.put("title", "宣讲与招聘");
         meta.put("rank", 5);
         graduateRouter.put("meta", meta);

@@ -9,7 +9,9 @@
             jf.title,
             jf.location,
             jf.start_time,
-            jf.end_time
+            jf.end_time,
+            jf.booth_total,
+            jf.description
         FROM tb_job_fair jf
         ORDER BY jf.start_time DESC
     </select>
@@ -21,6 +23,8 @@
         <result property="location" column="location"/>
         <result property="startTime" column="start_time"/>
         <result property="endTime" column="end_time"/>
+        <result property="boothTotal" column="booth_total"/>
+        <result property="description" column="description"/>
 
         <!-- companies 是嵌套查询结果 -->
         <collection property="companies" ofType="com.gr.geias.dto.CompanySimpleDTO"
