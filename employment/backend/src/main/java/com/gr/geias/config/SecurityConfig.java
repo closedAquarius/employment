@@ -24,6 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 不使用 session
                 .and()
                 .authorizeRequests()
+                .antMatchers("/uploads/**").permitAll()
                 // 登录注册
                 .antMatchers(
                         "/api/personinfo/login",

@@ -15,6 +15,7 @@ public class RouterServiceImpl implements RouterService {
         routes.add(createCVRouter());      // 个人简历
         routes.add(createAttendJobFairRouter());  // 招聘宣讲
         routes.add(createInterviewRouter()); // 模拟面试
+        routes.add(createMessageRouter());  // 消息管理
         return routes;
     }
 
@@ -31,6 +32,8 @@ public class RouterServiceImpl implements RouterService {
         routes.add(createOrganizationRouter()); // 组织架构管理
         routes.add(createStaffRouter());     // 人员管理
         routes.add(createAdminJobAndPresentationRouter());       // 宣讲会和招聘会管理
+        routes.add(createScreenRouter());   // 数字大屏
+        routes.add(createMessageRouter());  // 消息管理
         return routes;
     }
 
@@ -40,6 +43,7 @@ public class RouterServiceImpl implements RouterService {
         routes.add(createCompanyInfoRouter());      // 企业信息首页
         routes.add(createJobFairRouter());  // 申请宣讲招聘会
         routes.add(createJobRouter()); // 发布岗位
+        routes.add(createMessageRouter());  // 消息管理
         return routes;
     }
 
@@ -293,6 +297,78 @@ public class RouterServiceImpl implements RouterService {
 
         graduateRouter.put("children", children);
         return graduateRouter;
+    }
+
+    /**
+     * 创建数字大屏路由
+     */
+    private Map<String, Object> createScreenRouter() {
+        Map<String, Object> homeRouter = new HashMap<>();
+        homeRouter.put("path", "/screen");
+        /*
+        if (role.equals("2")) {
+            homeRouter.put("name", "AdminWelcomePage");
+        }*/
+        homeRouter.put("redirect", "/screen/index");
+
+        Map<String, Object> meta = new HashMap<>();
+        // meta.put("icon", "custom/screen");
+        meta.put("title", "数字大屏");
+        meta.put("rank", 7);
+        homeRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+        Map<String, Object> welcomeChild = new HashMap<>();
+        if (role.equals("2")) {
+            welcomeChild.put("path", "/screen/index");
+            welcomeChild.put("name", "screen");
+            welcomeChild.put("component", "screen/index");
+        }
+
+        Map<String, Object> welcomeMeta = new HashMap<>();
+        welcomeMeta.put("title", "数字大屏");
+        welcomeChild.put("meta", welcomeMeta);
+
+        children.add(welcomeChild);
+        homeRouter.put("children", children);
+
+        return homeRouter;
+    }
+
+    /**
+     * 创建消息中心路由
+     */
+    private Map<String, Object> createMessageRouter() {
+        Map<String, Object> homeRouter = new HashMap<>();
+        homeRouter.put("path", "/message");
+        /*
+        if (role.equals("2")) {
+            homeRouter.put("name", "AdminWelcomePage");
+        }*/
+        homeRouter.put("redirect", "/message/index");
+
+        Map<String, Object> meta = new HashMap<>();
+        // meta.put("icon", "custom/screen");
+        meta.put("title", "消息中心");
+        meta.put("rank", 8);
+        homeRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+        Map<String, Object> welcomeChild = new HashMap<>();
+        if (role.equals("2")) {
+            welcomeChild.put("path", "/message/index");
+            welcomeChild.put("name", "message");
+            welcomeChild.put("component", "message/index");
+        }
+
+        Map<String, Object> welcomeMeta = new HashMap<>();
+        welcomeMeta.put("title", "消息中心");
+        welcomeChild.put("meta", welcomeMeta);
+
+        children.add(welcomeChild);
+        homeRouter.put("children", children);
+
+        return homeRouter;
     }
 
     /**
