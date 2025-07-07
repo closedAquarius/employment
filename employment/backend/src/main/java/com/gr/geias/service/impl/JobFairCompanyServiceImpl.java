@@ -6,6 +6,8 @@ import com.gr.geias.service.JobFairCompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class JobFairCompanyServiceImpl implements JobFairCompanyService {
     @Autowired
@@ -31,5 +33,8 @@ public class JobFairCompanyServiceImpl implements JobFairCompanyService {
         return jobFairCompanyRepository.countApprovedCompanies(jobFairId);
     }
 
-
+    @Override
+    public List<JobFairCompany> selectJobFairCompaniesWithStatus(Integer status) {
+        return jobFairCompanyRepository.selectJobFairCompaniesWithStatus(status);
+    }
 }
