@@ -1,5 +1,7 @@
 package com.gr.geias.service;
 
+import com.gr.geias.dto.StudentExportExcel;
+import com.gr.geias.dto.StudentImportExcel;
 import com.gr.geias.model.PersonInfo;
 import org.apache.ibatis.annotations.Param;
 
@@ -109,4 +111,10 @@ public interface PersonInfoService {
     // 获取学院管理总数
     int getPerson1Count();
 
-} 
+    boolean insertStudentsBatch(List<PersonInfo> studentList);
+
+    List<StudentExportExcel> getAllStudents();
+
+    boolean importStudents(List<StudentImportExcel> importList);
+
+}

@@ -74,5 +74,12 @@
         WHERE enable_status = 1
     </select>
 
+    <insert id="insertPersons">
+        INSERT INTO tb_person_info (enable_status, person_name, create_time, password, username, college_id)
+        VALUES
+        <foreach collection="personList" item="person" separator=",">
+            (#{person.enableStatus}, #{person.personName}, #{person.createTime}, #{person.password}, #{person.username}, #{person.collegeId})
+        </foreach>
+    </insert>
 
 </mapper> 
