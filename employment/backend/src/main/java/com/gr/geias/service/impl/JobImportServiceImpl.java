@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class JobImportServiceImpl implements JobImportService {
@@ -40,5 +41,11 @@ public class JobImportServiceImpl implements JobImportService {
                 mapper.batchInsert(list);
             }
         }
+    }
+
+
+    @Override
+    public List<Map<String, Object>> getTopPreferredMajors() {
+        return mapper.getTopPreferredMajors();
     }
 }
