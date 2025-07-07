@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CollegeRepository {
     /**
@@ -55,4 +56,6 @@ public interface CollegeRepository {
 
     int queryCollegeCount(@Param("name") String name);
 
+    @Select("SELECT college_id, college_name FROM tb_college")
+    List<College> queryAllColleges();
 }

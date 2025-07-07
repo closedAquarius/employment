@@ -1,5 +1,7 @@
 package com.gr.geias.repository;
 
+import com.gr.geias.dto.StudentExportExcel;
+import com.gr.geias.dto.StudentWithCollege;
 import com.gr.geias.model.PersonInfo;
 import org.apache.ibatis.annotations.*;
 
@@ -134,4 +136,12 @@ public interface PersonInfoRepository {
 
     int countAllTeachers();
 
+    int insertPersons(@Param("personList") List<PersonInfo> personList);
+
+    @Select("SELECT p.person_name, c.college_name, p.username, p.password " +
+            "FROM tb_person_info p LEFT JOIN tb_college c ON p.college_id = c.college_id " +
+            "WHERE p.enable_status = 0")
+    List<StudentExportExcel> queryAllStudentsForExport();
+
+    List<StudentWithCollege> queryStudentWithCollege();
 } 

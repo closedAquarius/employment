@@ -9,6 +9,23 @@
         where person_id = #{personInfo.personId}
     </update>
 
+    <select id="queryStudentWithCollege" resultType="com.gr.geias.dto.StudentWithCollege">
+        SELECT
+            p.person_id,
+            p.person_name,
+            p.create_time,
+            p.username,
+            p.password,
+            p.college_id,
+            c.college_name
+        FROM
+            tb_person_info p
+                LEFT JOIN
+            tb_college c ON p.college_id = c.college_id
+        WHERE
+            p.enable_Status = 0;
+    </select>
+
     <!-- 更新人员信息 -->
     <update id="updatePerson">
         update tb_person_info
@@ -74,5 +91,12 @@
         WHERE enable_status = 1
     </select>
 
+    <insert id="insertPersons">
+        INSERT INTO tb_person_info (enable_status, person_name, create_time, password, username, college_id)
+        VALUES
+        <foreach collection="personList" item="person" separator=",">
+            (#{person.enableStatus}, #{person.personName}, #{person.createTime}, #{person.password}, #{person.username}, #{person.collegeId})
+        </foreach>
+    </insert>
 
 </mapper> 

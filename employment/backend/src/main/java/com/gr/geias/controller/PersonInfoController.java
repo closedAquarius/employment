@@ -1,13 +1,15 @@
 package com.gr.geias.controller;
 
+import com.alibaba.excel.EasyExcel;
+import com.gr.geias.dto.StudentExportExcel;
+import com.gr.geias.dto.StudentImportExcel;
+import com.gr.geias.dto.StudentWithCollege;
 import com.gr.geias.model.OperationLog;
 import com.gr.geias.model.PersonInfo;
 import com.gr.geias.model.Specialty;
 import com.gr.geias.enums.EnableStatusEnums;
-import com.gr.geias.service.OperationLogService;
-import com.gr.geias.service.PersonInfoService;
-import com.gr.geias.service.RouterService;
-import com.gr.geias.service.SpecialtyService;
+import com.gr.geias.service.*;
+import com.gr.geias.util.ExcelUtil;
 import com.gr.geias.util.JwtUtil;
 import com.gr.geias.util.TokenUtil;
 import io.jsonwebtoken.Claims;
@@ -15,7 +17,10 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +43,13 @@ public class PersonInfoController {
 
     @Autowired
     private RouterService routeService;
+
+    @Autowired
+    private CollegeService collegeService;
+
+
+    @Autowired
+    private ExcelUtil excelUtil;
 
     /**
      * 登录
@@ -299,4 +311,62 @@ public class PersonInfoController {
         return map;
     }
 
+    @PostMapping("/import-students")
+    public Map<String, Object> importStudents(@RequestParam("file") MultipartFile file) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            // 1. 读取Excel文件，转成导入DTO列表
+            List<StudentImportExcel> importList = EasyExcel.read(file.getInputStream())
+                    .head(StudentImportExcel.class)
+                    .sheet()
+                    .doReadSync();
+
+            if (importList == null || importList.isEmpty()) {
+                result.put("success", false);
+                result.put("errMsg", "导入文件为空");
+                return result;
+            }
+
+            // 2. 调用Service批量转换并保存
+            boolean success = personInfoService.importStudents(importList);
+
+            if (success) {
+                result.put("success", true);
+                result.put("message", "批量导入成功");
+            } else {
+                result.put("success", false);
+                result.put("errMsg", "批量导入失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("success", false);
+            result.put("errMsg", "导入异常: " + e.getMessage());
+        }
+        return result;
+    }
+
+    @GetMapping("/export-students")
+    public void exportStudents(HttpServletResponse response) {
+        try {
+            response.setContentType("application/vnd.ms-excel");
+            response.setCharacterEncoding("utf-8");
+            String fileName = URLEncoder.encode("学生信息", "UTF-8").replaceAll("\\+", "%20");
+            response.setHeader("Content-Disposition",
+                    "attachment; filename=\"" + fileName + ".xlsx\"; filename*=UTF-8''" + fileName + ".xlsx");
+
+
+            List<StudentExportExcel> exportList = personInfoService.getAllStudents();
+            EasyExcel.write(response.getOutputStream(), StudentExportExcel.class)
+                    .sheet("学生信息")
+                    .doWrite(exportList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @GetMapping("/getAllStudents")
+    public List<StudentWithCollege> getAllStudents() {
+        return personInfoService.getAllStudentsWithCollege();
+    }
 } 
