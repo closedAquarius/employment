@@ -14,7 +14,7 @@
     </resultMap>
 
     <!-- 插入企业 -->
-    <insert id="insertCompany" parameterType="CompanyInfo">
+    <insert id="insertCompany" parameterType="CompanyInfo" useGeneratedKeys="true" keyProperty="companyId">
         INSERT INTO tb_company_info (company_name, company_intro, address, area_id, create_time, confirmed)
         VALUES (#{companyName}, #{companyIntro}, #{address}, #{areaId}, NOW(), FALSE)
     </insert>
@@ -25,13 +25,14 @@
     </update>
 
     <!-- 修改企业信息时自动将 confirmed 重置为 false -->
-    <update id="updateCompany" parameterType="CompanyInfo">
+    <update id="updateCompany" parameterType="CompanyInfo"
+            useGeneratedKeys="true" keyProperty="companyId">
         UPDATE tb_company_info
         SET company_name = #{companyName},
             company_intro = #{companyIntro},
             address = #{address},
             area_id = #{areaId},
-            confirmed = FALSE
+            confirmed = 0
         WHERE company_id = #{companyId}
     </update>
 

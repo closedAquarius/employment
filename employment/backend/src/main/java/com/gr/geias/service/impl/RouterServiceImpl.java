@@ -39,6 +39,7 @@ public class RouterServiceImpl implements RouterService {
         routes.add(createCompanyInfoRouter());      // 企业信息首页
         routes.add(createJobFairRouter());  // 申请宣讲招聘会
         routes.add(createJobRouter()); // 发布岗位
+        routes.add(createMessageRouter()); // 发布岗位
         return routes;
     }
 
@@ -481,6 +482,37 @@ public class RouterServiceImpl implements RouterService {
 
         Map<String, Object> welcomeMeta = new HashMap<>();
         welcomeMeta.put("title", "发布岗位");
+        welcomeChild.put("meta", welcomeMeta);
+
+        children.add(welcomeChild);
+        homeRouter.put("children", children);
+
+        return homeRouter;
+    }
+
+    /**
+     * 创建发布岗位路由
+     */
+    private Map<String, Object> createMessageRouter() {
+        Map<String, Object> homeRouter = new HashMap<>();
+        homeRouter.put("path", "/message");
+        homeRouter.put("redirect", "/message/index");
+
+        Map<String, Object> meta = new HashMap<>();
+        meta.put("icon", "custom/sv");
+        meta.put("title", "消息中心");
+        meta.put("rank", 6);
+        homeRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+        Map<String, Object> welcomeChild = new HashMap<>();
+        welcomeChild.put("path", "/message/index");
+        welcomeChild.put("name", "MessageCenter");
+        welcomeChild.put("component", "message/index");
+
+
+        Map<String, Object> welcomeMeta = new HashMap<>();
+        welcomeMeta.put("title", "消息中心");
         welcomeChild.put("meta", welcomeMeta);
 
         children.add(welcomeChild);

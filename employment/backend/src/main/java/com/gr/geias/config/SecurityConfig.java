@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //InitController
                 .antMatchers("/init/getinit",
                         "init/getleve")
-                .hasAnyRole("ADMINISTRATOR", "TEACHER")
+                .hasAnyRole("ADMINISTRATOR", "TEACHER","ENTERPRISE_HR","STUDENT")
 
 
 
