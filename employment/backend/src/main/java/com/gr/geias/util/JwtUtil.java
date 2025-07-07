@@ -19,7 +19,7 @@ public class JwtUtil {
     private static final String JWT_SECRET = "eAf6XIz7Q6CmE3N4K5L6M7N8O9P0Q1R2S3T4U5V6W7X8Y9Z0aBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
 
     // accessToken 有效时间：30分钟
-    private static final long ACCESS_EXPIRE_TIME = 1000 * 60 * 30;
+    private static final long ACCESS_EXPIRE_TIME = 1000 * 60 * 3000;
     // refreshToken 有效时间：7天
     private static final long REFRESH_EXPIRE_TIME = 1000L * 60 * 60 * 24 * 7;
     

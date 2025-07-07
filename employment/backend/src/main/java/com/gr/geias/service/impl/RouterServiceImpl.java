@@ -305,10 +305,7 @@ public class RouterServiceImpl implements RouterService {
     private Map<String, Object> createScreenRouter() {
         Map<String, Object> homeRouter = new HashMap<>();
         homeRouter.put("path", "/screen");
-        /*
-        if (role.equals("2")) {
-            homeRouter.put("name", "AdminWelcomePage");
-        }*/
+        homeRouter.put("name", "DigitalPage");
         homeRouter.put("redirect", "/screen/index");
 
         Map<String, Object> meta = new HashMap<>();
@@ -341,25 +338,20 @@ public class RouterServiceImpl implements RouterService {
     private Map<String, Object> createMessageRouter() {
         Map<String, Object> homeRouter = new HashMap<>();
         homeRouter.put("path", "/message");
-        /*
-        if (role.equals("2")) {
-            homeRouter.put("name", "AdminWelcomePage");
-        }*/
+        homeRouter.put("name", "MessagePage");
         homeRouter.put("redirect", "/message/index");
 
         Map<String, Object> meta = new HashMap<>();
-        // meta.put("icon", "custom/screen");
+        meta.put("icon", "custom/message");
         meta.put("title", "消息中心");
         meta.put("rank", 8);
         homeRouter.put("meta", meta);
 
         List<Map<String, Object>> children = new ArrayList<>();
         Map<String, Object> welcomeChild = new HashMap<>();
-        if (role.equals("2")) {
-            welcomeChild.put("path", "/message/index");
-            welcomeChild.put("name", "message");
-            welcomeChild.put("component", "message/index");
-        }
+        welcomeChild.put("path", "/message/index");
+        welcomeChild.put("name", "message");
+        welcomeChild.put("component", "message/index");
 
         Map<String, Object> welcomeMeta = new HashMap<>();
         welcomeMeta.put("title", "消息中心");
@@ -601,7 +593,7 @@ public class RouterServiceImpl implements RouterService {
         homeRouter.put("redirect", "/job/index");
 
         Map<String, Object> meta = new HashMap<>();
-        meta.put("icon", "custom/sv");
+        meta.put("icon", "custom/hire");
         meta.put("title", "发布岗位");
         meta.put("rank", 5);
         homeRouter.put("meta", meta);
