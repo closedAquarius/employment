@@ -257,6 +257,16 @@ public class RouterServiceImpl implements RouterService {
         administratorChild.put("meta", administratorMeta);
         children.add(administratorChild);
 
+        // 学生管理
+        Map<String, Object> studentChild = new HashMap<>();
+        studentChild.put("path", "/staff/student");
+        studentChild.put("name", "studentManage");
+        studentChild.put("component", "staff/student");
+        Map<String, Object> studentMeta = new HashMap<>();
+        studentMeta.put("title", "学生管理");
+        studentChild.put("meta", studentMeta);
+        children.add(studentChild);
+
         staffRouter.put("children", children);
         return staffRouter;
     }
