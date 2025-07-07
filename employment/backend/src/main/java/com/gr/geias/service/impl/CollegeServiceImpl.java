@@ -13,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 学院服务实现类
@@ -29,6 +32,8 @@ public class CollegeServiceImpl implements CollegeService {
     OrganizationNumRepository organizationNumRepository;
     @Autowired
     SpecialtyService specialtyService;
+
+    private Map<String, Integer> collegeNameToIdMap;
 
     @Override
     public List<College> getCollege(Integer adminId) {
@@ -128,6 +133,28 @@ public class CollegeServiceImpl implements CollegeService {
     @Override
     public int getCollegeCount(String name) {
         return collegeRepository.queryCollegeCount(name);
+    }
+
+    @Override
+    public List<College> getAllColleges() {
+        return collegeRepository.queryAllColleges();
+    }
+
+    @PostConstruct
+    public void initCollegeMap() {
+        List<College> collegeList = collegeRepository.queryAllColleges();
+        collegeNameToIdMap = collegeList.stream()
+                .collect(Collectors.toMap(College::getCollegeName, College::getCollegeId));
+    }
+
+
+    @Override
+    public Map<String, Integer> getCollegeNameToIdMap() {
+        // 如果为空（比如第一次调用），先初始化一次
+        if (collegeNameToIdMap == null || collegeNameToIdMap.isEmpty()) {
+            initCollegeMap();
+        }
+        return collegeNameToIdMap;
     }
 
 }

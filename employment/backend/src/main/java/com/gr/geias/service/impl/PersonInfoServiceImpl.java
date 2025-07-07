@@ -1,7 +1,12 @@
 package com.gr.geias.service.impl;
 
+import com.github.promeg.pinyinhelper.Pinyin;
+import com.gr.geias.dto.StudentExportExcel;
+import com.gr.geias.dto.StudentImportExcel;
+import com.gr.geias.dto.StudentWithCollege;
 import com.gr.geias.model.PersonInfo;
 import com.gr.geias.repository.PersonInfoRepository;
+import com.gr.geias.service.CollegeService;
 import com.gr.geias.service.PersonInfoService;
 import com.gr.geias.util.FaceUtil;
 import org.json.JSONArray;
@@ -9,8 +14,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * 人员信息服务实现类
@@ -20,6 +24,8 @@ public class PersonInfoServiceImpl implements PersonInfoService {
     
     @Autowired
     private PersonInfoRepository personInfoRepository;
+    @Autowired
+    private CollegeService collegeService;
 
     @Override
     public PersonInfo login(String username, String password) {
@@ -173,4 +179,67 @@ public class PersonInfoServiceImpl implements PersonInfoService {
         Integer count = personInfoRepository.queryPerson1Count();
         return count == null ? 0 : count;
     }
-} 
+
+    @Override
+    public boolean insertStudentsBatch(List<PersonInfo> studentList) {
+        if (studentList == null || studentList.isEmpty()) {
+            return false;
+        }
+        int insertedCount = personInfoRepository.insertPersons(studentList);
+        // 判断是否全部插入成功
+        return insertedCount == studentList.size();
+    }
+
+    @Override
+    public List<StudentExportExcel> getAllStudents() {
+        return personInfoRepository.queryAllStudentsForExport();
+    }
+
+    /**
+     * 将导入的Excel DTO列表转换为PersonInfo实体，填充默认字段，批量保存
+     */
+    @Override
+    public boolean importStudents(List<StudentImportExcel> importList) {
+        if (importList == null || importList.isEmpty()) {
+            return false;
+        }
+
+        // 预加载学院映射（collegeName -> collegeId）
+        Map<String, Integer> collegeMap = collegeService.getCollegeNameToIdMap();
+
+        List<PersonInfo> personInfoList = new ArrayList<>();
+
+        for (StudentImportExcel dto : importList) {
+            PersonInfo p = new PersonInfo();
+            p.setPersonName(dto.getPersonName());
+            p.setCollegeName(dto.getCollegeName());
+
+            Integer collegeId = collegeMap.get(dto.getCollegeName());
+            if (collegeId == null) {
+                // 学院名未匹配到，跳过或抛异常（根据需求）
+                continue;
+            }
+            p.setCollegeId(collegeId);
+
+            String pinyin = Pinyin.toPinyin(dto.getPersonName(), "").toLowerCase();
+            String uuidSuffix1 = UUID.randomUUID().toString().replace("-", "").substring(0, 2);
+            String uuidSuffix2 = UUID.randomUUID().toString().replace("-", "").substring(0, 4);
+            String username = pinyin + uuidSuffix1;
+            String password = pinyin + uuidSuffix2;
+            p.setUsername(username);
+            p.setPassword(password);
+            p.setEnableStatus(0);
+            p.setCreateTime(new Date());
+
+            personInfoList.add(p);
+        }
+
+        // 批量保存
+        return insertStudentsBatch(personInfoList);
+    }
+
+    @Override
+    public List<StudentWithCollege> getAllStudentsWithCollege() {
+        return personInfoRepository.queryStudentWithCollege();
+    }
+}

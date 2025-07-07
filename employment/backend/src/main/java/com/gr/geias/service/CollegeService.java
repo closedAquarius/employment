@@ -3,6 +3,7 @@ package com.gr.geias.service;
 import com.gr.geias.model.College;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 学院信息服务接口
@@ -62,5 +63,9 @@ public interface CollegeService {
     List<College> getCollegePage(String name, int offset, int limit);
 
     int getCollegeCount(String name);
+
+    public List<College> getAllColleges();
+
+    Map<String, Integer> getCollegeNameToIdMap();
 
 }
