@@ -32,6 +32,13 @@ public class AudioService {
                         .sampleRate(48000)
                         .build();
 
+        // 确保audio目录存在
+        File audioDir = new File("audio");
+        if (!audioDir.exists()) {
+            audioDir.mkdirs();
+            System.out.println("创建audio目录: " + audioDir.getAbsolutePath());
+        }
+
         String name = "audio/" + title + ".mp3";
         File file = new File(name);
         if (file.exists()) {
