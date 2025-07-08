@@ -7,7 +7,7 @@
     </div>
     <div class="navbar-right">
       <span v-if="!isLogin" class="login-btn" @click="goLogin">登录</span>
-      <span v-else class="username">{{ username }}</span>
+      <span v-else class="username" @click="goAdmin" style="cursor: pointer">{{ username }}</span>
     </div>
   </div>
 
@@ -173,13 +173,43 @@ import axios from '@/utils/axios'
 const router = useRouter()
 
 // 登录状态模拟
-const username = localStorage.getItem('username') || ''
-const isLogin = !!username
+const userStr = ref(localStorage.getItem('user') || '')  // userStr 是响应式字符串
+const user = ref(userStr.value ? JSON.parse(userStr.value) : null) // user 是响应式对象
+const isLogin = ref(!!user.value)
+const username = ref(user.value?.nickname || '')
 
 function goLogin() {
-  router.push('/login')
+   window.open("http://localhost:3000", "_blank");
 }
 
+let userCheckTimer = null
+function checkLoginChange() {
+  userCheckTimer = setInterval(() => {
+    const current = localStorage.getItem('user') || ''
+    if (current !== userStr.value) {
+      userStr.value = current
+      try {
+        user.value = current ? JSON.parse(current) : null
+      } catch (e) {
+        user.value = null
+      }
+      isLogin.value = !!user.value
+      username.value = user.value?.nickname || ''
+    }
+  }, 1000)
+}
+onMounted(() => {
+  checkLoginChange()
+})
+onUnmounted(() => {
+  if (userCheckTimer) {
+    clearInterval(userCheckTimer)
+  }
+})
+
+function goAdmin() {
+  window.open("http://localhost:3000", "_blank")
+}
 function goToNews() {
   router.push('/news')
 }
@@ -248,6 +278,7 @@ async function fetchEmploymentNews() {
       tags: item.tags || '就业',
       views: item.readCount || 0
     }))
+    console.log(employmentList.value);
   } catch (e) {
     console.error('获取就业新闻失败', e)
   }

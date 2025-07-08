@@ -3,7 +3,29 @@
 </template>
 
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { useUserStore } from '@/stores/user'
+// 监听登录页发来的消息
+window.addEventListener("message", event => {
+  // 安全校验，确保消息来自可信的登录页
+  if (event.origin !== "http://localhost:3000") return;
+
+  const { user } = event.data;
+  if (user) {
+    const userStore = useUserStore()
+    console.log("收到登录用户信息:", user);
+
+    // 保存 user 信息，比如 localStorage 或 pinia/vuex 状态管理
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("token", user.accessToken);
+    userStore.setUserInfo({
+      id: user.id,
+      username: user.nickname,  
+      token: user.accessToken
+    })
+
+    // TODO: 可以触发登录状态更新，比如刷新用户信息，更新UI等
+  }
+});
 </script>
 
 <style>

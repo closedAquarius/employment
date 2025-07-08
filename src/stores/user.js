@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', {
   actions: {
     setUserInfo(user) {
       this.userId = user.id
-      this.username = user.name
+      this.username = user.nickname
       this.token = user.token
     },
     clearUserInfo() {

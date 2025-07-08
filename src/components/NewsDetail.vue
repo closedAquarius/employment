@@ -88,10 +88,10 @@ const comments = ref([])
 const commentContent = ref('')
 const relatedNews = ref([])
 
-// 假设登录后 userId 存在 localStorage
-const userId = localStorage.getItem('userId')
-const isLogin = !!userId
-
+const userStr = localStorage.getItem('user') || ''
+const user = userStr ? JSON.parse(userStr) : null
+const isLogin = !!user
+const userId = user?.id || null
 function goToDetail(id) {
   router.push(`/news/${id}`)
 }
@@ -149,7 +149,7 @@ async function fetchComments() {
 }
 
 async function handlePostComment() {
-  if (!isLogin) {
+  if (!isLogin || !userId) {
     alert('请先登录后再发表评论')
     return
   }
@@ -166,7 +166,8 @@ async function handlePostComment() {
     commentContent.value = ''
     await fetchComments()
   } catch (e) {
-    alert('评论失败')
+    console.error('评论失败', e)
+    alert('评论失败，请稍后再试')
   }
 }
 </script>
