@@ -1,44 +1,52 @@
-server:
-  port: 8095
-
 spring:
   application:
     name: auth-service
-  
-  # 允许Bean定义覆盖
   main:
     allow-bean-definition-overriding: true
-  
-  # 配置多数据源
+  mvc:
+    static-path-pattern: /static/**
+  aop:
+    proxy-target-class: true
   datasource:
-    # 禁用默认数据源自动配置
-    type: com.zaxxer.hikari.HikariDataSource
-    # 自定义数据源配置由DataSourceConfig类处理
-    mysql:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/graduateemploymentinfo?useUnicode=true&characterEncoding=utf8
-      username: root
-      password: 238373
-      jdbc-url: jdbc:mysql://localhost:3306/graduateemploymentinfo?useUnicode=true&characterEncoding=utf8
-    postgresql:
-      driver-class-name: org.postgresql.Driver
-      url: jdbc:postgresql://localhost:5432/interview
-      username: 238373
-      password: 
-      jdbc-url: jdbc:postgresql://localhost:5432/interview
-  
-  # Redis配置
-  redis:
-    host: localhost
-    port: 6379
-    database: 0
-    timeout: 10000
-    lettuce:
-      pool:
-        max-active: 8
-        max-wait: -1ms
-        max-idle: 8
-        min-idle: 0
+    url: jdbc:mysql://localhost:3306/graduateemploymentinfo?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: Liu050804
+    driver-class-name: com.mysql.jdbc.Driver
+    # 以下是连接池通用配置
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      pool-name: AuthServiceHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+
+# MyBatis配置
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.gr.geias.model
+  type-handlers-package: com.gr.geias.handler
+  configuration:
+    map-underscore-to-camel-case: true
+    use-generated-keys: true
+    use-column-label: true
+
+# 日志配置
+logging:
+  level:
+    com:
+      gr:
+        geias:
+          repository: debug
+
+# 服务器配置
+server:
+  port: 8095
+
+# 添加面试API配置
+employment:
+  api:
+    key: ${EMPLOYMENT_API_KEY:ai-interview-secret-key}  # API密钥，建议通过环境变量配置
 
 # JWT配置
 jwt:
@@ -47,9 +55,18 @@ jwt:
   header: Authorization
   token-prefix: Bearer 
 
-# 日志配置
-logging:
-  level:
-    com.employment.auth: DEBUG
-    org.springframework.web: INFO
-    org.hibernate: INFO 
+# AI面试系统API配置
+ai-interview:
+  api:
+    url: http://localhost:8088  # AI面试系统API地址
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInN1YiI6ImFkbWluIiwidXNlclR5cGUiOjIsImV4cCI6MTcyMTk2NTQ5MH0.AXCTmPqQZ_Aw-BLjV9Hs1GzPuJkA5-3zxjxrKMnQ9Eo
+
+# 爬虫服务配置
+crawler:
+  url: http://localhost:8000  # 爬虫服务URL
+
+# 分页插件配置
+pagehelper:
+  helper-dialect: postgresql
+  reasonable: true
+  support-methods-arguments: true 
