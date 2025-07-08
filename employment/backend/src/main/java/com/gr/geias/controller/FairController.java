@@ -31,7 +31,6 @@ public class FairController {
     public ResponseEntity<List<JobFairWithCompaniesDTO>> getAllJobFairs() {
         return ResponseEntity.ok(jobFairService.getAllJobFairsWithCompanies());
     }
-
     /**
      * 管理员可访问：发布招聘会
      */
@@ -118,4 +117,15 @@ public class FairController {
         return ResponseEntity.ok("审批完成");
     }
     
+    /**
+     * 管理员可访问：按公司申请状态查询所有招聘会及公司申请信息
+     * @param status 公司申请状态（可选，0=待审批，1=通过，2=拒绝，不传为全部）
+     */
+    @GetMapping("/jobfairsWithCompanyStatus")
+    public ResponseEntity<List<JobFairCompany>> getJobFairsWithCompanyStatus(
+            @RequestParam(value = "status", required = false) Integer status) {
+        List<JobFairCompany> list = jobFairCompanyService.selectJobFairCompaniesWithStatus(status);
+        return ResponseEntity.ok(list);
+    }
+
 }

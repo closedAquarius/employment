@@ -24,6 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 不使用 session
                 .and()
                 .authorizeRequests()
+                .antMatchers("/uploads/**").permitAll()
                 // 登录注册
                 .antMatchers(
                         "/api/personinfo/login",
@@ -50,7 +51,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 //FairController
                 .antMatchers(
-                        "/fairs/JobFairWithCompanies",
                         "/fairs/jobfair",
                         "/fairs/jobfairsWithboothstatus",
                         "/fairs/adminReview")
@@ -64,13 +64,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //InitController
                 .antMatchers("/init/getinit",
                         "init/getleve")
-                .hasAnyRole("ADMINISTRATOR", "TEACHER")
+                .hasAnyRole("ADMINISTRATOR", "TEACHER","ENTERPRISE_HR","STUDENT")
 
 
 
                 //FairController
                 .antMatchers(
-                        "/fairs/JobFairWithCompanies",
                         "/fairs/jobfair",
                         "/fairs/jobfairsWithboothstatus",
                         "/fairs/adminReview"

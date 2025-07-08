@@ -13,7 +13,7 @@ import java.util.List;
  * 岗位控制器
  */
 @RestController
-@RequestMapping("/api/jobs")
+@RequestMapping("/jobs")
 public class JobPositionController {
 
     @Autowired

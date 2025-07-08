@@ -1,13 +1,15 @@
 package com.gr.geias.controller;
 
+import com.alibaba.excel.EasyExcel;
+import com.gr.geias.dto.StudentExportExcel;
+import com.gr.geias.dto.StudentImportExcel;
+import com.gr.geias.dto.StudentWithCollege;
 import com.gr.geias.model.OperationLog;
 import com.gr.geias.model.PersonInfo;
 import com.gr.geias.model.Specialty;
 import com.gr.geias.enums.EnableStatusEnums;
-import com.gr.geias.service.OperationLogService;
-import com.gr.geias.service.PersonInfoService;
-import com.gr.geias.service.RouterService;
-import com.gr.geias.service.SpecialtyService;
+import com.gr.geias.service.*;
+import com.gr.geias.util.ExcelUtil;
 import com.gr.geias.util.JwtUtil;
 import com.gr.geias.util.TokenUtil;
 import io.jsonwebtoken.Claims;
@@ -15,7 +17,10 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +43,13 @@ public class PersonInfoController {
 
     @Autowired
     private RouterService routeService;
+
+    @Autowired
+    private CollegeService collegeService;
+
+
+    @Autowired
+    private ExcelUtil excelUtil;
 
     /**
      * 登录
@@ -95,170 +107,6 @@ public class PersonInfoController {
 
     @PostMapping("/get-async-routes")
     public Map<String, Object> getAsyncRoutes(@RequestBody Map<String, Object> requestBody) {
-        /*
-        Map<String, Object> result = new HashMap<>();
-
-        try {
-            List<Map<String, Object>> routes = new ArrayList<>();
-
-            // ===================  创建权限管理路由 ===================
-            Map<String, Object> permissionRouter = new HashMap<>();
-            permissionRouter.put("path", "/permission");
-
-            // 权限管理meta
-            Map<String, Object> permissionMeta = new HashMap<>();
-            permissionMeta.put("title", "权限管理");
-            permissionMeta.put("icon", "ep:lollipop");
-            permissionMeta.put("showLink", false);
-            permissionMeta.put("rank", 10);
-            permissionRouter.put("meta", permissionMeta);
-
-            // 权限管理子路由
-            List<Map<String, Object>> permissionChildren = new ArrayList<>();
-
-            // 页面权限
-            Map<String, Object> pagePermission = new HashMap<>();
-            pagePermission.put("path", "/permission/page/index");
-            pagePermission.put("name", "PermissionPage");
-
-            Map<String, Object> pageMeta = new HashMap<>();
-            pageMeta.put("title", "页面权限");
-            pageMeta.put("roles", Arrays.asList("admin", "common", "0", "1", "2"));
-            pagePermission.put("meta", pageMeta);
-
-            permissionChildren.add(pagePermission);
-
-            // 按钮权限
-            Map<String, Object> buttonPermission = new HashMap<>();
-            buttonPermission.put("path", "/permission/button");
-
-            Map<String, Object> buttonMeta = new HashMap<>();
-            buttonMeta.put("title", "按钮权限");
-            buttonMeta.put("roles", Arrays.asList("admin", "common", "0", "1", "2"));
-            buttonPermission.put("meta", buttonMeta);
-
-            // 按钮权限的子路由
-            List<Map<String, Object>> buttonChildren = new ArrayList<>();
-
-            // 路由返回按钮权限
-            Map<String, Object> buttonRouter = new HashMap<>();
-            buttonRouter.put("path", "/permission/button/router");
-            buttonRouter.put("component", "permission/button/index");
-            buttonRouter.put("name", "PermissionButtonRouter");
-
-            Map<String, Object> buttonRouterMeta = new HashMap<>();
-            buttonRouterMeta.put("title", "路由返回按钮权限");
-            buttonRouterMeta.put("auths", Arrays.asList(
-                    "permission:btn:add",
-                    "permission:btn:edit",
-                    "permission:btn:delete"
-            ));
-            buttonRouter.put("meta", buttonRouterMeta);
-
-            buttonChildren.add(buttonRouter);
-
-            // 登录接口返回按钮权限
-            Map<String, Object> buttonLogin = new HashMap<>();
-            buttonLogin.put("path", "/permission/button/login");
-            buttonLogin.put("component", "permission/button/perms");
-            buttonLogin.put("name", "PermissionButtonLogin");
-
-            Map<String, Object> buttonLoginMeta = new HashMap<>();
-            buttonLoginMeta.put("title", "登录接口返回按钮权限");
-            buttonLogin.put("meta", buttonLoginMeta);
-
-            buttonChildren.add(buttonLogin);
-
-            buttonPermission.put("children", buttonChildren);
-            permissionChildren.add(buttonPermission);
-
-            permissionRouter.put("children", permissionChildren);
-
-            // ===================  创建毕业生就业信息路由 ===================
-            Map<String, Object> graduateRouter = new HashMap<>();
-            graduateRouter.put("path", "/graduate");
-            graduateRouter.put("name", "Graduate");
-            graduateRouter.put("redirect", "/graduate");
-
-            // 毕业生就业信息meta
-            Map<String, Object> graduateMeta = new HashMap<>();
-            graduateMeta.put("icon", "custom/graduate");
-            graduateMeta.put("title", "毕业生就业信息");
-            graduateMeta.put("rank", 0);
-            graduateRouter.put("meta", graduateMeta);
-
-            // 毕业生就业信息子路由
-            List<Map<String, Object>> graduateChildren = new ArrayList<>();
-
-            // 毕业生就业总体数据
-            Map<String, Object> graduateData = new HashMap<>();
-            graduateData.put("path", "/graduate/data");
-            graduateData.put("name", "GraduateData");
-            graduateData.put("component", "graduate/data");
-            graduateData.put("roles", Arrays.asList("admin", "common"));
-
-            Map<String, Object> graduateDataMeta = new HashMap<>();
-            graduateDataMeta.put("title", "毕业生就业总体数据");
-            graduateData.put("meta", graduateDataMeta);
-
-            graduateChildren.add(graduateData);
-
-            // 毕业生主要就业方式
-            Map<String, Object> graduateType = new HashMap<>();
-            graduateType.put("path", "/graduate/type");
-            graduateType.put("name", "GraduateType");
-            graduateType.put("component", "graduate/type");
-            graduateType.put("roles", Arrays.asList("admin", "common"));
-
-            Map<String, Object> graduateTypeMeta = new HashMap<>();
-            graduateTypeMeta.put("title", "毕业生主要就业方式");
-            graduateType.put("meta", graduateTypeMeta);
-
-            graduateChildren.add(graduateType);
-
-            // 毕业生就业工作性质
-            Map<String, Object> graduateAttribute = new HashMap<>();
-            graduateAttribute.put("path", "/graduate/attribute");
-            graduateAttribute.put("name", "GraduateAttribut");
-            graduateAttribute.put("component", "graduate/attribute");
-            graduateAttribute.put("roles", Arrays.asList("admin", "common"));
-
-            Map<String, Object> graduateAttributeMeta = new HashMap<>();
-            graduateAttributeMeta.put("title", "毕业生就业工作性质");
-            graduateAttribute.put("meta", graduateAttributeMeta);
-
-            graduateChildren.add(graduateAttribute);
-
-            // 毕业生主要就业位置
-            Map<String, Object> graduateLocation = new HashMap<>();
-            graduateLocation.put("path", "/graduate/location");
-            graduateLocation.put("name", "GraduateLocation");
-            graduateLocation.put("component", "graduate/location");
-            graduateLocation.put("roles", Arrays.asList("admin", "common"));
-
-            Map<String, Object> graduateLocationMeta = new HashMap<>();
-            graduateLocationMeta.put("title", "毕业生主要就业位置");
-            graduateLocation.put("meta", graduateLocationMeta);
-
-            graduateChildren.add(graduateLocation);
-
-            graduateRouter.put("children", graduateChildren);
-
-            // ===================  组装最终结果 ===================
-            routes.add(permissionRouter);
-            routes.add(graduateRouter);
-
-            result.put("success", true);
-            result.put("data", routes);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.put("success", false);
-            result.put("errMsg", "获取路由配置失败: " + e.getMessage());
-        }
-
-        return result;
-        */
         Map<String, Object> result = new HashMap<>();
 
         try {
@@ -463,4 +311,62 @@ public class PersonInfoController {
         return map;
     }
 
+    @PostMapping("/import-students")
+    public Map<String, Object> importStudents(@RequestParam("file") MultipartFile file) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            // 1. 读取Excel文件，转成导入DTO列表
+            List<StudentImportExcel> importList = EasyExcel.read(file.getInputStream())
+                    .head(StudentImportExcel.class)
+                    .sheet()
+                    .doReadSync();
+
+            if (importList == null || importList.isEmpty()) {
+                result.put("success", false);
+                result.put("errMsg", "导入文件为空");
+                return result;
+            }
+
+            // 2. 调用Service批量转换并保存
+            boolean success = personInfoService.importStudents(importList);
+
+            if (success) {
+                result.put("success", true);
+                result.put("message", "批量导入成功");
+            } else {
+                result.put("success", false);
+                result.put("errMsg", "批量导入失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("success", false);
+            result.put("errMsg", "导入异常: " + e.getMessage());
+        }
+        return result;
+    }
+
+    @GetMapping("/export-students")
+    public void exportStudents(HttpServletResponse response) {
+        try {
+            response.setContentType("application/vnd.ms-excel");
+            response.setCharacterEncoding("utf-8");
+            String fileName = URLEncoder.encode("学生信息", "UTF-8").replaceAll("\\+", "%20");
+            response.setHeader("Content-Disposition",
+                    "attachment; filename=\"" + fileName + ".xlsx\"; filename*=UTF-8''" + fileName + ".xlsx");
+
+
+            List<StudentExportExcel> exportList = personInfoService.getAllStudents();
+            EasyExcel.write(response.getOutputStream(), StudentExportExcel.class)
+                    .sheet("学生信息")
+                    .doWrite(exportList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @GetMapping("/getAllStudents")
+    public List<StudentWithCollege> getAllStudents() {
+        return personInfoService.getAllStudentsWithCollege();
+    }
 } 

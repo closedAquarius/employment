@@ -23,6 +23,8 @@ public class PresentationWithCompanyDTO {
     private Integer companyId;
     private String companyName;
     private String companyUsername;
+    private String companyIntro;
+    private String address;
     private String companyType; // 来自 unit_kind 表
 
 }

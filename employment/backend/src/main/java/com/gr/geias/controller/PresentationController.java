@@ -40,6 +40,7 @@ public class PresentationController {
      */
     @GetMapping("/company/{companyId}")
     public ResponseEntity<List<Presentation>> getPresentationsByCompanyId(@PathVariable Integer companyId) {
+
         List<Presentation> list = presentationService.getPresentationsByCompanyId(companyId);
         return ResponseEntity.ok(list);
     }
@@ -53,7 +54,9 @@ public class PresentationController {
     public ResponseEntity<List<PresentationWithCompanyDTO>> getAllPresentations(
             @RequestParam(required = false) Integer status
     ) {
+        System.out.println("status:" + status);
         List<PresentationWithCompanyDTO> list = presentationService.getAllPresentationsWithCompany(status);
+        System.out.println("list:" + list);
         return ResponseEntity.ok(list);
     }
 
@@ -121,6 +124,7 @@ public class PresentationController {
      */
     @GetMapping("/student/unsigned")
     public ResponseEntity<List<PresentationWithCompanyDTO>> getUnSignedPresentations(@RequestParam Integer studentId) {
+        System.out.println("studentId:" + studentId);
         return ResponseEntity.ok(presentationSignupService.getUnSignedPresentations(studentId));
     }
 

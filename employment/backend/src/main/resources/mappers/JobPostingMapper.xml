@@ -57,4 +57,20 @@
         SELECT * FROM tb_job_posting WHERE position_id = #{id} and job_id=#{jobId}
     </select>
 
+    <select id="getTopPreferredMajors" resultType="map">
+        SELECT
+            major,
+            COUNT(*) AS count
+        FROM (
+            SELECT
+            jt.major
+            FROM tb_job_posting jp,
+            JSON_TABLE(jp.preferred_majors, '$[*]' COLUMNS (major VARCHAR(100) PATH '$')) AS jt
+            WHERE jp.preferred_majors IS NOT NULL
+            ) AS majors
+        GROUP BY major
+        ORDER BY count DESC
+            LIMIT 10
+    </select>
+
 </mapper>
