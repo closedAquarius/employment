@@ -30,6 +30,7 @@ public class RouterServiceImpl implements RouterService {
         routes.add(createGraduateRouter());  // 毕业生就业信息
         routes.add(createOrganizationRouter()); // 组织架构管理
         routes.add(createStaffRouter());     // 人员管理
+        routes.add(createNewsRouter());     //新闻管理
         return routes;
     }
 
@@ -256,6 +257,43 @@ public class RouterServiceImpl implements RouterService {
         return staffRouter;
     }
 
+    private Map<String, Object> createNewsRouter() {
+        Map<String, Object> newsRouter = new HashMap<>();
+        newsRouter.put("path", "/news");
+        newsRouter.put("redirect", "/news/control");
+
+        Map<String, Object> meta = new HashMap<>();
+        meta.put("icon", "custom/news");
+        meta.put("title", "新闻管理");
+        meta.put("rank", 5);
+        newsRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+
+        // 新闻列表
+        Map<String, Object> listChild = new HashMap<>();
+        listChild.put("path", "/news/list");
+        listChild.put("name", "newsList");
+        listChild.put("component", "news/list");
+        Map<String, Object> listMeta = new HashMap<>();
+        listMeta.put("title", "新闻列表");
+        listChild.put("meta", listMeta);
+        children.add(listChild);
+
+        //查看评论
+        Map<String, Object> commentsChild = new HashMap<>();
+        commentsChild.put("path", "/news/comments");  // 使用newsId参数
+        commentsChild.put("name", "newsComments");
+        commentsChild.put("component", "news/comments");
+        Map<String, Object> commentsMeta = new HashMap<>();
+        commentsMeta.put("title", "查看评论");
+        commentsChild.put("meta", commentsMeta);
+        children.add(commentsChild);
+
+        newsRouter.put("children", children);
+        return newsRouter;
+    }
+
     /**
      * 创建学生个人简历路由
      */
@@ -353,7 +391,7 @@ public class RouterServiceImpl implements RouterService {
         matchChild.put("meta", matchMeta);
         children.add(matchChild);
 
-        // AI面试
+        // AI笔试
         Map<String, Object> writeChild = new HashMap<>();
         writeChild.put("path", "/interview/write");
         writeChild.put("name", "write");

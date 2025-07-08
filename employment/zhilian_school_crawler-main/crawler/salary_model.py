@@ -13,6 +13,8 @@ import warnings
 import re
 import jieba
 from collections import Counter
+import time
+import traceback
 
 warnings.filterwarnings('ignore')
 
@@ -25,13 +27,17 @@ plt.rcParams['axes.unicode_minus'] = False  # 解决保存图像负号'-'显示�
 class MySql(object):
     # 建立数据库链接
     def __init__(self):
-        self.connect = pymysql.connect(host="127.0.0.1",
-                                       port=3306,
-                                       user="root",
-                                       password="1933432895www.",
-                                       database="spiderdatabase",
-                                       charset="utf8")
-        self.cursor = self.connect.cursor(cursor=pymysql.cursors.DictCursor)
+        try:
+            self.connect = pymysql.connect(host="127.0.0.1",
+                                        port=3306,
+                                        user="root",
+                                        password="Liu050804",
+                                        database="spiderdatabase",
+                                        charset="utf8")
+            self.cursor = self.connect.cursor(cursor=pymysql.cursors.DictCursor)
+        except Exception as e:
+            print(f"数据库连接错误: {e}")
+            raise
 
     # 关闭链接
     def __del__(self):
@@ -98,7 +104,7 @@ class SalaryDataProcessor:
     def __init__(self):
         self.label_encoders = {}
         self.feature_importances = None
-        self.top_skills = None
+        self.top_skills = []  # 初始化为空列表而不是None
         self.skill_pattern = None
 
     def _encode_categorical(self, df, column):
@@ -179,6 +185,7 @@ class SalaryDataProcessor:
     def _create_skill_features(self, df):
         """为每个常见技能创建二进制特征"""
         if not self.top_skills:
+            self.top_skills = []  # 确保top_skills至少是一个空列表而不是None
             return df
 
         for skill in self.top_skills:
@@ -235,7 +242,11 @@ class SalaryDataProcessor:
         # 7. 选择最终特征
         features = [
                        'province', 'city', 'education', 'scale', 'exp_years', 'scale_value'
-                   ] + [f'skill_{skill}' for skill in self.top_skills if f'skill_{skill}' in df.columns]
+                   ]
+        
+        # 确保top_skills不为None
+        if self.top_skills:
+            features += [f'skill_{skill}' for skill in self.top_skills if f'skill_{skill}' in df.columns]
 
         return df[features], df['avg_salary'] if 'avg_salary' in df.columns else None
 
@@ -258,12 +269,16 @@ class SalaryDataProcessor:
 
             with open(os.path.join(path, 'top_skills.pkl'), 'rb') as f:
                 self.top_skills = pickle.load(f)
+                if self.top_skills is None:
+                    self.top_skills = []  # 如果加载的top_skills为None，设置为空列表
 
             if self.top_skills:
                 self.skill_pattern = '|'.join(self.top_skills)
 
             return True
-        except:
+        except Exception as e:
+            print(f"加载编码器失败: {str(e)}")
+            self.top_skills = []  # 确保在加载失败时top_skills为空列表
             return False
 
 
@@ -425,33 +440,106 @@ class SalaryPredictor:
 
         input_data: 包含用户输入特征的字典
         """
-        # 转换为DataFrame
-        input_df = pd.DataFrame([input_data])
+        try:
+            # 转换为DataFrame
+            input_df = pd.DataFrame([input_data])
 
-        # 预处理
-        X, _ = self.processor.preprocess(input_df, is_training=False)
+            # 预处理
+            X, _ = self.processor.preprocess(input_df, is_training=False)
 
-        # 预测
-        avg_salary = self.model.predict(X)[0]
+            # 预测
+            avg_salary = self.model.predict(X)[0]
 
-        # 计算最低和最高薪资 (±15%)
-        min_salary = avg_salary * 0.85
-        max_salary = avg_salary * 1.15
+            # 计算最低和最高薪资 (±15%)
+            min_salary = avg_salary * 0.85
+            max_salary = avg_salary * 1.15
 
-        # 计算个人匹配度（简单逻辑）
-        # 根据特征重要性计算置信度
-        confidence = 0.85  # 默认值
+            # 计算个人匹配度（简单逻辑）
+            # 根据特征重要性计算置信度
+            confidence = 0.85  # 默认值
+            
+            # 生成预测可视化图表
+            chart_path = self.visualize_prediction(input_data, min_salary, avg_salary, max_salary)
 
-        return {
-            'min_salary': int(min_salary),
-            'max_salary': int(max_salary),
-            'avg_salary': int(avg_salary),
-            'confidence': confidence
-        }
+            return {
+                'min_salary': int(min_salary),
+                'max_salary': int(max_salary),
+                'avg_salary': int(avg_salary),
+                'confidence': confidence,
+                'chart_path': chart_path,
+                'factors': [
+                    {'name': '地区', 'impact': 30},
+                    {'name': '学历', 'impact': 25},
+                    {'name': '经验', 'impact': 20},
+                    {'name': '技能匹配度', 'impact': 15},
+                    {'name': '公司规模', 'impact': 10}
+                ]
+            }
+        except Exception as e:
+            print(f"薪资预测失败: {str(e)}")
+            # 返回默认值
+            return {
+                'min_salary': 5000,
+                'max_salary': 8000,
+                'avg_salary': 6500,
+                'confidence': 0.5,
+                'chart_path': '',
+                'factors': [
+                    {'name': '数据不足', 'impact': 100}
+                ],
+                'error': str(e)
+            }
+    
+    def visualize_prediction(self, input_data, min_salary, avg_salary, max_salary):
+        """可视化预测结果并保存图表"""
+        try:
+            # 创建目录（如果不存在）
+            upload_dir = "../../../employment/backend/uploads/predictions"
+            os.makedirs(upload_dir, exist_ok=True)
+            
+            # 生成唯一文件名
+            filename = f"salary_prediction_{int(time.time())}.png"
+            filepath = os.path.join(upload_dir, filename)
+            
+            # 使用非交互式后端，避免NSWindow错误
+            import matplotlib
+            matplotlib.use('Agg')  # 确保使用非交互式后端
+            
+            # 创建图表
+            plt.figure(figsize=(10, 6))
+            
+            # 绘制薪资范围
+            x = ['最低薪资', '平均薪资', '最高薪资']
+            y = [min_salary, avg_salary, max_salary]
+            
+            # 使用简单的条形图而不是seaborn，减少依赖
+            plt.bar(x, y, color=['#5470c6', '#91cc75', '#fac858'])
+            
+            # 设置标题和标签
+            plt.title(f"{input_data.get('name', '职位')}薪资预测 - {input_data.get('city', '未知')}地区")
+            plt.ylabel('薪资 (元/月)')
+            
+            # 在柱状图上显示具体数值
+            for i, v in enumerate(y):
+                plt.text(i, v + 500, f"{int(v)}", ha='center')
+                
+            plt.tight_layout()
+            
+            # 保存图表
+            plt.savefig(filepath, dpi=300, bbox_inches='tight')
+            plt.close('all')  # 确保关闭所有图形
+            
+            print(f"图表已保存: {filepath}")
+            # 返回相对路径，供前端访问
+            return f"predictions/{filename}"
+        except Exception as e:
+            print(f"图表生成失败: {str(e)}")
+            traceback.print_exc()
+            return ""  # 出错时返回空字符串
 
 
 # 数据可视化
-def visualize_data(df, save_dir='plots'):
+def visualize_data(df, save_dir='../../../employment/backend/uploads/plots'):
     """生成数据可视化图表"""
     print("生成数据可视化...")
 
