@@ -29,10 +29,11 @@ public class RouterServiceImpl implements RouterService {
         List<Map<String, Object>> routes = new ArrayList<>();
         routes.add(createHomeRouter());      // 首页
         routes.add(createGraduateRouter());  // 毕业生就业信息
+        routes.add(createAdminJobAndPresentationRouter());   // 宣讲会和招聘会管理
+        routes.add(createNewsRouter());  // 新闻管理
         routes.add(createOrganizationRouter()); // 组织架构管理
         routes.add(createStaffRouter());     // 人员管理
-        routes.add(createAdminJobAndPresentationRouter());       // 宣讲会和招聘会管理
-        routes.add(createScreenRouter());   // 数字大屏
+        // routes.add(createScreenRouter());   // 数字大屏
         routes.add(createMessageRouter());  // 消息管理
         return routes;
     }
@@ -162,6 +163,47 @@ public class RouterServiceImpl implements RouterService {
     }
 
     /**
+     * 创建新闻管理路由
+     */
+    private Map<String, Object> createNewsRouter() {
+        Map<String, Object> graduateRouter = new HashMap<>();
+        graduateRouter.put("path", "/news");
+        graduateRouter.put("name", "News");
+        graduateRouter.put("redirect", "/news");
+
+        Map<String, Object> meta = new HashMap<>();
+        meta.put("icon", "custom/graduate");
+        meta.put("title", "就业新闻管理");
+        meta.put("rank", 4);
+        graduateRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+
+        // 毕业生就业总体数据
+        Map<String, Object> dataChild = new HashMap<>();
+        dataChild.put("path", "/news/list");
+        dataChild.put("name", "NewsList");
+        dataChild.put("component", "news/list");
+        Map<String, Object> dataMeta = new HashMap<>();
+        dataMeta.put("title", "新闻管理");
+        dataChild.put("meta", dataMeta);
+        children.add(dataChild);
+
+        // 毕业生主要就业方式
+        Map<String, Object> typeChild = new HashMap<>();
+        typeChild.put("path", "/news/comments");
+        typeChild.put("name", "NewsComments");
+        typeChild.put("component", "news/comments");
+        Map<String, Object> typeMeta = new HashMap<>();
+        typeMeta.put("title", "评论管理");
+        typeChild.put("meta", typeMeta);
+        children.add(typeChild);
+
+        graduateRouter.put("children", children);
+        return graduateRouter;
+    }
+
+    /**
      * 创建组织架构管理路由
      */
     private Map<String, Object> createOrganizationRouter() {
@@ -172,7 +214,7 @@ public class RouterServiceImpl implements RouterService {
         Map<String, Object> meta = new HashMap<>();
         meta.put("icon", "custom/organization");
         meta.put("title", "组织架构管理");
-        meta.put("rank", 3);
+        meta.put("rank", 5);
         organizationRouter.put("meta", meta);
 
         List<Map<String, Object>> children = new ArrayList<>();
@@ -232,7 +274,7 @@ public class RouterServiceImpl implements RouterService {
         Map<String, Object> meta = new HashMap<>();
         meta.put("icon", "custom/person");
         meta.put("title", "人员管理");
-        meta.put("rank", 4);
+        meta.put("rank", 6);
         staffRouter.put("meta", meta);
 
         List<Map<String, Object>> children = new ArrayList<>();
@@ -280,7 +322,7 @@ public class RouterServiceImpl implements RouterService {
         Map<String, Object> meta = new HashMap<>();
         meta.put("icon", "custom/jobFair");
         meta.put("title", "宣讲与招聘");
-        meta.put("rank", 5);
+        meta.put("rank", 3);
         graduateRouter.put("meta", meta);
 
         List<Map<String, Object>> children = new ArrayList<>();
