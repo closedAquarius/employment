@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/jobs")
@@ -26,5 +28,14 @@ public class JobImportController {
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to import job postings: " + e.getMessage());
         }
+    }
+
+
+    @GetMapping("/top-majors")
+    public List<Map<String, Object>> getTopPreferredMajors() {
+        System.out.println("getTopPreferredMajors");
+        System.out.println(jobImportService.getTopPreferredMajors());
+        System.out.println("=======================================");
+        return jobImportService.getTopPreferredMajors();
     }
 }

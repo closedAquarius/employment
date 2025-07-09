@@ -63,11 +63,19 @@ public class ResumeService {
     }
 
     public Resume findInterView(String name) {
-        Resume resume = this.resumeRepository.findByName(name);
-        if (resume == null) {
+        // 修改为使用findAll并按ID排序，然后返回最新的一条记录
+        List<Resume> resumes = this.resumeRepository.findAll()
+                .stream()
+                .filter(r -> r.getName().equals(name))
+                .sorted((r1, r2) -> r2.getId().compareTo(r1.getId()))  // 按ID降序排序
+                .collect(Collectors.toList());
+                
+        if (resumes.isEmpty()) {
             throw new IllegalArgumentException("Interview not found");
         }
-        return resume;
+        
+        // 返回最新的一条记录
+        return resumes.get(0);
     }
 
     public Resume findInterView(Long id) {
@@ -79,8 +87,11 @@ public class ResumeService {
     }
 
     public void changeTestReuslt(String name, int score, String evaluate) {
-        var resume = findInterView(name);
+        Resume resume = findInterView(name);
         resume.setScore(score);
+        resume.setEvaluate(evaluate);
+        
+        // 根据分数设置面试状态
         switch (score) {
             case 5:
                 resume.setInterViewStatus(InterViewStatus.PERFECT);
@@ -95,12 +106,19 @@ public class ResumeService {
                 resume.setInterViewStatus(InterViewStatus.ELIMINATE);
                 break;
         }
-        resume.setEvaluate(evaluate);
-        String mp3Path = this.audioService.getSpeech(resume.getId() + name,evaluate);
+        
+        try {
+            // 尝试生成音频文件，但不影响主要功能
+            String mp3Path = audioService.getSpeech(score + name, evaluate);
         resume.setMp3Path(mp3Path);
+        } catch (Exception e) {
+            // 记录错误但继续执行
+            System.err.println("音频生成失败，但继续保存笔试结果: " + e.getMessage());
+        }
+        
+        // 设置完成状态
         resume.setIsDoneStatus(IsDoneStatus.ONE_DONE);
-
-        this.resumeRepository.save(resume);
+        resumeRepository.save(resume);
     }
 
     public void changeInterview(String name, String evaluate) {

@@ -6,6 +6,7 @@ import com.guangge.Interview.record.ProgramRecord;
 import com.guangge.Interview.util.CommonResult;
 import com.guangge.Interview.vo.CvRequest;
 import com.guangge.Interview.vo.UserResponse;
+import feign.form.FormData;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,14 @@ public interface ConsumerClient {
     List<InterViewRecord> findInterView(@RequestParam("question") String question);
 
     @PostMapping(value="/interview/face2faceChat", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "audio/wav")
-    ResponseEntity<byte[]> face2faceChat(@RequestParam("chatId") String chatId, @RequestParam(value ="userName", required = false) String userName,
-                                                @RequestParam(value = "audio", required = false) MultipartFile audio);
+    ResponseEntity<byte[]> face2faceChat(@RequestParam("chatId") String chatId, 
+                                      @RequestParam(value ="userName", required = false) String userName,
+                                      @RequestPart(value = "audio", required = false) MultipartFile audio);
+    
+    @PostMapping(value="/interview/face2faceChatBytes", produces = "audio/wav")
+    byte[] face2faceChatBytes(@RequestParam("chatId") String chatId, 
+                                     @RequestParam(value ="userName", required = false) String userName,
+                                     @RequestParam(value ="audioData", required = false) String base64AudioData);
 
     @GetMapping(value="/interview/welcomemp3", produces = "audio/mp3")
     ResponseEntity<byte[]> welcomemp3();

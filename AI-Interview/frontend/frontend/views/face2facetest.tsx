@@ -6,6 +6,7 @@ import { FaMicrophone, FaStop, FaPaperPlane } from 'react-icons/fa';
 import FaceVerificationDialog from './FaceVerificationDialog';
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
 import { Notification } from '@vaadin/react-components/Notification.js';
+import { Button } from '@vaadin/react-components/Button.js';
 
 export const config: ViewConfig = { menu: { order: 1, icon: 'vaadin:users' }, title: '智联面试' };
 
@@ -94,19 +95,31 @@ const AudioRecorder = () => {
 
     try {
       console.log(`Starting interview with userName: ${userName}, userId: ${userId || 'undefined'}`);
+      // 检查FormData内容
+      for (let pair of formData.entries()) {
+        console.log(`FormData entry - ${pair[0]}: ${pair[1]}`);
+      }
+      
       const response = await fetch(`/interview/face2faceChat`, {
         method: 'POST',
-        headers: token ? {
-          'Authorization': `Bearer ${token}`
-        } : {},
+        headers: {
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+          // 不要手动设置Content-Type，让浏览器自动设置带boundary的multipart/form-data
+        },
         body: formData,
       });
 
+      console.log(`Response status: ${response.status}`);
+      console.log(`Response headers: ${JSON.stringify([...response.headers].reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {}))}`);
+
       if (!response.ok) {
+        const errorText = await response.text().catch(() => "无法获取错误详情");
+        console.error(`HTTP error! Status: ${response.status}, Details: ${errorText}`);
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const responseBlob = await response.blob();
+      console.log(`Response blob type: ${responseBlob.type}, size: ${responseBlob.size}`);
       const audioUrl = URL.createObjectURL(responseBlob);
 
       // 获取状态信息
@@ -177,9 +190,10 @@ const AudioRecorder = () => {
       console.log(`Sending audio with userName: ${userName}, userId: ${userId || 'undefined'}`);
       const response = await fetch(`/interview/face2faceChat`, {
         method: 'POST',
-        headers: token ? {
-          'Authorization': `Bearer ${token}`
-        } : {},
+        headers: {
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+          // 不要手动设置Content-Type，让浏览器自动设置带boundary的multipart/form-data
+        },
         body: formData,
       });
 
@@ -207,7 +221,7 @@ const AudioRecorder = () => {
   };
 
   // 播放音频
-  const playAudio = (url) => {
+  const playAudio = (url: string) => {
     const audio = new Audio(url);
     audio.play().catch(error => {
       console.error('Error playing audio:', error);
@@ -225,6 +239,90 @@ const AudioRecorder = () => {
       }
     };
   };
+
+  // 测试文件上传
+  const testFileUpload = async () => {
+    // 创建一个简单的文本文件作为测试
+    const blob = new Blob(['This is a test file'], { type: 'text/plain' });
+    const testFile = new File([blob], 'test.txt', { type: 'text/plain' });
+    
+    const formData = new FormData();
+    formData.append('file', testFile);
+    
+    try {
+      console.log('Testing file upload...');
+      const response = await fetch('/interview/test-upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      const result = await response.text();
+      console.log('File upload test result:', result);
+      showNotification('文件上传测试结果: ' + result, 'success');
+    } catch (error: any) {
+      console.error('Error testing file upload:', error);
+      showNotification(`文件上传测试失败: ${error.message}`);
+    }
+  };
+  
+  // 测试直接音频端点
+  const testDirectAudio = async () => {
+    try {
+      console.log('Testing direct audio endpoint...');
+      const response = await fetch(`/interview/test-audio?chatId=${chatId}&userName=${userName}`, {
+        method: 'POST',
+        headers: {
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+      });
+      
+      console.log(`Response status: ${response.status}`);
+      
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => '');
+        throw new Error(`HTTP error! Status: ${response.status}, Details: ${errorText}`);
+      }
+
+      const responseBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(responseBlob);
+      
+      setAudioUrl(audioUrl);
+      playAudio(audioUrl);
+      showNotification('测试音频生成成功！', 'success');
+      
+    } catch (error: any) {
+      console.error('Error testing direct audio endpoint:', error);
+      showNotification(`测试音频失败: ${error.message}`);
+    }
+  };
+  
+  // 添加测试按钮
+  useEffect(() => {
+    // 按下Ctrl+Shift+T时执行测试
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+        e.preventDefault();
+        testFileUpload();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // 添加测试按钮快捷键
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+Shift+A 触发测试音频
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        e.preventDefault();
+        testDirectAudio();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [chatId, userName]);
 
   return (
   <div>
@@ -355,6 +453,21 @@ const AudioRecorder = () => {
           </div>
         )}
       </div>
+      {/* 调试按钮 */}
+        <Button
+          onClick={testDirectAudio}
+          style={{
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: 1000,
+            backgroundColor: '#444',
+            color: 'white',
+            fontSize: '12px'
+          }}
+        >
+          测试音频
+        </Button>
     </div>
   );
 };

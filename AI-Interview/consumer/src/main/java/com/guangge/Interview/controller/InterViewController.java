@@ -26,6 +26,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import org.apache.commons.io.IOUtils;
+import org.springframework.http.HttpStatus;
+import java.util.Base64;
+import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
+
 
 @RestController
 @RequestMapping("interview")
@@ -64,18 +70,16 @@ public class InterViewController {
     /**
      * 面试接口
      * @param chatId 回话id
+     * @param userName 用户名
      * @param audio 面试者回答音频
      * @return 面试官问题音频
-     * @throws IOException
-     * @throws InterruptedException
-     * @throws UnsupportedAudioFileException
      */
-    @PostMapping(value="/face2faceChat", produces = "audio/wav")
+    @PostMapping(value="/face2faceChat", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "audio/wav")
     public ResponseEntity<byte[]> face2faceChat(@RequestParam("chatId") String chatId,
                                                @RequestParam(value ="userName", required = false) String userName,
                                                @RequestPart(value = "audio", required = false) MultipartFile audio) {
         try {
-            logger.info("Received face2face request: chatId={}, userName={}, audio={}", 
+            logger.info("Received face2face request at consumer: chatId={}, userName={}, audio={}", 
                       chatId, userName, (audio != null ? "present" : "null"));
                       
             String completed = "";
@@ -83,11 +87,14 @@ public class InterViewController {
             
             // 如果只有用户名，没有音频，则处理初始欢迎消息
             if (StringUtils.hasLength(userName) && audio == null) {
-                text = userName;
-                logger.info("Processing welcome message for user: {}", userName);
+                // 明确指示大模型获取用户简历并开始面试
+                text = "我是" + userName + "，请获取我的简历并开始面试";
+                logger.info("Processing welcome message for user: {}, instructing AI to get resume", userName);
             } 
             // 如果有音频，处理用户语音输入
             else if (audio != null) {
+                logger.info("Processing audio file: size={}, contentType={}", 
+                           audio.getSize(), audio.getContentType());
                 File tempFile = File.createTempFile("audio-", ".opus");
                 audio.transferTo(tempFile);
                 File convertFile = AudioConverter.convertToWav(tempFile);
@@ -118,6 +125,7 @@ public class InterViewController {
 
             // 文字转语音
             byte[] audioResponse = speechService.textToSpeech(response);
+            logger.info("Generated audio response: size={} bytes", audioResponse.length);
 
             return ResponseEntity.ok()
                     .header("Content-Type", "audio/wav")
@@ -126,6 +134,153 @@ public class InterViewController {
         } catch (Exception e) {
             logger.error("Error in face2faceChat: ", e);
             return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /**
+     * 面试接口 - 使用文件路径
+     * @param chatId 回话id
+     * @param userName 用户名
+     * @param audioPath 音频文件路径
+     * @return 面试官问题音频
+     */
+    @PostMapping(value="/face2faceChatWithPath", produces = "audio/wav")
+    public ResponseEntity<byte[]> face2faceChatWithPath(@RequestParam("chatId") String chatId,
+                                                      @RequestParam(value ="userName", required = false) String userName,
+                                                      @RequestParam(value ="audioPath", required = false) String audioPath) {
+        try {
+            logger.info("Received face2face request with file path: chatId={}, userName={}, audioPath={}", 
+                      chatId, userName, audioPath);
+
+            // Process based on whether we have audio or not
+            if (audioPath == null || audioPath.isEmpty()) {
+                // No audio - just generate welcome message
+                logger.info("No audio file path provided - generating welcome message");
+                // 处理欢迎消息，修改为与其他方法一致的格式
+                String text = "我是" + userName + "，请获取我的简历并开始面试";
+                logger.info("Processing welcome message for user: {}, instructing AI to get resume", userName);
+                
+                // 获取大模型响应
+                String response = interviewAssistant.chat(chatId, text);
+                logger.info("AI response: {}", response);
+                
+                byte[] audioResponse = speechService.textToSpeech(response);
+                return ResponseEntity.ok()
+                        .header("Content-Type", "audio/wav")
+                        .body(audioResponse);
+            } else {
+                // We have audio - process the interview
+                File audioFile = new File(audioPath);
+                if (!audioFile.exists()) {
+                    logger.warn("Audio file not found at path: {}", audioPath);
+                    return ResponseEntity.badRequest()
+                        .body(("Audio file not found at: " + audioPath).getBytes());
+                }
+                
+                logger.info("Reading audio file from path: {}, size: {} bytes", audioPath, audioFile.length());
+                
+                // 通过路径处理音频文件
+                String text = "";
+                try {
+                    File convertFile = AudioConverter.convertToWav(audioFile);
+                    text = speechToTextService.transcribeAudio(convertFile);
+                    convertFile.delete();
+                } catch (Exception e) {
+                    logger.error("Error processing audio file: {}", e.getMessage());
+                    text = "音频处理失败，请重新发送";
+                }
+                
+                // 获取大模型响应
+                String response = interviewAssistant.chat(chatId, text);
+                logger.info("AI response: {}", response);
+                
+                // 文字转语音
+                byte[] audioResponse = speechService.textToSpeech(response);
+                
+                return ResponseEntity.ok()
+                        .header("Content-Type", "audio/wav")
+                        .body(audioResponse);
+            }
+        } catch (Exception e) {
+            logger.error("Error processing face2face chat: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(("Error processing face2face chat: " + e.getMessage()).getBytes());
+        }
+    }
+
+    /**
+     * 面试接口 - 使用Base64编码的音频数据
+     * @param chatId 回话id
+     * @param userName 用户名
+     * @param base64AudioData Base64编码的音频数据
+     * @return 面试官问题音频
+     */
+    @PostMapping(value="/face2faceChatBytes", produces = "audio/wav")
+    public byte[] face2faceChatBytes(@RequestParam("chatId") String chatId,
+                                                  @RequestParam(value ="userName", required = false) String userName,
+                                                  @RequestParam(value ="audioData", required = false) String base64AudioData) {
+        try {
+            logger.info("Received face2face request with base64 audio data: chatId={}, userName={}, audioDataLength={}", 
+                      chatId, userName, (base64AudioData != null ? base64AudioData.length() : 0));
+
+            // Process based on whether we have audio or not
+            if (base64AudioData == null || base64AudioData.isEmpty()) {
+                // No audio - just generate welcome message
+                logger.info("No audio data provided - processing welcome message");
+                // 处理欢迎消息，修改为与face2faceChat方法一致的格式
+                String text = "我是" + userName + "，请获取我的简历并开始面试";
+                logger.info("Processing welcome message for user: {}, instructing AI to get resume", userName);
+                
+                // 获取大模型响应
+                String response = interviewAssistant.chat(chatId, text);
+                logger.info("AI response: {}", response);
+                
+                return speechService.textToSpeech(response);
+            } else {
+                // We have audio - process the interview
+                // 解码Base64音频数据
+                byte[] audioBytes = Base64.getDecoder().decode(base64AudioData);
+                logger.info("Decoded audio data, size: {} bytes", audioBytes.length);
+                
+                // 保存为临时文件
+                File tempFile = File.createTempFile("audio-", ".wav");
+                try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                    fos.write(audioBytes);
+                }
+                
+                // 处理音频文件
+                String text = "";
+                try {
+                    File convertFile = AudioConverter.convertToWav(tempFile);
+                    text = speechToTextService.transcribeAudio(convertFile);
+                    convertFile.delete();
+                    
+                    // 处理语音识别结果为空的情况
+                    if (text == null || text.trim().isEmpty()) {
+                        logger.warn("Speech recognition returned empty text, using default message");
+                        text = "我没有听清楚，请再说一遍";
+                    }
+                } catch (Exception e) {
+                    logger.error("Error processing audio file: {}", e.getMessage());
+                    text = "音频处理失败，请重新发送";
+                } finally {
+                    tempFile.delete();
+                }
+                
+                // 获取大模型响应
+                String response = interviewAssistant.chat(chatId, text);
+                logger.info("AI response: {}", response);
+                
+                // 文字转语音
+                return speechService.textToSpeech(response);
+            }
+        } catch (Exception e) {
+            logger.error("Error processing face2face chat with bytes: {}", e.getMessage(), e);
+            try {
+                return ("Error processing face2face chat: " + e.getMessage()).getBytes("UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                return new byte[0];
+            }
         }
     }
 
@@ -170,5 +325,24 @@ public class InterViewController {
                                 """;
         Flux<String> result = this.programAssistant.reviewQuestion(request.getQuestion(),request.getInput(),request.getOutput(),request.getCode());
         return result;
+    }
+
+    /**
+     * 测试文件上传接口
+     * @param file 上传的文件
+     * @return 文件信息
+     */
+    @PostMapping("/test-upload")
+    public ResponseEntity<String> testUpload(@RequestPart("file") MultipartFile file) {
+        logger.info("Received test upload request: filename={}, size={}, contentType={}", 
+                  file.getOriginalFilename(), file.getSize(), file.getContentType());
+        
+        StringBuilder info = new StringBuilder();
+        info.append("File received successfully!\n");
+        info.append("Filename: ").append(file.getOriginalFilename()).append("\n");
+        info.append("Size: ").append(file.getSize()).append(" bytes\n");
+        info.append("Content Type: ").append(file.getContentType()).append("\n");
+        
+        return ResponseEntity.ok(info.toString());
     }
 }

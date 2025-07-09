@@ -4,13 +4,17 @@ import pymysql
 class Match(object):
     # 建立数据库链接
     def __init__(self):
-        self.connect = pymysql.connect(host="127.0.0.1",
-                                       port=3306,
-                                       user="root",
-                                       password="1933432895www.",
-                                       database="spiderdatabase",
-                                       charset="utf8")
-        self.cursor = self.connect.cursor(cursor=pymysql.cursors.DictCursor)
+        try:
+            self.connect = pymysql.connect(host="127.0.0.1",
+                                           port=3306,
+                                           user="root",
+                                           password="Liu050804",
+                                           database="spiderdatabase",
+                                           charset="utf8")
+            self.cursor = self.connect.cursor(cursor=pymysql.cursors.DictCursor)
+        except Exception as e:
+            print(f"数据库连接错误: {e}")
+            raise
 
     # 关闭链接
     def __del__(self):

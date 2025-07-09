@@ -46,6 +46,7 @@
     "react-pdf": "^10.0.1",
     "react-router-dom": "6.29.0",
     "react-spinners": "^0.15.0",
+    "react-syntax-highlighter": "^15.6.1",
     "react-webcam": "^7.2.0"
   },
   "devDependencies": {
@@ -139,7 +140,7 @@
       "workbox-core": "7.3.0",
       "workbox-precaching": "7.3.0"
     },
-    "hash": "f393fe20d08fd0dd7d2e0a2a95b00584368fdeeab7541e8b6d61708337bf3948"
+    "hash": "954a5a54f9dd702608df89a3fa075288e9908eaa447a0030b606d4a1f39bd2de"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -180,6 +181,7 @@
     "react-webcam": "$react-webcam",
     "file-saver": "$file-saver",
     "ejs": "$ejs",
-    "esbuild": "$esbuild"
+    "esbuild": "$esbuild",
+    "react-syntax-highlighter": "$react-syntax-highlighter"
   }
 }

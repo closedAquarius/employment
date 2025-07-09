@@ -521,7 +521,7 @@ public class RouterServiceImpl implements RouterService {
         matchChild.put("meta", matchMeta);
         children.add(matchChild);
 
-        // AI面试
+        // AI笔试
         Map<String, Object> writeChild = new HashMap<>();
         writeChild.put("path", "/interview/write");
         writeChild.put("name", "write");

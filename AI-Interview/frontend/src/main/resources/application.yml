@@ -4,6 +4,12 @@ feign:
       default: # 适用于所有 Feign Client
         connectTimeout: 5000  # 连接超时 5 秒
         readTimeout: 20000    # 读取超时 10 秒
+  httpclient:
+    enabled: true
+    max-connections: 200
+    max-connections-per-route: 50
+    connection-timeout: 5000
+    socket-timeout: 20000
 
 server:
   port: 8084
@@ -21,6 +27,23 @@ spring:
         period: 0  # 开发阶段禁用缓存
   mvc:
     static-path-pattern: /**
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 2KB
+      location: ${java.io.tmpdir}
+      resolve-lazily: false
+  codec:
+    max-in-memory-size: 10MB
+
+logging:
+  level:
+    feign: DEBUG
+    com.guangge.Interview: DEBUG
+    org.springframework.web.client.RestTemplate: DEBUG
+    org.springframework.web.multipart: DEBUG
 
 # 应用自定义配置
 app:
