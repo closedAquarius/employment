@@ -8,11 +8,18 @@ import com.itextpdf.layout.font.FontProvider;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Document;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+@Component
 public class MarkdownToPdfConverter {
+    
+    @Value("${python.path}")
+    private String pythonPath;
+    
     /**
      * 将Markdown转换为HTML
      */
@@ -55,9 +62,9 @@ public class MarkdownToPdfConverter {
         }
     }
 
-    public static void html2Pdf(String html, String outputPath, String script) throws IOException, InterruptedException {
+    public void html2Pdf(String html, String outputPath, String script) throws IOException, InterruptedException {
         // 调用 extract_text.py 提取文本
-        ProcessBuilder processBuilder = new ProcessBuilder("python", script, html, outputPath);
+        ProcessBuilder processBuilder = new ProcessBuilder(pythonPath, script, html, outputPath);
         processBuilder.redirectErrorStream(true); // 合并标准输出和错误输出
         Process process = processBuilder.start();
 
