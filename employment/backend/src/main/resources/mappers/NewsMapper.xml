@@ -58,7 +58,7 @@
         FROM tb_news
         WHERE is_deleted = 0
         <if test="tags != null and tags != ''">
-            AND tags = #{tags}
+            AND tags LIKE CONCAT('%', #{tags}, '%')
         </if>
         ORDER BY publish_time DESC
         LIMIT #{offset}, #{size}

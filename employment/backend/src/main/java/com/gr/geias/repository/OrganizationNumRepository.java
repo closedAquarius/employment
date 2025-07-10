@@ -26,7 +26,7 @@ public interface OrganizationNumRepository {
      * @param collegeId 学院id
      * @return
      */
-    @Select("select sum from tb_organization_num where college_id=#{collegeId}")
+    @Select("select SUM(sum) from tb_organization_num where college_id=#{collegeId} group by college_id")
     Integer queryCountByCollegeId(@Param("collegeId")Integer collegeId);
 
     /**

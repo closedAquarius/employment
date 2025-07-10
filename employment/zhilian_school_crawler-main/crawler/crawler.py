@@ -272,13 +272,13 @@ def crawl_major_jobs(driver, major_name, major_code,start_index):
     page_index = 0
     try:
         # 初始化数据文件
-        data_file = f"./crawler/data/{start_index}_{major_code}_{major_name}.json"
+        data_file = f"../../backend/src/main/resources/data/all_data.json"
         os.makedirs(os.path.dirname(data_file), exist_ok=True)
         if not os.path.exists(data_file):
             with open(data_file, "w", encoding="utf-8") as f:
                 json.dump([], f, ensure_ascii=False, indent=4)
-        else:
-            clear_half_file(data_file)
+        # else:
+        #     clear_half_file(data_file)
         time.sleep(3)# 新建文件等1s
         url = f"https://xiaoyuan.zhaopin.com/search/index?refcode=4404&cateType=major&city=538%2C539%2C540&degree=4%2C3%2C10%2C1&sourceType=2&position=2%2C5&major={major_code}"
         driver.get(url)
@@ -521,6 +521,7 @@ def save_progress(progress_data):
 
 
 def run_spider(args):
+    auto = args.get("auto", False)
     """主函数，运行爬虫"""
     # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     # driver = webdriver.Chrome(executable_path="D:\Download\chromedriver-win64\chromedriver.exe")
@@ -532,7 +533,7 @@ def run_spider(args):
         # 获取专业代码映射
         job_class_map = get_job_class_map()
 
-        get_job_positions(driver, job_class_map, args.auto)
+        get_job_positions(driver, job_class_map, auto)
 
         print("爬取完成，数据已保存到 job_positions.json")
     finally:

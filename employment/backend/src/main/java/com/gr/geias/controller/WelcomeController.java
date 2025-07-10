@@ -164,7 +164,9 @@ public class WelcomeController {
                 employmentInformation.setCollege(college);
                 Integer count = employmentInformationService.getCount(employmentInformation,
                         null, null);
+                System.out.println("count:" + count);
                 Integer integer = organizationNumService.getcollegeCount(college.getCollegeId());
+                System.out.println("integer:" + integer);
                 float ratio =0f;
                 if (integer!=0){
                     ratio = (float)count / (float)integer;

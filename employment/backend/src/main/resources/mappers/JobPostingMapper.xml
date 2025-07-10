@@ -33,9 +33,9 @@
          update_date, job_description, job_place)
         VALUES
             (#{positionId}, #{positionName}, #{city}, #{salary}, #{companyName},
-             #{companyTags}, #{educationRequirement},
-             #{experienceRequired}, #{jobId}, #{recruitNumber}, #{preferredMajors},
-             #{date}, #{description}, #{place})
+        #{companyTags}, #{educationRequirement},
+        #{experienceRequired}, #{jobId}, #{recruitNumber}, #{preferredMajors},
+        #{date}, #{description}, #{place})
     </insert>
 
     <insert id="batchInsert" parameterType="java.util.List">
@@ -54,23 +54,30 @@
     </insert>
 
     <select id="findById" resultMap="JobPostingResult">
-        SELECT * FROM tb_job_posting WHERE position_id = #{id} and job_id=#{jobId}
+        SELECT *
+        FROM tb_job_posting
+        WHERE job_id=#{jobId}
     </select>
 
-    <select id="getTopPreferredMajors" resultType="map">
-        SELECT
-            major,
-            COUNT(*) AS count
-        FROM (
-            SELECT
-            jt.major
-            FROM tb_job_posting jp,
-            JSON_TABLE(jp.preferred_majors, '$[*]' COLUMNS (major VARCHAR(100) PATH '$')) AS jt
-            WHERE jp.preferred_majors IS NOT NULL
-            ) AS majors
-        GROUP BY major
-        ORDER BY count DESC
-            LIMIT 10
+    <delete id="deleteAll">
+        DELETE FROM tb_job_posting
+    </delete>
+
+    <select id="selectJobList" resultMap="JobPostingResult">
+        SELECT *
+        FROM tb_job_posting j
+            LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="findByIdCount" resultType="int">
+        SELECT  COUNT(*)
+        FROM tb_job_posting
+        where job_id=#{jobId}
+    </select>
+
+    <select id="selectTotalJobCount" resultType="int" >
+        SELECT  COUNT(*)
+        FROM tb_job_posting
     </select>
 
 </mapper>

@@ -11,7 +11,7 @@ import pickle
 import os
 import warnings
 import re
-import jieba
+
 from collections import Counter
 import time
 import traceback
@@ -29,11 +29,11 @@ class MySql(object):
     def __init__(self):
         try:
             self.connect = pymysql.connect(host="127.0.0.1",
-                                        port=3306,
-                                        user="root",
-                                        password="Liu050804",
-                                        database="spiderdatabase",
-                                        charset="utf8")
+                                           port=3306,
+                                           user="root",
+                                           password="sh20051015",
+                                           database="spiderdatabase",
+                                           charset="utf8")
             self.cursor = self.connect.cursor(cursor=pymysql.cursors.DictCursor)
         except Exception as e:
             print(f"数据库连接错误: {e}")
@@ -241,9 +241,9 @@ class SalaryDataProcessor:
 
         # 7. 选择最终特征
         features = [
-                       'province', 'city', 'education', 'scale', 'exp_years', 'scale_value'
-                   ]
-        
+            'province', 'city', 'education', 'scale', 'exp_years', 'scale_value'
+        ]
+
         # 确保top_skills不为None
         if self.top_skills:
             features += [f'skill_{skill}' for skill in self.top_skills if f'skill_{skill}' in df.columns]
@@ -457,7 +457,7 @@ class SalaryPredictor:
             # 计算个人匹配度（简单逻辑）
             # 根据特征重要性计算置信度
             confidence = 0.85  # 默认值
-            
+
             # 生成预测可视化图表
             chart_path = self.visualize_prediction(input_data, min_salary, avg_salary, max_salary)
 
@@ -489,46 +489,46 @@ class SalaryPredictor:
                 ],
                 'error': str(e)
             }
-    
+
     def visualize_prediction(self, input_data, min_salary, avg_salary, max_salary):
         """可视化预测结果并保存图表"""
         try:
             # 创建目录（如果不存在）
             upload_dir = "../../../employment/backend/uploads/predictions"
             os.makedirs(upload_dir, exist_ok=True)
-            
+
             # 生成唯一文件名
             filename = f"salary_prediction_{int(time.time())}.png"
             filepath = os.path.join(upload_dir, filename)
-            
+
             # 使用非交互式后端，避免NSWindow错误
             import matplotlib
             matplotlib.use('Agg')  # 确保使用非交互式后端
-            
+
             # 创建图表
             plt.figure(figsize=(10, 6))
-            
+
             # 绘制薪资范围
             x = ['最低薪资', '平均薪资', '最高薪资']
             y = [min_salary, avg_salary, max_salary]
-            
+
             # 使用简单的条形图而不是seaborn，减少依赖
             plt.bar(x, y, color=['#5470c6', '#91cc75', '#fac858'])
-            
+
             # 设置标题和标签
             plt.title(f"{input_data.get('name', '职位')}薪资预测 - {input_data.get('city', '未知')}地区")
             plt.ylabel('薪资 (元/月)')
-            
+
             # 在柱状图上显示具体数值
             for i, v in enumerate(y):
                 plt.text(i, v + 500, f"{int(v)}", ha='center')
-                
+
             plt.tight_layout()
-            
+
             # 保存图表
             plt.savefig(filepath, dpi=300, bbox_inches='tight')
             plt.close('all')  # 确保关闭所有图形
-            
+
             print(f"图表已保存: {filepath}")
             # 返回相对路径，供前端访问
             return f"predictions/{filename}"

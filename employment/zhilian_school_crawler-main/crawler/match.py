@@ -8,7 +8,7 @@ class Match(object):
             self.connect = pymysql.connect(host="127.0.0.1",
                                            port=3306,
                                            user="root",
-                                           password="Liu050804",
+                                           password="sh20051015",
                                            database="spiderdatabase",
                                            charset="utf8")
             self.cursor = self.connect.cursor(cursor=pymysql.cursors.DictCursor)

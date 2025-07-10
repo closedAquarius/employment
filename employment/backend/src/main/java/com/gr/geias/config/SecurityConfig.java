@@ -30,7 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/personinfo/login",
                         "/api/personinfo/register",
                         "/api/personinfo/refresh-token",
-                        "/api/personinfo/faceLogin"
+                        "/api/personinfo/faceLogin",
+                        "/news/*"
                 ).permitAll()
 
                //CompanyInfoController

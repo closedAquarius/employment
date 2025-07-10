@@ -36,6 +36,8 @@ public class ResumeRewriterService {
     private String pythonScriptPath;
     @Value("${python.script.html_to_pdf.path}")
     private String html2PdfPath;
+    @Value("${python.path}")
+    private String pythonPath;
     @Value("classpath:templates/resume.txt")
     private Resource resume;
     @Value("classpath:templates/education.txt")
@@ -47,11 +49,13 @@ public class ResumeRewriterService {
 
     private final JDKeywordExtractor jdKeywordExtractor;
     private final ResumeRewriterAssistant resumeRewriterAssistant;
+    private final MarkdownToPdfConverter markdownToPdfConverter;
 
-
-    public ResumeRewriterService(JDKeywordExtractor jdKeywordExtractor, ResumeRewriterAssistant resumeRewriterAssistant) {
+    public ResumeRewriterService(JDKeywordExtractor jdKeywordExtractor, ResumeRewriterAssistant resumeRewriterAssistant,
+                                 MarkdownToPdfConverter markdownToPdfConverter) {
         this.jdKeywordExtractor = jdKeywordExtractor;
         this.resumeRewriterAssistant = resumeRewriterAssistant;
+        this.markdownToPdfConverter = markdownToPdfConverter;
     }
 
     private static final String PDF_STORAGE_PATH = "external/static/pdf/";
@@ -113,7 +117,7 @@ public class ResumeRewriterService {
         resumeFile.transferTo(tempFile);
 
         // 调用 extract_text.py 提取文本
-        ProcessBuilder processBuilder = new ProcessBuilder("python", pythonScriptPath, tempFile.getAbsolutePath());
+        ProcessBuilder processBuilder = new ProcessBuilder(pythonPath, pythonScriptPath, tempFile.getAbsolutePath());
         processBuilder.redirectErrorStream(true); // 合并标准输出和错误输出
         Process process = processBuilder.start();
 
@@ -144,7 +148,7 @@ public class ResumeRewriterService {
                 "</style></head><body>" +
                 html +
                 "</body></html>";
-        MarkdownToPdfConverter.html2Pdf(html, outputPath, html2PdfPath);
+        markdownToPdfConverter.html2Pdf(html, outputPath, html2PdfPath);
 
         return "pdf/" + resumePdfName;
     }

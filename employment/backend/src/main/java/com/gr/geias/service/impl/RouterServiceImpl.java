@@ -31,6 +31,7 @@ public class RouterServiceImpl implements RouterService {
         routes.add(createGraduateRouter());  // 毕业生就业信息
         routes.add(createAdminJobAndPresentationRouter());   // 宣讲会和招聘会管理
         routes.add(createNewsRouter());  // 新闻管理
+        routes.add(createSpiderRouter());
         routes.add(createOrganizationRouter()); // 组织架构管理
         routes.add(createStaffRouter());     // 人员管理
         // routes.add(createScreenRouter());   // 数字大屏
@@ -214,7 +215,7 @@ public class RouterServiceImpl implements RouterService {
         Map<String, Object> meta = new HashMap<>();
         meta.put("icon", "custom/organization");
         meta.put("title", "组织架构管理");
-        meta.put("rank", 5);
+        meta.put("rank", 7);
         organizationRouter.put("meta", meta);
 
         List<Map<String, Object>> children = new ArrayList<>();
@@ -274,7 +275,7 @@ public class RouterServiceImpl implements RouterService {
         Map<String, Object> meta = new HashMap<>();
         meta.put("icon", "custom/person");
         meta.put("title", "人员管理");
-        meta.put("rank", 6);
+        meta.put("rank", 8);
         staffRouter.put("meta", meta);
 
         List<Map<String, Object>> children = new ArrayList<>();
@@ -664,6 +665,34 @@ public class RouterServiceImpl implements RouterService {
         homeRouter.put("children", children);
 
         return homeRouter;
+    }
+
+    private Map<String, Object> createSpiderRouter() {
+        Map<String, Object> spiderRouter = new HashMap<>();
+        spiderRouter.put("path", "/spider");
+        spiderRouter.put("redirect", "/spider/data");
+
+        Map<String, Object> meta = new HashMap<>();
+        // meta.put("icon", "custom/spider");
+        meta.put("title", "数据爬虫");
+        meta.put("rank", 6);
+        spiderRouter.put("meta", meta);
+
+        List<Map<String, Object>> children = new ArrayList<>();
+
+        // 信息列表
+        Map<String, Object> listChild = new HashMap<>();
+        listChild.put("path", "/spider/data");
+        listChild.put("name", "spiderData");
+        listChild.put("component", "spider/data");
+        Map<String, Object> listMeta = new HashMap<>();
+        listMeta.put("title", "信息列表");
+        listChild.put("meta", listMeta);
+        children.add(listChild);
+
+        spiderRouter.put("children", children);
+        return spiderRouter;
+
     }
 
 }

@@ -66,12 +66,18 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
 
+
         // ✅ 映射本地图片上传目录
         registry.addResourceHandler("/uploads/messages/**")  // 修改路径为 /uploads/messages/**
                 .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/messages/");  // 设置具体路径
+
+        System.out.println(System.getProperty("user.dir"));
+        // ✅ 映射本地图片上传目录
+        registry.addResourceHandler("/uploads/news/**")  // 修改路径为 /uploads/messages/**
+                .addResourceLocations("file:" + System.getProperty("user.dir")+ "/employment/backend" + "/uploads/news/");  // 设置具体路径
         // ✅ 新增：映射本地图片上传目录
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
+                .addResourceLocations("file:" + System.getProperty("user.dir")+ "/employment/backend" + "/uploads/");
     }
 
     /**
