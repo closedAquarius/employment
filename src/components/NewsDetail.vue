@@ -235,6 +235,7 @@ async function handlePostComment() {
 }
 .related-news-section {
   margin-top: 40px;
+  margin-left: 50px;
 }
 .related-news-list {
   list-style: none;

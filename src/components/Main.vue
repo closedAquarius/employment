@@ -2,9 +2,9 @@
   <!-- 顶部导航栏 -->
   <div class="top-navbar">
     <div class="navbar-left">
-      <img src="https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons/images/svg/briefcase.svg" class="logo-icon" alt="logo" />
-      <span class="project-title">职引未来</span>
+      <img src="../../public/platform-logo.png" class="logo-icon" alt="logo" />
     </div>
+    <img src="../../public/logo.png" class="logo-img">
     <div class="navbar-right">
       <span v-if="!isLogin" class="login-btn" @click="goLogin">登录</span>
       <span v-else class="username" @click="goAdmin" style="cursor: pointer">{{ username }}</span>
@@ -338,14 +338,36 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+body {
+    overflow-x: hidden !important;
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+}
+
+body::-webkit-scrollbar-track {
+  background: white;
+  border-radius: 2px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background:  rgb(239, 239, 239);
+  border-radius: 10px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background:  rgb(179, 179, 179);
+}
+
 /* 顶部导航栏样式 */
 .top-navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 56px;
-  background: #fff;
+  height: 80px;
+  background: #024E9F;
   box-shadow: 0 2px 12px #0001;
   display: flex;
   align-items: center;
@@ -355,17 +377,23 @@ onUnmounted(() => {
   box-sizing: border-box;
 }
 
+.logo-img {
+  width: 300px;
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .navbar-left,
 .navbar-right {
   min-width: 0;
 }
 
 .logo-icon {
-  width: 32px;
-  height: 32px;
+  width: 180px;
   vertical-align: middle;
   object-fit: contain;
-  background: #f5f5f5;
 }
 
 .project-title {
@@ -392,6 +420,7 @@ onUnmounted(() => {
   border: 1px solid #3b82f6;
   transition: background 0.2s, color 0.2s;
 }
+
 .login-btn:hover {
   background: #3b82f6;
   color: #fff;
@@ -444,7 +473,7 @@ onUnmounted(() => {
 .slider .pic {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 50vh;
   flex: 1 1 0;
   display: block;
   /* 不能有margin-bottom等撑开高度的属性 */
@@ -808,15 +837,15 @@ onUnmounted(() => {
 }
 
 .main-content {
-  padding-top: 56px; /* 与.top-navbar高度一致，避免被遮挡 */
+  padding-top: 80px; /* 与.top-navbar高度一致，避免被遮挡 */
+  overflow-x: hidden;
 }
 
 .home-swiper-cover {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto 36px auto;
+  margin: 0;
   box-sizing: border-box;
-  padding: 0 24px;
+  padding: 0;
 }
 .home-swiper1 {
   width: 100%;
@@ -839,7 +868,7 @@ onUnmounted(() => {
     border-radius: 10px;
   }
   .home-swiper-cover {
-    padding: 0 6px;
+    padding: 0;
   }
 }
 </style>

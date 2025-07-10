@@ -1,7 +1,7 @@
 <!-- filepath: d:\programstudy\test\employment-frontend\src\components\HomeSwiper.vue -->
 <template>
   <div class="home-swiper-cover">
-    <div class="arrow left" @click="handlePrev"><span>&lt;</span></div>
+    <div class="arrow left" @click="handlePrev"><span><img src="../../public/last.svg" style="width: 20px"></span></div>
     <van-swipe
       ref="swipeRef"
       class="home-swiper1"
@@ -18,7 +18,7 @@
         </a>
       </van-swipe-item>
     </van-swipe>
-    <div class="arrow right" @click="handleNext"><span>&gt;</span></div>
+    <div class="arrow right" @click="handleNext"><span><img src="../../public/next.svg" style="width: 20px"></span></div>
     <!-- 自定义指示器 -->
     <div class="custom-indicators">
       <span
@@ -82,29 +82,29 @@ function onChange(idx) {
 .home-swiper-cover {
   width: 100vw;
   max-width: none;
-  margin: 0 auto 36px auto;
+  margin: 0;
   box-sizing: border-box;
-  padding: 0 0;
+  padding: 0;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .home-swiper1 {
   width: 100%;
-  height: 440px;
-  border-radius: 32px;
   overflow: hidden;
-  box-shadow: 0 4px 24px #0001;
+  height: calc(70vh);
 }
+
 .home-swiper1 img {
   width: 100%;
-  height: 440px;
+  height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 32px;
   background: #f5f7fa;
 }
+
 .arrow {
   position: absolute;
   top: 50%;
@@ -170,7 +170,7 @@ function onChange(idx) {
   }
   .home-swiper-cover {
     max-width: 100vw;
-    padding: 0 4px;
+    padding: 0;
   }
   .arrow {
     width: 32px;

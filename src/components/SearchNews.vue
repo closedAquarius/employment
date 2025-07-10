@@ -65,31 +65,36 @@ const goDetail = (id) => {
 
 <style scoped>
 .search-news {
+  margin: 50px auto 50px auto !important;
   position: relative;
-  width: 320px;
+  width: 70vw;
   margin: 0 auto;
 }
+
 .search-input {
   width: 100%;
-  padding: 10px 16px;
-  border: 1.5px solid #3b82f6;
+  padding: 15px 25px;
+  border: none;
   border-radius: 24px;
   font-size: 16px;
   outline: none;
   transition: border 0.2s;
-  background: #fff;
+  background: #F2F2F2;
 }
+
 .search-input:focus {
   border-color: #174ea6;
 }
+
 .dropdown {
   position: absolute;
+  width: 73vw !important;
   left: 0;
   right: 0;
-  top: 44px;
+  top: 50px;
   background: #fff;
   border: 1px solid #e3e7ed;
-  border-radius: 0 0 12px 12px;
+  border-radius: 15px;
   box-shadow: 0 4px 16px #0001;
   z-index: 10;
   max-height: 320px;
@@ -98,6 +103,25 @@ const goDetail = (id) => {
   margin: 0;
   list-style: none;
 }
+
+.dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown::-webkit-scrollbar-track {
+  background: white;
+  border-radius: 2px;
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+  background:  rgb(239, 239, 239);
+  border-radius: 10px;
+}
+
+.dropdown::-webkit-scrollbar-thumb:hover {
+  background:  rgb(179, 179, 179);
+}
+
 .dropdown li {
   padding: 12px 18px;
   cursor: pointer;
@@ -108,6 +132,7 @@ const goDetail = (id) => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .dropdown li:hover {
   background: #e0eaff;
   color: #174ea6;
